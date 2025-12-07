@@ -1,8 +1,7 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import app from './app.js';
-import { NodeAssetLoader } from './loader.js';
-import { AssetLoader } from './types.js';
+import { AssetLoader, NodeAssetLoader } from './loader.js';
 
 const wrapper = new Hono<{ Variables: { assetLoader: AssetLoader } }>();
 

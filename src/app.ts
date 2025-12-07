@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { ImageResponse } from '@cf-wasm/og';
-import { AssetLoader } from './types';
+import { AssetLoader } from './loader';
 
 type Env = {
   Bindings: CloudflareBindings;

@@ -1,4 +1,9 @@
-import { AssetLoader } from './types';
+export interface AssetLoader {
+  loadFont(name: string): Promise<ArrayBuffer>;
+  loadImage(path: string): Promise<ArrayBuffer>;
+  loadText(path: string): Promise<string>;
+}
+
 
 export class CloudflareAssetLoader implements AssetLoader {
   private assetsFetcher: Fetcher | null;
