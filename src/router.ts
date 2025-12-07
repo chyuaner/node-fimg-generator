@@ -38,6 +38,63 @@ export const parseColor = (colorStr: string) => {
 };
 
 // -----------------------------------------------------------------------------
+// Emoji / Emote Parsers
+// -----------------------------------------------------------------------------
+
+// Regex for Discord emotes: <:name:id>
+const DISCORD_EMOTE_REGEX = /<:(\w+):(\d+)>/g;
+
+
+const parseTextToElements = (text: string, fontSizeVal: number) => {
+  const elements: any[] = [];
+  let lastIndex = 0;
+  
+  const matches = Array.from(text.matchAll(DISCORD_EMOTE_REGEX));
+
+  for (const match of matches) {
+    const matchIndex = match.index!;
+    const matchString = match[0];
+    const emoteId = match[2]; // Capturing group 2 is ID
+
+    // Text before match
+    if (matchIndex > lastIndex) {
+      elements.push({
+        type: 'span',
+        props: { children: text.substring(lastIndex, matchIndex) }
+      });
+    }
+
+    // specific discord emote element
+    elements.push({
+        type: 'img',
+        props: {
+            src: `https://cdn.discordapp.com/emojis/${emoteId}.png`,
+            width: fontSizeVal,
+            height: fontSizeVal,
+            style: {
+                margin: '0 2px',
+                verticalAlign: 'middle',
+                objectFit: 'contain'
+            }
+        }
+    });
+
+    lastIndex = matchIndex + matchString.length;
+  }
+
+  // Process failing text after the last match
+  if (lastIndex < text.length) {
+    elements.push({
+      type: 'span',
+      props: { children: text.substring(lastIndex) }
+    });
+  }
+  
+  return elements;
+};
+
+
+// -----------------------------------------------------------------------------
 // Router 設定（接受已建立好的 app，回傳同一個 app）
 // -----------------------------------------------------------------------------
 export const applyRoutes = (app: Hono<any>) => {
@@ -101,8 +158,8 @@ export const applyRoutes = (app: Hono<any>) => {
     }
 
     // Generate Image
-    // Using React-like element structure (JSX via generic object or h function if we import it,
-    // but standard object structure works for Satori/OG)
+    const fontSizeVal = Math.floor(Math.min(width, height) / 5);
+    const parsedChildren = parseTextToElements(text, fontSizeVal);
 
     const element = {
         type: 'div',
@@ -115,10 +172,10 @@ export const applyRoutes = (app: Hono<any>) => {
                 color: fgColor,
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: Math.min(width, height) / 5 + 'px', // Simple scaling
+                fontSize: fontSizeVal + 'px', 
                 fontFamily: fontName,
             },
-            children: text,
+            children: parsedChildren,
         },
     };
 
@@ -141,6 +198,7 @@ export const applyRoutes = (app: Hono<any>) => {
             format: format as any, // Cast if type definitions are incomplete
         }
     );
+
 
     // If SVG, headers might need adjustment? ImageResponse handles Content-Type.
     return imageResponse;
