@@ -15,13 +15,13 @@ export const parseSize = (sizeStr: string) => {
 
 export const parseColor = (colorStr: string) => {
   // Support "ff0000" -> "#ff0000", "000" -> "#000"
-  // Also support "ff0000,128" -> rgba? users ex: "ff0000,128". 
+  // Also support "ff0000,128" -> rgba? users ex: "ff0000,128".
   // Let's assume user means hex + alpha(0-255).
   // The user example: "ff0000", "000", "ff0000,128"
-  
+
   const [hex, alpha] = colorStr.split(',');
   let color = hex.startsWith('#') ? hex : '#' + hex;
-  
+
   // Basic validation/sanitization could be added here
   return { color, alpha };
 };
@@ -36,7 +36,7 @@ export const applyRoutes = (app: Hono<any>) => {
     const sizeParam = c.req.param('size'); // "300", "300.png", "300x200", "300x200.png"
     const bgParam = c.req.param('bgColor');
     const fgParam = c.req.param('fgColor');
-    
+
     // Check for .png extension in the *last* provided parameter to override type
     let forcePng = false;
     let rawSize = sizeParam;
@@ -46,7 +46,7 @@ export const applyRoutes = (app: Hono<any>) => {
     // Logic to detect .png at the end of the URL path
     // Since specific params might be undefined, we check the path or the last defined param.
     // Actually, Hono's routing might handle extensions if we are careful, but let's parse manualy.
-    
+
     // If sizeParam has .png, and others are undefined
     if (rawSize && rawSize.endsWith('.png')) {
         forcePng = true;
@@ -60,11 +60,11 @@ export const applyRoutes = (app: Hono<any>) => {
     }
 
     const { width, height } = parseSize(rawSize);
-    
+
     // Defaults
     const bgColor = rawBg ? parseColor(rawBg).color : '#cccccc'; // Default grey
     // const bgAlpha = rawBg ? parseColor(rawBg).alpha : undefined; // TODO: Handle alpha if needed in style
-    
+
     const fgColor = rawFg ? parseColor(rawFg).color : '#969696'; // Default darker grey
     // const fgAlpha = ...
 
@@ -92,9 +92,9 @@ export const applyRoutes = (app: Hono<any>) => {
     }
 
     // Generate Image
-    // Using React-like element structure (JSX via generic object or h function if we import it, 
+    // Using React-like element structure (JSX via generic object or h function if we import it,
     // but standard object structure works for Satori/OG)
-    
+
     const element = {
         type: 'div',
         props: {
@@ -107,7 +107,7 @@ export const applyRoutes = (app: Hono<any>) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: Math.min(width, height) / 5 + 'px', // Simple scaling
-                fontFamily: fontName, 
+                fontFamily: fontName,
             },
             children: text,
         },

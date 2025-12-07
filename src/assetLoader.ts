@@ -18,7 +18,7 @@ export class CloudflareAssetLoader implements AssetLoader {
     // For simplicity with 'assets' binding (if configured) or static assets:
     // If 'ASSETS' binding is available, use it. Otherwise, assume public url.
     // However, in a worker, we might not have 'location.origin'.
-    
+
     // Strategy: Try to use binding if provided.
     if (this.assetsFetcher) {
         const response = await this.assetsFetcher.fetch(`http://assets/font/${name}`);
@@ -27,8 +27,8 @@ export class CloudflareAssetLoader implements AssetLoader {
         }
         return response.arrayBuffer();
     }
-    
-    // Fallback or specific logic if needed. 
+
+    // Fallback or specific logic if needed.
     // Ideally we should inject the origin or use a known base URL.
     // For now, assuming relative fetch might work if mapped, but standard workers don't support relative fetch without base.
     // We will rely on the caller to provide a valid fetcher or handle this.
@@ -36,23 +36,23 @@ export class CloudflareAssetLoader implements AssetLoader {
   }
 
   async loadImage(path: string): Promise<ArrayBuffer> {
-     if (this.assetsFetcher) {
-        const response = await this.assetsFetcher.fetch(`http://assets/${path}`);
-        if (!response.ok) {
-            throw new Error(`Failed to load image ${path}: ${response.statusText}`);
-        }
-        return response.arrayBuffer();
+    if (this.assetsFetcher) {
+      const response = await this.assetsFetcher.fetch(`http://assets/${path}`);
+      if (!response.ok) {
+          throw new Error(`Failed to load image ${path}: ${response.statusText}`);
+      }
+      return response.arrayBuffer();
     }
     throw new Error("CloudflareAssetLoader requires a Fetcher binding for assets");
   }
 
   async loadText(path: string): Promise<string> {
-     if (this.assetsFetcher) {
-        const response = await this.assetsFetcher.fetch(`http://assets/${path}`);
-        if (!response.ok) {
-            throw new Error(`Failed to load text ${path}: ${response.statusText}`);
-        }
-        return response.text();
+    if (this.assetsFetcher) {
+      const response = await this.assetsFetcher.fetch(`http://assets/${path}`);
+      if (!response.ok) {
+          throw new Error(`Failed to load text ${path}: ${response.statusText}`);
+      }
+      return response.text();
     }
     throw new Error("CloudflareAssetLoader requires a Fetcher binding for assets");
   }
