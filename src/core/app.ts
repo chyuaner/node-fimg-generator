@@ -4,37 +4,6 @@ import { parseSize, parseColor, parseTextToElements } from './routerTools';
 import { parseFakeImgUrl as parseFakeImgUrlDetailed } from './parseFakeImgUrl';
 
 // -----------------------------------------------------------------------------
-// URL Parsing Helper
-// -----------------------------------------------------------------------------
-function parseFakeImgUrl(pathname: string) {
-  let forcePng = false, forceSvg = false;
-  let cleanPath = pathname;
-
-  if (pathname.endsWith('.png')) {
-    forcePng = true;
-    cleanPath = pathname.slice(0, -4);
-  } else if (pathname.endsWith('.svg')) {
-    forceSvg = true;
-    cleanPath = pathname.slice(0, -4);
-  }
-
-  // Remove leading slashes and split
-  const parts = cleanPath.replace(/^\/+/, '').split('/');
-
-  const sizeParam = parts[0] ?? null;
-  const bgParam = parts[1] ?? null;
-  const fgParam = parts[2] ?? null;
-
-  return {
-    forcePng,
-    forceSvg,
-    sizeParam,
-    bgParam,
-    fgParam,
-  };
-}
-
-// -----------------------------------------------------------------------------
 // Main Request Handler
 // -----------------------------------------------------------------------------
 export async function handleRequest(
