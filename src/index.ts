@@ -1,20 +1,28 @@
-import { Hono } from "hono";
-import app from "./app";
-import { AssetLoader, CloudflareAssetLoader } from "./core/assetLoader";
+import { handleRequest } from "./core/app";
+import { CloudflareAssetLoader } from "./core/assetLoader";
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+
+    // Serve static assets (HTML, CSS, JS) from the ASSETS binding
+    // These are built by Astro and deployed with the worker
+    if (pathname === '/' || pathname.startsWith('/assets/') || pathname.endsWith('.html') || pathname.endsWith('.css') || pathname.endsWith('.js')) {
+      if (env.ASSETS) {
+        try {
+          const response = await env.ASSETS.fetch(request);
+          if (response.status !== 404) {
+            return response;
+          }
+        } catch (e) {
+          console.error('Error serving static asset:', e);
+        }
+      }
+    }
+
+    // Handle dynamic image generation
     const loader = new CloudflareAssetLoader(env.ASSETS);
-
-    const workerApp = new Hono<{ Variables: { assetLoader: AssetLoader }, Bindings: CloudflareBindings }>();
-
-    workerApp.use('*', async (c, next) => {
-      c.set('assetLoader', loader);
-      await next();
-    });
-
-    workerApp.route('/', app);
-
-    return workerApp.fetch(request, env, ctx);
+    return handleRequest(request, loader);
   },
 } satisfies ExportedHandler<CloudflareBindings>;
