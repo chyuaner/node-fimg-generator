@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { trimTrailingSlash } from 'hono/trailing-slash'
-import { AssetLoader } from './assetLoader';
-import { applyRoutes } from './router';
+import { AssetLoader } from './core/assetLoader';
+import { applyRoutes } from './core/router';
 
 type Env = {
   Bindings: CloudflareBindings;

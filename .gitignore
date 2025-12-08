@@ -1,6 +1,6 @@
 # prod
 dist/
-public/styles.css
+public/build/
 
 # dev
 .yarn/

@@ -8,8 +8,8 @@
         "deploy": "npm run build:css && wrangler deploy --minify",
         "cf-typegen": "wrangler types --env-interface CloudflareBindings",
         "build": "npm run build:css",
-        "build:css": "tailwindcss -i ./src/input.css -o ./public/styles.css",
-        "watch:css": "tailwindcss -i ./src/input.css -o ./public/styles.css --watch"
+        "build:css": "tailwindcss -i ./src/frontend/base.css -o ./public/build/styles.css",
+        "watch:css": "tailwindcss -i ./src/frontend/base.css -o ./public/build/styles.css --watch"
     },
     "dependencies": {
         "@cf-wasm/og": "^0.3.3",

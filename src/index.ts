@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import app from "./app";
-import { AssetLoader, CloudflareAssetLoader } from "./assetLoader";
+import { AssetLoader, CloudflareAssetLoader } from "./core/assetLoader";
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {
