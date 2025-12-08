@@ -56,9 +56,11 @@ export async function handleRequest(
   }
 
   // Debug route - returns parsed URL structure as JSON
-  if (normalizedPath.startsWith('/debug/')) {
-    const debugPath = normalizedPath.slice(7); // Remove '/debug/' prefix
-    const parsed = parseFakeImgUrlDetailed(debugPath);
+  // Note: Use original pathname (not normalizedPath) to preserve trailing slashes
+  if (pathname.startsWith('/debug/')) {
+    const debugPath = pathname.slice(7); // Remove '/debug/' prefix
+    const fullDebugPath = debugPath + url.search; // Include query string
+    const parsed = parseFakeImgUrlDetailed(fullDebugPath);
     return new Response(JSON.stringify(parsed, null, 2), {
       status: 200,
       headers: {
