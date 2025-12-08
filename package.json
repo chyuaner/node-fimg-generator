@@ -14,7 +14,9 @@
     "dependencies": {
         "@astrojs/cloudflare": "^12.6.12",
         "@cf-wasm/og": "^0.3.3",
-        "astro": "^5.0.0"
+        "@types/express": "^5.0.6",
+        "astro": "^5.0.0",
+        "express": "^5.2.1"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
