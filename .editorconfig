@@ -11,7 +11,7 @@ indent_style = space      # 使用空格縮排
 indent_size = 4           #
 
 # JavaScript / TypeScript 檔案（含 src 目錄下的 *.js、*.ts）
-
+[*.{js,jsx,ts,tsx}]
 indent_style = space      # 使用空格縮排
 indent_size = 2           # 每層縮排 2 個空格
 quote_type = single       # 盡量使用單引號（'）
