@@ -1,6 +1,26 @@
-import { Hono } from 'hono';
+import { Context, Hono } from 'hono';
 import { ImageResponse } from '@cf-wasm/og';
 import { parseSize, parseColor, parseTextToElements } from './routerTools';
+
+// -----------------------------------------------------------------------------
+// Helper functions (Hono相關的)
+// -----------------------------------------------------------------------------
+function detectType(c: Context) {
+    const fullPath = c.req.path;                     // 取得原始 URL 路徑
+    let forcePng = false, forceSvg = false;
+    let cleanPath = fullPath;
+
+    if (fullPath.endsWith('.png')) {
+        forcePng = true;
+        cleanPath = fullPath.slice(0, -4); // 移除 ".png"
+    }
+    else if (fullPath.endsWith('.svg')) {
+        forceSvg = true;
+        cleanPath = fullPath.slice(0, -4); // 移除 ".png"
+    }
+
+    return {forcePng, forceSvg, cleanPath};
+}
 
 // -----------------------------------------------------------------------------
 // Router 設定（接受已建立好的 app，回傳同一個 app）
@@ -9,31 +29,20 @@ export const applyRoutes = (app: Hono<any>) => {
 
   // ---------- 動態圖片 ----------
   app.get('/:size/:bgColor?/:fgColor?', async (c) => {
-    const sizeParam = c.req.param('size'); // "300", "300.png", "300x200", "300x200.png"
-    const bgParam = c.req.param('bgColor');
-    const fgParam = c.req.param('fgColor');
-
     // Check for .png extension in the *last* provided parameter to override type
-    let forcePng = false;
+    let {forcePng, cleanPath} = detectType(c);
+
+    // 把去除副檔名後的路徑切割成參數陣列 (去除開頭的斜線)
+    const parts = cleanPath.replace(/^\/+/, '').split('/');
+
+    // Hono 仍會把路由參數自動對應至以下變數，為保險起見重新取得
+    const sizeParam = parts[0] ?? null;        // "300"、"300x200"
+    const bgParam   = parts[1] ?? null;        // "ff0000"
+    const fgParam   = parts[2] ?? null;        // "00ff00"
+
     let rawSize = sizeParam;
     let rawBg = bgParam;
-    let rawFg = fgParam;
-
-    // Logic to detect .png at the end of the URL path
-    // Since specific params might be undefined, we check the path or the last defined param.
-    // Actually, Hono's routing might handle extensions if we are careful, but let's parse manualy.
-
-    // If sizeParam has .png, and others are undefined
-    if (rawSize && rawSize.endsWith('.png')) {
-        forcePng = true;
-        rawSize = rawSize.replace('.png', '');
-    } else if (rawBg && rawBg.endsWith('.png') && !rawFg) {
-        forcePng = true;
-        rawBg = rawBg.replace('.png', '');
-    } else if (rawFg && rawFg.endsWith('.png')) {
-        forcePng = true;
-        rawFg = rawFg.replace('.png', '');
-    }
+    let rawFg = fgParam
 
     const { width, height } = parseSize(rawSize);
 
