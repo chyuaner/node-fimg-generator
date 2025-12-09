@@ -41,15 +41,21 @@ https://fimg.yuaner.tw/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-bgcolor]/[b
 - [x] fgcolor = 000,255
 
 ### 相容 Fake images please? 用法
-* http://fimg.yuaner.tw/300/
-* http://fimg.yuaner.tw/250x100/
-* http://fimg.yuaner.tw/250x100/ff0000/
-* http://fimg.yuaner.tw/350x200/ff0000/000
-* http://fimg.yuaner.tw/350x200/ff0000,128/000,255
-* http://fimg.yuaner.tw/350x200/?text=Hello
-* http://fimg.yuaner.tw/200x100/?retina=1&text=こんにちは&font=noto
-* http://fimg.yuaner.tw/350x200/?text=World&font=lobster
-* http://fimg.yuaner.tw/440x230/ff0000,128/000,255/?retina=1&text=Problem?%20%3C%3Apepw%3A989410572514758676%3E
+* https://fimg.yuaner.tw/300/
+* https://fimg.yuaner.tw/250x100/
+* https://fimg.yuaner.tw/250x100/ff0000/
+* https://fimg.yuaner.tw/350x200/ff0000/000
+* https://fimg.yuaner.tw/350x200/ff0000,128/000,255
+* https://fimg.yuaner.tw/350x200/?text=Hello
+* https://fimg.yuaner.tw/200x100/?retina=1&text=こんにちは&font=noto
+* https://fimg.yuaner.tw/350x200/?text=World&font=lobster
+* https://fimg.yuaner.tw/440x230/ff0000,128/000,255/?retina=1&text=Problem?%20%3C%3Apepw%3A989410572514758676%3E
+
+### 草稿階段
+* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[bgcolor]/[radius]/code/[theme]/[language]/
+* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[bgcolor]/[radius]/code/[code-bgcolor]/[code-fgcolor]/[language]/text
+* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[bgcolor]/[radius]/code/[code-bgcolor]/[code-fgtheme]/[language]/content
+* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[bgcolor]/[radius]/code/[code-bgcolor]/[code-fgtheme]/[language]/content
 
 
 ## 控制檔案
