@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// Helper functions
+// Params Paser functions
 // -----------------------------------------------------------------------------
 
 export const parseSize = (sizeStr: string) => {
@@ -35,4 +35,39 @@ export const parseColor = (colorStr: string) => {
   return color;
 };
 
+// -----------------------------------------------------------------------------
+// Helper functions
+// -----------------------------------------------------------------------------
+// 決定回傳格式 (SVG / PNG)
+//   1. ?filetype=xxx   -> 最高優先權
+//   2. .xxx 結尾      -> 次高優先權
+//   3. Accept Header -> 最低優先權
+// 預設: SVG
+export function fileType(url: URL, request: Request) {
+  const pathname = url.pathname;
+  let format: 'svg' | 'png' = 'svg';
+
+  // 1️⃣ query param
+  const filetypeParam = url.searchParams.get('filetype')?.toLowerCase();
+  if (filetypeParam === 'png' || filetypeParam === 'svg') {
+    format = filetypeParam as typeof format;
+  } else {
+    // 2️⃣ 檔名副檔名
+    if (pathname.endsWith('.png')) {
+      format = 'png';
+    } else if (pathname.endsWith('.svg')) {
+      format = 'svg';
+    } else {
+      // 3️⃣ Accept header
+      const acceptHeader = request.headers.get('Accept')?.toLowerCase() ?? '';
+      if (acceptHeader.includes('image/png')) {
+        format = 'png';
+      } else if (acceptHeader.includes('image/svg+xml')) {
+        format = 'svg';
+      }
+    }
+  }
+
+  return format;
+}
 
