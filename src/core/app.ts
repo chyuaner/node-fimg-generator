@@ -1,8 +1,8 @@
 import { ImageResponse } from '@cf-wasm/og';
 import { AssetLoader } from './assetLoader';
+import { splitUrl } from './splitUrl';
 import { parseSize, parseColor } from './parseUrl';
 import { parseTextToElements } from './renderHelper';
-import { splitUrl } from './splitUrl';
 
 // -----------------------------------------------------------------------------
 // Main Request Handler
@@ -18,6 +18,36 @@ export async function handleRequest(request: Request, assetLoader: AssetLoader, 
   // ---------------------------------------------------------------------------
   const url = new URL(request.url);
   const pathname = url.pathname;
+
+  // ---------------------------------------------------------------------------
+  // 決定回傳格式 (SVG / PNG)
+  //   1. ?filetype=xxx   -> 最高優先權
+  //   2. .xxx 結尾      -> 次高優先權
+  //   3. Accept Header -> 最低優先權
+  // 預設: SVG
+  // ---------------------------------------------------------------------------
+  let format: 'svg' | 'png' = 'svg';
+
+  // 1️⃣ query param
+  const filetypeParam = url.searchParams.get('filetype')?.toLowerCase();
+  if (filetypeParam === 'png' || filetypeParam === 'svg') {
+    format = filetypeParam as typeof format;
+  } else {
+    // 2️⃣ 檔名副檔名
+    if (pathname.endsWith('.png')) {
+      format = 'png';
+    } else if (pathname.endsWith('.svg')) {
+      format = 'svg';
+    } else {
+      // 3️⃣ Accept header
+      const acceptHeader = request.headers.get('Accept')?.toLowerCase() ?? '';
+      if (acceptHeader.includes('image/png')) {
+        format = 'png';
+      } else if (acceptHeader.includes('image/svg+xml')) {
+        format = 'svg';
+      }
+    }
+  }
 
   // 處理結尾斜線
   const normalizedPath = pathname.endsWith('/') && pathname.length > 1
@@ -107,9 +137,6 @@ export async function handleRequest(request: Request, assetLoader: AssetLoader, 
       children: parsedChildren,
     },
   };
-
-  // 預設輸出 SVG
-  const format = 'svg';
 
   const imageResponse = new ImageResponse(element as any, {
     // 若未提供 sizeParam，寬高會是 undefined，ImageResponse 會自行根據內容決定畫布大小

@@ -52,6 +52,35 @@ https://fimg.yuaner.tw/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-bgcolor]/[b
 * http://fimg.yuaner.tw/440x230/ff0000,128/000,255/?retina=1&text=Problem?%20%3C%3Apepw%3A989410572514758676%3E
 
 
+## 控制檔案
+本專案提供SVG與PNG
+
+提供三種方式控制你想拿的檔案格式
+
+若網址參數帶入 ?filetype=png ，或是 Header帶入 Accept: image/png，或是網址結尾以 .png 字串的話，就控制由png輸出。  優先順序： ?filetype=png > .png > Accept: image/png  然後SVG也比照。
+
+
+### 控制參數的優先順序與理由
+主要考量是以操作直覺性為主！
+
+#### 1. ?filetype=png
+考量這個為最優先，是考量到使用者可能會用Postman Params界面，會希望能在界面上方便用句選取消的方式來控制
+
+#### 2. .png
+對人類使用者與一般客戶端程式來說，最直覺說要取得什麼樣的檔案格式
+
+#### 3. Accept: image/png
+主流瀏覽器與比較成熟的客戶端，在發送HTTP Request時，就會直接順便宣告要接受什麼格式
+
+#### 4. 都沒指定
+目前直接以SVG為主。下述以SVG為主的理由：
+
+### 預設格式的理由
+雖然Fake images please?原本是以png為主，不過在本次專案中，將改以SVG為預設，以下說明主要考量：
+
+SVG：主流瀏覽器都支援，後端不須，
+PNG: 主流
+
 ## Setup
 
 1. Install dependencies:
