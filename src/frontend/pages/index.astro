@@ -3,38 +3,32 @@ import Layout from '../layouts/Layout.astro';
 
 ---
 <style>
+    .eurl {
+        display: grid;
+        overflow: scroll;
+    }
+    .eurl-content { margin-left: 3em; }
+    .eurl .eurl-base, .eurl .eurl-content {
+        display: inline-flex;
+        flex-wrap: wrap;
+    }
+    @media (width >= 48rem) {
+        .eurl { display: flex; }
+        .eurl-content { margin-left: 0; }
+        .eurl .eurl-base, .eurl .eurl-content {
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+    }
     .eurl .eurl-group {
-        display: flex;
         align-items: start;
-        /* margin-bottom: 0.5em; */
         width: fit-content;
-        padding: 0.5em 0.5em;
         margin: 0 0.5em;
         /* background-color: darkred; */
         border-radius: 12px;
     }
-    .eurl .eurl-group.inline { display: inline-flex!important;margin-left: 0!important; }
-    @media (width >= 80rem) {
-        .eurl .eurl-group {
-            display: inline-flex;
-        }
-    }
-    .eurl .eurl-group:not(:first-child) {
-        margin-left: 1em;
-    }
-    @media (width >= 48rem) {
-        .eurl .eurl-group:not(:first-child) {
-            margin-left: 4em;
-        }
-    }
-    @media (width >= 80rem) {
-        .eurl .eurl-group:not(:first-child) {
-            margin-left: 0;
-        }
-    }
 
     .eurl .eurl-part {
-        margin: 0 0.5em;
         /* padding: 0 0.5em; */
         /* background-color: rgb(28, 114, 85); */
         display: inline-table;
@@ -44,8 +38,7 @@ import Layout from '../layouts/Layout.astro';
         /* display: table; */
     }
     .eurl .eurl-part::before {
-        content: '　';
-        /* content: ''; */
+        content: '';
         font-size: 0.6em;
         display: table-footer-group;
         color: oklch(75% 0.006 286.286);
@@ -53,8 +46,20 @@ import Layout from '../layouts/Layout.astro';
         /* display: table-header-group; */
         /* line-height: 1em; */
     }
-    .eurl .eurl-part[data-url-ptitle]::before {
-        content: '[' attr(data-url-ptitle) ']';
+    @media (width >= 48rem) {
+        .eurl .eurl-part {
+            margin: 0 0.5em;
+        }
+        .eurl .eurl-group {
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+        .eurl .eurl-part::before {
+            content: ' ';
+        }
+        .eurl .eurl-part[data-url-ptitle]::before {
+            content: '[' attr(data-url-ptitle) ']';
+        }
     }
 </style>
 
@@ -66,12 +71,15 @@ import Layout from '../layouts/Layout.astro';
 
 <article class="grid">
 
-    <div class="eurl bg-neutral p-2 rounded-xl text-neutral-content w-full overflow-x-auto whitespace-nowrap">
+    <div class="eurl bg-neutral p-2 rounded-xl text-neutral-content w-full whitespace-nowrap">
 
-      <span class="eurl-base">https://fimg.yuaner.tw/</span><span class="eurl-group hover:bg-indigo-600/30 inline"><span class="eurl-part" data-url-ptitle="Canvas Size">300x200</span></span>
-      <span class="eurl-group hover:bg-cyan-600/30">/bg/<span class="eurl-part" data-url-ptitle="Padding">2x3</span>/<span class="eurl-part" data-url-ptitle="Shadow">5</span>/<span class="eurl-part" data-url-ptitle="Radius">3</span>/<span class="eurl-part" data-url-ptitle="Color">A5D0E5</span></span>
-      <span class="eurl-group hover:bg-yellow-600/30">/ph/<span class="eurl-part" data-url-ptitle="bgcolor">ff0000,128</span>/<span class="eurl-part" data-url-ptitle="fgcolor">000,255</span>/?<span class="eurl-part">text=Hello+World</span></span>
-      <span class="eurl-group hover:bg-green-600/30">&<span class="eurl-part">filetype=svg</span></span>
+      <span class="eurl-base"><span class="eurl-group">https://fimg.yuaner.tw</span></span>
+      <span class="eurl-content">
+          <span class="eurl-group hover:bg-indigo-600/30 inline">/<span class="eurl-part" data-url-ptitle="Canvas Size">300x200</span></span>
+          <span class="eurl-group hover:bg-cyan-600/30">/bg/<span class="eurl-part" data-url-ptitle="Padding">2x3</span>/<span class="eurl-part" data-url-ptitle="Shadow">5</span>/<span class="eurl-part" data-url-ptitle="Radius">3</span>/<span class="eurl-part" data-url-ptitle="Color">A5D0E5</span></span>
+          <span class="eurl-group hover:bg-yellow-600/30">/ph/<span class="eurl-part" data-url-ptitle="bgcolor">ff0000,128</span>/<span class="eurl-part" data-url-ptitle="fgcolor">000,255</span>/?<span class="eurl-part">text=Hello+World</span></span>
+          <span class="eurl-group hover:bg-green-600/30">&<span class="eurl-part">filetype=svg</span></span>
+      </span>
     </div>
     <p>ppppp</p>
 
