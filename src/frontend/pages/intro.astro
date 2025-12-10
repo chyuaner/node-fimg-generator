@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+---
+
+<Layout>
+<section id="intro" class="-mt-[1em]">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="col-span-2">
+            <div id="intro-content" class=" prose !max-w-none mb-8">
+                <article class="">
+                    <p>以在CDN原生直接運行的條件下，重新復刻 Fake images please? 的原有功能。在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。</p>
+                    <p>並在原有的網址結構基礎下，加入分組式的網址結構，預留未來加入其他內容類型的彈性。</p>
+                    <p>同時也新增邊緣背景設計的功能，方便用於製作螢幕截圖示意圖、簡報圖美化用途。</p>
+                </article>
+
+                <h2>如何使用</h2>
+                <pre class="overflow-x-auto">&lt;h3&gt;一般預留圖&lt;/h3&gt;
+&lt;img src=&quot;https://fimg.yuaner.tw//300x200.svg&quot;&gt;
+
+&lt;h3&gt;自訂文案預留圖&lt;/h3&gt;
+&lt;img src=&quot;https://fimg.yuaner.tw//400x200?text=🖼️預留圖😉&amp;filetype=png&quot;&gt;
+
+&lt;h3&gt;自訂背景色與文字顏色的預留圖&lt;/h3&gt;
+&lt;img src=&quot;https://fimg.yuaner.tw//400x200/ff0000/FFF/?text=I am red.&quot;&gt;
+
+&lt;h3&gt;帶有帶有陰影的透明邊緣的預留圖 (bg=Background ph=PlaceHolder)&lt;/h3&gt;
+&lt;img src=&quot;https://fimg.yuaner.tw//300x200/bg/5/10/ph.svg&quot;&gt;
+
+&lt;h3&gt;帶有帶有圓角陰影的圖案邊緣的預留圖&lt;/h3&gt;
+&lt;img src=&quot;https://fimg.yuaner.tw//300x200/bg/5/10/4/tpl(drool)/ph.svg&quot;&gt;</pre>
+            </div>
+        </div>
+        <div>
+            <section role="images" class="grid grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-8">
+                <div class="first-line col-span-2">
+                    <img alt="fakeimg.pl" src="/440x320/282828/eae0d0/?retina=1">
+                </div>
+                <div class="second-line-1">
+                    <img class="left" alt="fakeimg.pl" src="/200x100/282828/eae0d0/?retina=1">
+                </div>
+                <div class="second-line-2">
+                    <img class="right" alt="fakeimg.pl" src="/200x100/282828/eae0d0/?retina=1&amp;text=こんにちは&amp;font=noto">
+                </div>
+                <div class="third-line col-span-2">
+                    <img alt="fakeimg.pl" src="/440x230/282828/eae0d0/?retina=1&amp;text=Problem? <%3Apepw%3A989410572514758676>">
+                </div>
+                <div class="third-line col-span-2">
+                    <img alt="fakeimg.pl" src="/440x230/282828/eae0d0/?retina=1&amp;text=Supports emojis! 😋">
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+</Layout>
