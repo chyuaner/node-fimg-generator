@@ -5,44 +5,41 @@ import "../styles/eurl.css";
 ---
 
 <Layout>
-  <!-- ===== 頁首說明 ===== -->
-  <section class="prose !max-w-none -mt-[1em] border-b mb-6">
-    <h1 class="text-4xl font-bold text-blue-600 mb-4">範例頁 (Examples)</h1>
-    <p class="text-lg">以下示範不同的 URL 產生方式與對應的預覽圖，供開發者直接引用。</p>
-  </section>
-
   <!-- ===== 使用範例 ===== -->
-  <section class="prose !max-w-none mb-8">
-    <h2 class="text-2xl font-semibold mb-4 text-gray-700">使用範例 (Usage Examples)</h2>
+  <section class="">
+    <header class="prose !max-w-none mb-6">
+        <h2 class="">使用範例 (Usage Examples)</h2>
+        <p>以下示範不同的 URL 產生方式與對應的預覽圖，供開發者直接引用。</p>
+    </header>
 
     <div class="space-y-6">
       <!-- 單一尺寸 -->
-      <div class="bg-gray-100 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-        <code class="text-sm bg-gray-800 text-green-400 p-2 rounded flex-1">/300</code>
+      <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
+        <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/300</code>
         <img src="/300" alt="300x300" class="border rounded shadow-sm">
       </div>
 
       <!-- 自訂寬高 -->
-      <div class="bg-gray-100 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-        <code class="text-sm bg-gray-800 text-green-400 p-2 rounded flex-1">/250x100</code>
+      <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
+        <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/250x100</code>
         <img src="/250x100" alt="250x100" class="border rounded shadow-sm">
       </div>
 
       <!-- 背景色 / 文字顏色 -->
-      <div class="bg-gray-100 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-        <code class="text-sm bg-gray-800 text-green-400 p-2 rounded flex-1">/350x200/ff0000/fff</code>
+      <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
+        <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/350x200/ff0000/fff</code>
         <img src="/350x200/ff0000/fff" alt="Colored" class="border rounded shadow-sm">
       </div>
 
       <!-- 自訂文字與字型 -->
-      <div class="bg-gray-100 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-        <code class="text-sm bg-gray-800 text-green-400 p-2 rounded flex-1">/350x200/?text=Hello+World&font=noto</code>
+      <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
+        <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/350x200/?text=Hello+World&font=noto</code>
         <img src="/350x200/?text=Hello+World&font=noto" alt="Text and Font" class="border rounded shadow-sm">
       </div>
 
       <!-- 強制 PNG -->
-      <div class="bg-gray-100 p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-        <code class="text-sm bg-gray-800 text-green-400 p-2 rounded flex-1">/300.png (Force PNG)</code>
+      <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
+        <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/300.png (Force PNG)</code>
         <img src="/300.png" alt="PNG Force" class="border rounded shadow-sm">
       </div>
     </div>
@@ -50,8 +47,8 @@ import "../styles/eurl.css";
 
   <!-- ===== API 說明 ===== -->
   <section class="prose !max-w-none">
-    <h2 class="text-2xl font-semibold mb-4 text-gray-700">API 文件 (API Documentation)</h2>
-    <ul class="list-disc pl-5 space-y-2">
+    <h2 class="">API 文件 (API Documentation)</h2>
+    <ul>
       <li><strong>結構：</strong> <code class="bg-gray-200 px-1 rounded">/size/bgColor/textColor</code></li>
       <li><strong>顏色：</strong> Hex 代碼（例：<code>ff0000</code>）或 Hex+Alpha（例：<code>ff0000,128</code> 代表 50% 透明度）。</li>
       <li><strong>Query 參數：</strong>
