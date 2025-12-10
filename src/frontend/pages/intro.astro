@@ -5,7 +5,7 @@ import "../styles/eurl.css";
 ---
 
 <style>
-    .eurl { display: inherit!important; }
+    .eurl { display: block`!important; }
     .eurl-content { margin-left: 0; }
     .eurl-base, .eurl-content { display: inline-block;}
     .eurl-group { margin: 0 0.1em; padding-left: 0.1em; padding-right: 0.1em; }
@@ -14,33 +14,53 @@ import "../styles/eurl.css";
 </style>
 
 <Layout>
-<section id="intro" class="-mt-[1em]">
+<section id="intro" class="prose !max-w-none -mt-[1em]">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div class="col-span-2">
-            <div class=" prose !max-w-none mb-8">
+            <h2>簡介</h2>
+            <article id="intro-content">
+                <p>以在CDN原生直接運行的條件下，重新復刻 Fake images please? 的原有功能。在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。</p>
+                <p>並在原有的網址結構基礎下，加入分組式的網址結構，預留未來加入其他內容類型的彈性。</p>
+                <p>同時也新增邊緣背景設計的功能，方便用於製作螢幕截圖示意圖、簡報圖美化用途。</p>
+            </article>
+        </div>
+        <div class="prose-img:m-2 hidden lg:flex">
+            <div class="first-line">
+                <img alt="fakeimg.pl" src="/440x320">
+            </div>
+        </div>
+    </div>
+</section>
 
-                <article id="intro-content" class="">
-                    <p>以在CDN原生直接運行的條件下，重新復刻 Fake images please? 的原有功能。在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。</p>
-                    <p>並在原有的網址結構基礎下，加入分組式的網址結構，預留未來加入其他內容類型的彈性。</p>
-                    <p>同時也新增邊緣背景設計的功能，方便用於製作螢幕截圖示意圖、簡報圖美化用途。</p>
-                </article>
+<section id="how-to-use" class="prose !max-w-none mb-8">
+    <h2>如何使用</h2>
 
+    <article class="grid">
+        <h3 class="mt-0">網址結構</h3>
+        <div class="eurl p-4 md:py-0 rounded-md w-full whitespace-nowrap bg-neutral text-neutral-content">
+
+        <span class="eurl-base"><span class="eurl-group">https://fimg.yuaner.tw</span></span>
+        <span class="eurl-content">
+            <span class="eurl-group bg-indigo-600/30 inline" data-url-gtitle="畫布大小">/<span class="eurl-part">[canvas-size]</span></span>
+            <span class="eurl-group bg-cyan-600/30" data-url-gtitle="邊緣背景">/bg/<span class="eurl-part">[bg-padding]</span>/<span class="eurl-part">[bg-shadow]</span>/<span class="eurl-part">[bg-radius]</span>/<span class="eurl-part">[bg-bgcolor]</span></span>
+            <span class="eurl-group bg-yellow-600/30" data-url-gtitle="主內容">/ph/<span class="eurl-part">[bgcolor]</span>/<span class="eurl-part">[fgcolor]</span>/?<span class="eurl-part">text=[text]</span></span>
+            <span class="eurl-group bg-green-600/30" data-url-gtitle="額外設定">&<span class="eurl-part">filetype=[svg|png]</span></span>
+        </span>
+        </div>
+    </article>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="col-span-2">
+            <div>
                 <article>
-                    <h2>如何使用</h2>
+                    <h3>常用範例</h3>
 
-                    <h3>網址結構</h3>
-                    <div class="eurl p-4 md:py-0 rounded-md w-full whitespace-nowrap bg-neutral text-neutral-content">
-
-                    <span class="eurl-base"><span class="eurl-group">https://fimg.yuaner.tw</span></span>
-                    <span class="eurl-content">
-                        <span class="eurl-group bg-indigo-600/30 inline" data-url-gtitle="畫布大小">/<span class="eurl-part">[canvas-size]</span></span>
-                        <span class="eurl-group bg-cyan-600/30" data-url-gtitle="邊緣背景">/bg/<span class="eurl-part">[bg-padding]</span>/<span class="eurl-part">[bg-shadow]</span>/<span class="eurl-part">[bg-radius]</span>/<span class="eurl-part">[bg-bgcolor]</span></span>
-                        <span class="eurl-group bg-yellow-600/30" data-url-gtitle="主內容">/ph/<span class="eurl-part">[bgcolor]</span>/<span class="eurl-part">[fgcolor]</span>/?<span class="eurl-part">text=[text]</span></span>
-                        <span class="eurl-group bg-green-600/30" data-url-gtitle="額外設定">&<span class="eurl-part">filetype=[svg|png]</span></span>
-                    </span>
+                    <div role="alert" class="alert alert-warning">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span>目前 /bg/ 與 tpl(...) 功能尚未實做</span>
                     </div>
 
-                    <h3>常用範例</h3>
                     <pre class="overflow-x-auto">&lt;h3&gt;一般預留圖&lt;/h3&gt;
 &lt;img src=&quot;https://fimg.yuaner.tw/300x200.svg&quot;&gt;
 
@@ -60,6 +80,13 @@ import "../styles/eurl.css";
                 <article>
                     <h2>相容 Fake images please? 用法範例</h2>
 
+                    <div role="alert" class="alert alert-warning">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span>目前 retina=1 font=noto 尚未實做</span>
+                    </div>
+
                     <ul>
                         <li>https://fimg.yuaner.tw/300/</li>
                         <li>https://fimg.yuaner.tw/250x100/</li>
@@ -74,11 +101,8 @@ import "../styles/eurl.css";
                 </article>
             </div>
         </div>
-        <div>
+        <div class="lg:pt-12">
             <section role="images" class="grid grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-8">
-                <div class="first-line col-span-2">
-                    <img alt="fakeimg.pl" src="/440x320/282828/eae0d0/?retina=1">
-                </div>
                 <div class="second-line-1">
                     <img class="left" alt="fakeimg.pl" src="/200x100/282828/eae0d0/?retina=1">
                 </div>
