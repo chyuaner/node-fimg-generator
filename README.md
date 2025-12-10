@@ -26,7 +26,7 @@ A high-performance image generation service running on Cloudflare Workers using 
 ## 基本用法
 
 ```
-https://fimg.yuaner.tw/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-bgcolor]/[bg-radius]/ph/[bgcolor]/[fgcolor]/?text=Hello+World
+https://fimg.yuaner.tw/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-radius]/[bg-bgcolor]/ph/[bgcolor]/[fgcolor]/?text=Hello+World
 ```
 
 網址參數（目前已實裝的功能）
@@ -52,10 +52,10 @@ https://fimg.yuaner.tw/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-bgcolor]/[b
 * https://fimg.yuaner.tw/440x230/ff0000,128/000,255/?retina=1&text=Problem?%20%3C%3Apepw%3A989410572514758676%3E
 
 ### 草稿階段
-* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[bgcolor]/[radius]/code/[theme]/[language]/
-* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[bgcolor]/[radius]/code/[code-bgcolor]/[code-fgcolor]/[language]/text
-* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[bgcolor]/[radius]/code/[code-bgcolor]/[code-fgtheme]/[language]/content
-* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[bgcolor]/[radius]/code/[code-bgcolor]/[code-fgtheme]/[language]/content
+* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[theme]/[language]/
+* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[code-bgcolor]/[code-fgcolor]/[language]/text
+* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[code-bgcolor]/[code-fgtheme]/[language]/content
+* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[code-bgcolor]/[code-fgtheme]/[language]/content
 
 
 ## 控制檔案

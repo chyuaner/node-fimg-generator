@@ -149,8 +149,8 @@ export function splitUrl(
       parts: bgParts,
       padding: bgParts[0],
       shadow: bgParts[1],
-      bgcolor: bgParts[2],
-      radius: bgParts[3],
+      radius: bgParts[2],
+      bgcolor: bgParts[3],
   };
 
   return { canvas, bg: bgObj, content: contentObj, query };
