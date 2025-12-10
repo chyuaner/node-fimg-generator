@@ -7,28 +7,47 @@ import Layout from '../layouts/Layout.astro';
 <section id="intro" class="-mt-[1em]">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div class="col-span-2">
-            <div id="intro-content" class=" prose !max-w-none mb-8">
-                <article class="">
+            <div class=" prose !max-w-none mb-8">
+
+                <article id="intro-content" class="">
                     <p>以在CDN原生直接運行的條件下，重新復刻 Fake images please? 的原有功能。在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。</p>
                     <p>並在原有的網址結構基礎下，加入分組式的網址結構，預留未來加入其他內容類型的彈性。</p>
                     <p>同時也新增邊緣背景設計的功能，方便用於製作螢幕截圖示意圖、簡報圖美化用途。</p>
                 </article>
 
-                <h2>如何使用</h2>
-                <pre class="overflow-x-auto">&lt;h3&gt;一般預留圖&lt;/h3&gt;
-&lt;img src=&quot;https://fimg.yuaner.tw//300x200.svg&quot;&gt;
+                <article>
+                    <h2>如何使用</h2>
+                    <pre class="overflow-x-auto">&lt;h3&gt;一般預留圖&lt;/h3&gt;
+&lt;img src=&quot;https://fimg.yuaner.tw/300x200.svg&quot;&gt;
 
 &lt;h3&gt;自訂文案預留圖&lt;/h3&gt;
-&lt;img src=&quot;https://fimg.yuaner.tw//400x200?text=🖼️預留圖😉&amp;filetype=png&quot;&gt;
+&lt;img src=&quot;https://fimg.yuaner.tw/400x200?text=🖼️預留圖😉&amp;filetype=png&quot;&gt;
 
 &lt;h3&gt;自訂背景色與文字顏色的預留圖&lt;/h3&gt;
-&lt;img src=&quot;https://fimg.yuaner.tw//400x200/ff0000/FFF/?text=I am red.&quot;&gt;
+&lt;img src=&quot;https://fimg.yuaner.tw/400x200/ff0000/FFF/?text=I am red.&quot;&gt;
 
 &lt;h3&gt;帶有帶有陰影的透明邊緣的預留圖 (bg=Background ph=PlaceHolder)&lt;/h3&gt;
-&lt;img src=&quot;https://fimg.yuaner.tw//300x200/bg/5/10/ph.svg&quot;&gt;
+&lt;img src=&quot;https://fimg.yuaner.tw/300x200/bg/5/10/ph.svg&quot;&gt;
 
 &lt;h3&gt;帶有帶有圓角陰影的圖案邊緣的預留圖&lt;/h3&gt;
-&lt;img src=&quot;https://fimg.yuaner.tw//300x200/bg/5/10/4/tpl(drool)/ph.svg&quot;&gt;</pre>
+&lt;img src=&quot;https://fimg.yuaner.tw/300x200/bg/5/10/4/tpl(drool)/ph.svg&quot;&gt;</pre>
+                </article>
+
+                <article>
+                    <h2>相容 Fake images please? 用法範例</h2>
+
+                    <ul>
+                        <li>https://fimg.yuaner.tw/300/</li>
+                        <li>https://fimg.yuaner.tw/250x100/</li>
+                        <li>https://fimg.yuaner.tw/250x100/ff0000/</li>
+                        <li>https://fimg.yuaner.tw/350x200/ff0000/000</li>
+                        <li>https://fimg.yuaner.tw/350x200/ff0000,128/000,255</li>
+                        <li>https://fimg.yuaner.tw/350x200/?text=Hello</li>
+                        <li>https://fimg.yuaner.tw/200x100/?retina=1&text=こんにちは&font=noto</li>
+                        <li>https://fimg.yuaner.tw/350x200/?text=World&font=lobster</li>
+                        <li>https://fimg.yuaner.tw/440x230/ff0000,128/000,255/?retina=1&text=Problem?%20%3C%3Apepw%3A989410572514758676%3E</li>
+                    </ul>
+                </article>
             </div>
         </div>
         <div>
