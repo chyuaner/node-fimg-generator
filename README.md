@@ -36,7 +36,7 @@ https://fimg.yuaner.tw/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-bgcolor]/[b
 - [ ] shadow = 3
 - [ ] radius = 5
 - [x] bgcolor = ff0000,128
-- [ ] bgcolor = tmp(aaa)
+- [ ] bgcolor = tpl(aaa)
 - [ ] bgcolor = url("https://example.com/a.png")
 - [x] fgcolor = 000,255
 
