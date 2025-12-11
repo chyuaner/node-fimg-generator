@@ -116,67 +116,77 @@ export function genBgElement(
     wrapperStyle?: Record<string, string | number>;
   } = {}
 ): JSX.Element {
-    const {
-      bgColor,
-      padding,
-      shadow,
-      radius,
-      wrapperStyle = {},
-    } = opts;
+  const {
+    bgColor,
+    padding,
+    shadow,
+    radius,
+    wrapperStyle = {},
+  } = opts;
 
   /* -------------------------------------------------
-   * 1️⃣ 先為 inner 加入 shadow / radius（若有提供）
+   * 🔹 建立絕對定位的容器（相對定位）
    * ------------------------------------------------- */
-  const innerStyle = {
-    // 保留原本 inner 可能已經有的 style
-    ...(inner.props?.style ?? {}),
-    // radius
+  const containerStyle = {
+    position: 'relative' as const,
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...(bgColor ? { backgroundColor: bgColor } : {}),
+    ...(padding !== undefined
+      ? { padding: typeof padding === 'number' ? `${padding}px` : padding }
+      : {}),
     ...(radius !== undefined
       ? { borderRadius: typeof radius === 'number' ? `${radius}px` : radius }
       : {}),
-    // shadow
-    ...(shadow !== undefined
-      ? {
-          // boxShadow: `0 0 ${typeof shadow === 'number' ? `${shadow}px` : shadow} #555`,
-          filter: `drop-shadow(0 0 ${typeof shadow === 'number' ? `${shadow}px` : shadow} #000)`,
-        }
-      : {}),
+    ...wrapperStyle,
   };
 
-  const innerWithEffect: JSX.Element = {
+  /* -------------------------------------------------
+   * 🔹 底層陰影元素（與原元素大小位置完全相同）
+   * ------------------------------------------------- */
+  const shadowStyle = {
+    ...inner.props?.style,
+    position: 'absolute' as const,
+    inset: 0,
+    filter: shadow
+      ? `drop-shadow(0 0 ${typeof shadow === 'number' ? `${shadow}px` : shadow} #000)`
+      : undefined,
+    pointerEvents: 'none' as const, // 防止陰影層擋住點擊
+    zIndex: 0,
+  };
+
+  const shadowElement: JSX.Element = {
     ...inner,
     props: {
       ...inner.props,
-      style: innerStyle,
+      style: shadowStyle,
+      children: inner.props?.children,
     },
   };
 
   /* -------------------------------------------------
-   * 2️⃣ 建立外層 wrapper（只處理 bgColor、padding、使用者自訂樣式）
+   * 🔹 上層原內容（不加陰影，正常顯示）
    * ------------------------------------------------- */
-  // 建立根據 /bg/ 參數的基礎 style
-  const baseStyle: Record<string, string | number> = {
-    display: 'flex',
-    width: '100%',
-    height: '100%',
-    // 如果有提供顏色就設定背景
-    ...(bgColor ? { backgroundColor: bgColor } : {}),
-    // padding
-    ...(padding !== undefined ? { padding: typeof padding === 'number' ? `${padding}px` : padding } : {}),
-
-    // 讓子元素置中（與原先 genPhElement 的樣式保持一致）
-    alignItems: 'center',
-    justifyContent: 'center',
+  const contentElement: JSX.Element = {
+    ...inner,
+    props: {
+      ...inner.props,
+      style: {
+        ...inner.props?.style,
+        position: 'relative' as const,
+        zIndex: 1,
+      },
+    },
   };
-
-  // 合併使用者自行傳入的 wrapperStyle，優先權較高
-  const finalStyle = { ...baseStyle, ...wrapperStyle };
 
   return {
     type: 'div',
     props: {
-      style: finalStyle,
-      children: [innerWithEffect],
+      style: containerStyle,
+      children: [shadowElement, contentElement],
     },
   };
 }
