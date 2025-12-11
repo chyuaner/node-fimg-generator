@@ -2,6 +2,8 @@
 // Params Paser functions
 // -----------------------------------------------------------------------------
 
+import { getPath } from "./assets";
+
 /**
  * 解析尺寸字串（支援單一值與「x」分隔的雙值）
  *
@@ -130,6 +132,22 @@ export const parseSingleSize = (
   const minSide = Math.min(canvasSize.width as number, canvasSize.height as number);
   // 以「比例 %」的概念計算（例如 30 表示 30%）
   return Math.round((minSide * ratio) / 100);
+};
+
+export const parseColorOrPath = (colorStr: string) => {
+  if (colorStr.startsWith('tpl(') && colorStr.endsWith(')')) {
+    // 取得資源檔範本名稱
+    const tplName = colorStr.slice(4, -1);
+    // 從 assets 取得路徑
+    const path = getPath(tplName);
+    // 如果路徑存在，則返回路徑
+    if (path) {
+      return {type:'tpl', value: path};
+    }
+  }
+  else {
+      return {type:'color', value: parseColor(colorStr)};
+  }
 };
 
 export const parseColor = (colorStr: string) => {

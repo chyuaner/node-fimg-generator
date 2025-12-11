@@ -110,6 +110,7 @@ export function genBgElement(
   inner: JSX.Element,
   opts: {
     bgColor?: string;
+    bgUrl?: string;
     padding?: number | string;
     shadow?: number | string;
     radius?: number | string;
@@ -118,6 +119,7 @@ export function genBgElement(
 ): JSX.Element {
   const {
     bgColor,
+    bgUrl,
     padding,
     shadow,
     radius,
@@ -135,6 +137,7 @@ export function genBgElement(
     alignItems: 'center',
     justifyContent: 'center',
     ...(bgColor ? { backgroundColor: bgColor } : {}),
+    ...(bgUrl ? { background: `url(${bgUrl})` } : {}),
     ...(padding !== undefined
       ? { padding: typeof padding === 'number' ? `${padding}px` : padding }
       : {}),

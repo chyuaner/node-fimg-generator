@@ -1,7 +1,7 @@
 import { ImageResponse } from '@cf-wasm/og';
 import { AssetLoader } from './assetLoader';
 import { splitUrl } from './splitUrl';
-import { parseSize, parseColor, fileType, parseSingleSize } from './parseUrl';
+import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPath } from './parseUrl';
 import { genBgElement, genPhElement, parseTextToElements } from './renderHelper';
 import { renderfullHtmlFromElement } from './renderHtml';
 
@@ -68,14 +68,14 @@ export async function handleRequest(request: Request, assetLoader: AssetLoader, 
   }
 
 
-  // canvas (sizeParam)
+  // canvas (sizeParam) ----------------
   // 若未提供則不設定 width / height，交由 ImageResponse 依內容自動決定畫布大小
   const sizeParam = canvas ?? null;
   // 只有在提供 sizeParam 時才解析尺寸
   const hasSize = !!sizeParam;
   const { width, height } = hasSize ? parseSize(sizeParam) : { width: undefined, height: undefined };
 
-  // content (ph)
+  // content (ph)  ---------------------
   // content.parts[0] → 主內容背景顏色 (原本的 bgColor)
   // content.parts[1] → 主內容文字顏色 (原本的 fgColor)
   const bgPart = content.parts[0] ?? null;
@@ -101,6 +101,7 @@ export async function handleRequest(request: Request, assetLoader: AssetLoader, 
     text,
   });
 
+  // bg --------------------------------
   // 若 /bg/ 區塊提供了任意參數，使用 genBgElement 包裹
   const hasBgConfig =
     bg.padding !== undefined ||
@@ -118,7 +119,54 @@ export async function handleRequest(request: Request, assetLoader: AssetLoader, 
     const shadowValue = bg.shadow ? parseSingleSize(bg.shadow, { width, height }) : undefined;
     const radiusValue = bg.radius ? parseSingleSize(bg.radius, { width, height }) : undefined;
 
+    const bgBackground = bg.bgcolor ? parseColorOrPath(bg.bgcolor) : undefined;
+    let bgBackgroundParm;
+    if (bgBackground !== undefined) {
+      switch (bgBackground.type) {
+        case 'tpl':
+          let bgPath = bgBackground.value;
+          const mimeType = getMimeType(bgPath);
+          const bgImgData = await assetLoader.loadImage(bgPath);
+          if (bgImgData === null || bgImgData === undefined) {
+            throw new Error('bgImgData is null or undefined');
+          }
+
+          const base64String = btoa(String.fromCharCode(...new Uint8Array(bgImgData)));
+          const base64Url = `data:${mimeType};base64,${base64String}`;
+
+          function getMimeType(path: string): string {
+            const extension = path.split('.').pop();
+            switch (extension) {
+              case 'jpg':
+              case 'jpeg':
+                return 'image/jpeg';
+              case 'png':
+                return 'image/png';
+              case 'gif':
+                return 'image/gif';
+              case 'svg':
+                return 'image/svg+xml';
+              // ...
+              default:
+                return 'application/octet-stream';
+            }
+          }
+
+          bgBackgroundParm = {
+            bgUrl: base64Url,
+          }
+          break;
+        default:
+        case 'color':
+          bgBackgroundParm = {
+            bgColor: bgBackground.value,
+          }
+          break;
+      }
+    }
+
     finalElement = genBgElement(element, {
+        ...bgBackgroundParm,
         // 轉成數值（若是 undefined 則會被忽略）
         ...(paddingX !== undefined || paddingY !== undefined
         ? { padding: `${paddingY ?? paddingX ?? 0}px ${paddingX ?? paddingY ?? 0}px` }
@@ -126,7 +174,6 @@ export async function handleRequest(request: Request, assetLoader: AssetLoader, 
         // 直接使用已經計算好的單一數值
         ...(shadowValue !== undefined ? { shadow: `${shadowValue}px` } : {}),
         ...(radiusValue !== undefined ? { radius: `${radiusValue}px` } : {}),
-        bgColor:  bg.bgcolor ? parseColor(bg.bgcolor) : undefined,
         // 若還想自行加入其他 style，可在此追加 wrapperStyle
       });
   } else {
