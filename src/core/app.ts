@@ -1,7 +1,7 @@
 import { ImageResponse } from '@cf-wasm/og';
 import { AssetLoader } from './assetLoader';
 import { splitUrl } from './splitUrl';
-import { parseSize, parseColor, fileType } from './parseUrl';
+import { parseSize, parseColor, fileType, parseSingleSize } from './parseUrl';
 import { genBgElement, genPhElement, parseTextToElements } from './renderHelper';
 import { renderfullHtmlFromElement } from './renderHtml';
 
@@ -114,13 +114,18 @@ export async function handleRequest(request: Request, assetLoader: AssetLoader, 
     const paddingX = paddingInfo?.width;   // 左/右
     const paddingY = paddingInfo?.height;  // 上/下
 
+    // ----- shadow / radius 改用 calcFromCanvas -----
+    const shadowValue = bg.shadow ? parseSingleSize(bg.shadow, { width, height }) : undefined;
+    const radiusValue = bg.radius ? parseSingleSize(bg.radius, { width, height }) : undefined;
+
     finalElement = genBgElement(element, {
         // 轉成數值（若是 undefined 則會被忽略）
         ...(paddingX !== undefined || paddingY !== undefined
         ? { padding: `${paddingY ?? paddingX ?? 0}px ${paddingX ?? paddingY ?? 0}px` }
         : {}),
-        shadow:   bg.shadow   ? Number(bg.shadow)   : undefined,
-        radius:   bg.radius   ? Number(bg.radius)   : undefined,
+        // 直接使用已經計算好的單一數值
+        ...(shadowValue !== undefined ? { shadow: `${shadowValue}px` } : {}),
+        ...(radiusValue !== undefined ? { radius: `${radiusValue}px` } : {}),
         bgColor:  bg.bgcolor ? parseColor(bg.bgcolor) : undefined,
         // 若還想自行加入其他 style，可在此追加 wrapperStyle
       });

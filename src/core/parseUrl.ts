@@ -63,6 +63,42 @@ export const parseSize = (
   return { width, height };
 };
 
+/**
+ * 依畫布最小邊計算比例或直接回傳 pixel。
+ *
+ * @param sizeStr       例如 "30", "30p"
+ * @param canvasSize  { width: number; height: number } | null
+ * @returns           計算後的單一像素值 (number)
+ *
+ * 使用方式：
+ *   const shadow = parseSingleSize(blocks.bg.parts[1] ?? '0', canvasSize);
+ *   const radius = parseSingleSize(blocks.bg.parts[2] ?? '0', canvasSize);
+ */
+export const parseSingleSize = (
+  sizeStr: string,
+  canvasSize: Partial<{ width: number; height: number }> | null = null
+): number => {
+  // 去掉前後空白
+  const trimmed = sizeStr.trim();
+
+  // 1️⃣ 有 p 後綴 → 直接視為 pixel
+  if (trimmed.endsWith('p')) {
+    const num = Number(trimmed.slice(0, -1));
+    return Number.isNaN(num) ? 0 : num;
+  }
+
+  // 2️⃣ 只是一個純數字（比例） → 以 canvas 最小邊計算
+  const ratio = Number(trimmed);
+  if (Number.isNaN(ratio) || ratio <= 0) return 0;
+
+  // 若 canvasSize 為 null 或缺少其中一個維度，直接回傳比例本身
+  if (!canvasSize?.width || !canvasSize?.height) return ratio;
+
+  const minSide = Math.min(canvasSize.width as number, canvasSize.height as number);
+  // 以「比例 %」的概念計算（例如 30 表示 30%）
+  return Math.round((minSide * ratio) / 100);
+};
+
 export const parseColor = (colorStr: string) => {
   // Support "ff0000" -> "#ff0000", "000" -> "#000"
   // Also support "ff0000,128" -> "#ff000080"
