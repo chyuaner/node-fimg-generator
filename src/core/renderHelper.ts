@@ -153,6 +153,9 @@ export function genBgElement(
     const shadowStyle = {
       ...inner.props?.style,
       position: 'absolute' as const,
+      ...(radius !== undefined
+          ? { borderRadius: typeof radius === 'number' ? `${radius}px` : radius }
+          : {}),
       inset: 0,
       filter: shadow
         ? `blur(${typeof shadow === 'number' ? `${shadow}px` : shadow})`
@@ -183,6 +186,9 @@ export function genBgElement(
       style: {
         ...inner.props?.style,
         position: 'relative' as const,
+        ...(radius !== undefined
+          ? { borderRadius: typeof radius === 'number' ? `${radius}px` : radius }
+          : {}),
         zIndex: 1,
       },
     },
