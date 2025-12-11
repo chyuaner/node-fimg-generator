@@ -2,13 +2,65 @@
 // Params Paser functions
 // -----------------------------------------------------------------------------
 
-export const parseSize = (sizeStr: string) => {
-  if (sizeStr.includes('x')) {
-    const [w, h] = sizeStr.split('x').map(Number);
-    return { width: w, height: h };
+/**
+ * 解析尺寸字串（支援單一值與「x」分隔的雙值）
+ *
+ * @param sizeStr   例: "30x30", "30", "30p"
+ * @param canvasSize { width?: number; height?: number } | null
+ *                  - 若提供，對應維度的百分比會以此基準計算
+ *                  - 若該維度為 undefined，或 canvasSize 為 null，
+ *                    該維度直接視為 pixel（即使字串是百分比）
+ *
+ * @returns { width:number; height:number }
+ */
+export const parseSize = (
+  sizeStr: string,
+  canvasSize: Partial<{ width: number; height: number }> | null = null
+): { width: number; height: number } => {
+  // --------------------------------------------------------------
+  // 1️⃣ 先去除前後空白，並檢查是否為單一值
+  // --------------------------------------------------------------
+  const trimmed = sizeStr.trim();
+
+  // 判斷是否含有 "x"（雙值）或僅單一值
+  const isDual = trimmed.includes('x');
+
+  // --------------------------------------------------------------
+  // 2️⃣ 單一值的處理（可能有 p 後綴）
+  // --------------------------------------------------------------
+  if (!isDual) {
+    const isPixel = trimmed.endsWith('p');
+    const pureNum = Number(isPixel ? trimmed.slice(0, -1) : trimmed);
+    // 只要是單一值，寬高皆回傳相同結果
+    const width = isPixel || !canvasSize?.width
+      ? pureNum
+      : Math.round((canvasSize.width as number) * pureNum / 100);
+    const height = isPixel || !canvasSize?.height
+      ? pureNum
+      : Math.round((canvasSize.height as number) * pureNum / 100);
+    return { width, height };
   }
-  const s = Number(sizeStr);
-  return { width: s, height: s };
+
+  // --------------------------------------------------------------
+  // 3️⃣ 雙值 (a x b) 的處理
+  // --------------------------------------------------------------
+  const [rawW, rawH] = trimmed.split('x');
+
+  const wIsPixel = rawW.endsWith('p');
+  const hIsPixel = rawH.endsWith('p');
+
+  const wNum = Number(wIsPixel ? rawW.slice(0, -1) : rawW);
+  const hNum = Number(hIsPixel ? rawH.slice(0, -1) : rawH);
+
+  const width = wIsPixel || !canvasSize?.width
+    ? wNum
+    : Math.round((canvasSize.width as number) * wNum / 100);
+
+  const height = hIsPixel || !canvasSize?.height
+    ? hNum
+    : Math.round((canvasSize.height as number) * hNum / 100);
+
+  return { width, height };
 };
 
 export const parseColor = (colorStr: string) => {
