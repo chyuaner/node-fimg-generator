@@ -70,7 +70,7 @@ export function splitUrl(
     );
 
   // 正則：需要剔除的副檔名
-  const EXT_REG = /\.(png|svg|jpg|jpeg|gif)$/i; // 需要剔除的副檔名
+  const EXT_REG = /\.(png|svg|jpg|jpeg|gif|html)$/i; // 需要剔除的副檔名
 
   // ---------- 先找 canvas ----------
   const first = segs[0];

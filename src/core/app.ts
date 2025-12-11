@@ -2,7 +2,8 @@ import { ImageResponse } from '@cf-wasm/og';
 import { AssetLoader } from './assetLoader';
 import { splitUrl } from './splitUrl';
 import { parseSize, parseColor, fileType } from './parseUrl';
-import { parseTextToElements } from './renderHelper';
+import { genBgElement, genPhElement, parseTextToElements } from './renderHelper';
+import { renderfullHtmlFromElement } from './renderHtml';
 
 // -----------------------------------------------------------------------------
 // Main Request Handler
@@ -92,40 +93,67 @@ export async function handleRequest(request: Request, assetLoader: AssetLoader, 
   const fontSizeVal = Math.floor(Math.min(width ?? 100, height ?? 100) / 5);
   const parsedChildren = parseTextToElements(text, fontSizeVal);
 
-  const element = {
-    type: 'div',
-    props: {
-      style: {
-        display: 'flex',
-        width: '100%',
-        height: '100%',
-        backgroundColor: bgColor,
-        color: fgColor,
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: fontSizeVal + 'px',
-        fontFamily: fontName,
-      },
-      children: parsedChildren,
-    },
-  };
-
-  const imageResponse = new ImageResponse(element as any, {
-    // 若未提供 sizeParam，寬高會是 undefined，ImageResponse 會自行根據內容決定畫布大小
-    ...(hasSize && {
-      width: retina ? width! * 2 : width!,
-      height: retina ? height! * 2 : height!,
-    }),
-    fonts: [
-      {
-        name: fontName,
-        data: fontData,
-        weight: 400,
-        style: 'normal',
-      },
-    ],
-    format: format as any,
+  const element = genPhElement({
+    bgColor,
+    fgColor,
+    fontName,
+    fontSize: fontSizeVal,
+    text,
   });
 
-  return imageResponse;
+  // 若 /bg/ 區塊提供了任意參數，使用 genBgElement 包裹
+  const hasBgConfig =
+    bg.padding !== undefined ||
+    bg.shadow !== undefined ||
+    bg.radius !== undefined ||
+    bg.bgcolor !== undefined;
+
+  let finalElement;
+  if (hasBgConfig) {
+    const paddingInfo = bg.padding ? parseSize(bg.padding) : undefined;
+    const paddingX = paddingInfo?.width;   // 左/右
+    const paddingY = paddingInfo?.height;  // 上/下
+
+    finalElement = genBgElement(element, {
+        // 轉成數值（若是 undefined 則會被忽略）
+        ...(paddingX !== undefined || paddingY !== undefined
+        ? { padding: `${paddingY ?? paddingX ?? 0}px ${paddingX ?? paddingY ?? 0}px` }
+        : {}),
+        shadow:   bg.shadow   ? Number(bg.shadow)   : undefined,
+        radius:   bg.radius   ? Number(bg.radius)   : undefined,
+        bgColor:  bg.bgcolor ? parseColor(bg.bgcolor) : undefined,
+        // 若還想自行加入其他 style，可在此追加 wrapperStyle
+      });
+  } else {
+    finalElement = element;
+  }
+
+
+  if (format === 'html') {
+    const html = renderfullHtmlFromElement(finalElement);
+
+    return new Response(html, {
+      status: 200,
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    });
+  } else {
+    const imageResponse = new ImageResponse(finalElement as any, {
+      // 若未提供 sizeParam，寬高會是 undefined，ImageResponse 會自行根據內容決定畫布大小
+      ...(hasSize && {
+        width: retina ? width! * 2 : width!,
+        height: retina ? height! * 2 : height!,
+      }),
+      fonts: [
+        {
+          name: fontName,
+          data: fontData,
+          weight: 400,
+          style: 'normal',
+        },
+      ],
+      format: format as any,
+    });
+
+    return imageResponse;
+  }
 }

@@ -8,8 +8,6 @@
     "lib": [
       "ESNext"
     ],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
     "types": [
         "node",
         "./worker-configuration.d.ts"

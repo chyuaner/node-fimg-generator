@@ -45,11 +45,11 @@ export const parseColor = (colorStr: string) => {
 // 預設: SVG
 export function fileType(url: URL, request: Request) {
   const pathname = url.pathname;
-  let format: 'svg' | 'png' = 'svg';
+  let format: 'svg' | 'png' | 'html' = 'svg';
 
   // 1️⃣ query param
   const filetypeParam = url.searchParams.get('filetype')?.toLowerCase();
-  if (filetypeParam === 'png' || filetypeParam === 'svg') {
+  if (filetypeParam === 'png' || filetypeParam === 'svg' || filetypeParam === 'html') {
     format = filetypeParam as typeof format;
   } else {
     // 2️⃣ 檔名副檔名
@@ -57,6 +57,8 @@ export function fileType(url: URL, request: Request) {
       format = 'png';
     } else if (pathname.endsWith('.svg')) {
       format = 'svg';
+    } else if (pathname.endsWith('.html')) {
+      format = 'html';
     } else {
       // 3️⃣ Accept header
       const acceptHeader = request.headers.get('Accept')?.toLowerCase() ?? '';
@@ -64,6 +66,8 @@ export function fileType(url: URL, request: Request) {
         format = 'png';
       } else if (acceptHeader.includes('image/svg+xml')) {
         format = 'svg';
+      } else if (acceptHeader.includes('text/html')) {
+        format = 'html';
       }
     }
   }
