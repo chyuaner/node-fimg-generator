@@ -137,7 +137,8 @@ export function genBgElement(
     // shadow
     ...(shadow !== undefined
       ? {
-          boxShadow: `0 0 ${typeof shadow === 'number' ? `${shadow}px` : shadow} #555`,
+          // boxShadow: `0 0 ${typeof shadow === 'number' ? `${shadow}px` : shadow} #555`,
+          filter: `drop-shadow(0 0 ${typeof shadow === 'number' ? `${shadow}px` : shadow} #555)`,
         }
       : {}),
   };
