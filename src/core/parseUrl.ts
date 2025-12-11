@@ -15,8 +15,10 @@
  */
 export const parseSize = (
   sizeStr: string,
-  canvasSize: Partial<{ width: number; height: number }> | null = null
+  canvasSize: Partial<{ width: number; height: number }> | null = null,
+  opt: { mode?: 'independent' | 'max' | 'min' | 'average' } = {}
 ): { width: number; height: number } => {
+  const { mode = 'independent' } = opt; // 預設獨立運算
   // --------------------------------------------------------------
   // 1️⃣ 先去除前後空白，並檢查是否為單一值
   // --------------------------------------------------------------
@@ -26,41 +28,72 @@ export const parseSize = (
   const isDual = trimmed.includes('x');
 
   // --------------------------------------------------------------
-  // 2️⃣ 單一值的處理（可能有 p 後綴）
+  // 2️⃣ 雙值 (a x b) —— 永遠走「獨立」模式
   // --------------------------------------------------------------
-  if (!isDual) {
-    const isPixel = trimmed.endsWith('p');
-    const pureNum = Number(isPixel ? trimmed.slice(0, -1) : trimmed);
-    // 只要是單一值，寬高皆回傳相同結果
-    const width = isPixel || !canvasSize?.width
-      ? pureNum
-      : Math.round((canvasSize.width as number) * pureNum / 100);
-    const height = isPixel || !canvasSize?.height
-      ? pureNum
-      : Math.round((canvasSize.height as number) * pureNum / 100);
+  if (isDual) {
+    const [rawW, rawH] = trimmed.split('x');
+
+    const wIsPixel = rawW.endsWith('p');
+    const hIsPixel = rawH.endsWith('p');
+
+    const wNum = Number(wIsPixel ? rawW.slice(0, -1) : rawW);
+    const hNum = Number(hIsPixel ? rawH.slice(0, -1) : rawH);
+
+    const width = wIsPixel || !canvasSize?.width
+      ? wNum
+      : Math.round((canvasSize.width as number) * wNum / 100);
+
+    const height = hIsPixel || !canvasSize?.height
+      ? hNum
+      : Math.round((canvasSize.height as number) * hNum / 100);
+
     return { width, height };
   }
 
   // --------------------------------------------------------------
-  // 3️⃣ 雙值 (a x b) 的處理
+  // 3️⃣ 單一值的處理（可能有 p 後綴）
   // --------------------------------------------------------------
-  const [rawW, rawH] = trimmed.split('x');
+  const isPixel = trimmed.endsWith('p');
+  const pureNum = Number(isPixel ? trimmed.slice(0, -1) : trimmed);
 
-  const wIsPixel = rawW.endsWith('p');
-  const hIsPixel = rawH.endsWith('p');
+  // p 後綴 → 直接視為 pixel
+  if (isPixel) {
+    return { width: pureNum, height: pureNum };
+  }
 
-  const wNum = Number(wIsPixel ? rawW.slice(0, -1) : rawW);
-  const hNum = Number(hIsPixel ? rawH.slice(0, -1) : rawH);
+  // 沒有 canvasSize 可用 → 直接視為 pixel（保持容錯）
+  if (!canvasSize?.width || !canvasSize?.height) {
+    return { width: pureNum, height: pureNum };
+  }
 
-  const width = wIsPixel || !canvasSize?.width
-    ? wNum
-    : Math.round((canvasSize.width as number) * wNum / 100);
+  // --------------------------------------------------------------
+  // 4️⃣ 依 mode 決定「共用基準」的邊長
+  // --------------------------------------------------------------
+  let baseSide: number;
 
-  const height = hIsPixel || !canvasSize?.height
-    ? hNum
-    : Math.round((canvasSize.height as number) * hNum / 100);
+  switch (mode) {
+    case 'max':
+      baseSide = Math.max(canvasSize.width as number, canvasSize.height as number);
+      break;
+    case 'min':
+      baseSide = Math.min(canvasSize.width as number, canvasSize.height as number);
+      break;
+    case 'average':
+      baseSide = Math.round(
+        ((canvasSize.width as number) + (canvasSize.height as number)) / 2
+      );
+      break;
+    case 'independent':
+    default:
+      // 獨立計算：寬度用 width 做基準，高度用 height 做基準
+      const width = Math.round((canvasSize.width as number) * pureNum / 100);
+      const height = Math.round((canvasSize.height as number) * pureNum / 100);
+      return { width, height };
+  }
 
-  return { width, height };
+  // 以共用基準 (max / min / average) 計算寬高，兩者結果相同
+  const shared = Math.round((baseSide * pureNum) / 100);
+  return { width: shared, height: shared };
 };
 
 /**

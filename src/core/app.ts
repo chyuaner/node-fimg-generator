@@ -110,7 +110,7 @@ export async function handleRequest(request: Request, assetLoader: AssetLoader, 
 
   let finalElement;
   if (hasBgConfig) {
-    const paddingInfo = bg.padding ? parseSize(bg.padding, { width, height }) : undefined;
+    const paddingInfo = bg.padding ? parseSize(bg.padding, { width, height }, { mode: 'average' }) : undefined;
     const paddingX = paddingInfo?.width;   // 左/右
     const paddingY = paddingInfo?.height;  // 上/下
 
