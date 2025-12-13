@@ -138,6 +138,7 @@ export function genBgElement(
     justifyContent: 'center',
     ...(bgColor ? { backgroundColor: bgColor } : {}),
     ...(bgUrl ? { background: `url(${bgUrl})` } : {}),
+    backgroundSize: '100% 100%',
     ...(padding !== undefined
       ? { padding: typeof padding === 'number' ? `${padding}px` : padding }
       : {}),
