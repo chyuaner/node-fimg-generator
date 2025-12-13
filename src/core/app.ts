@@ -1,8 +1,6 @@
 import { AssetLoader } from './loaders/AssetLoader';
 import { splitUrl } from './splitUrl';
 import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPath } from './parseUrl';
-import React from 'react';
-import PhElement from './components/PhElement';
 import { genBgElement, genPhElement, parseTextToElements } from './renderHelper';
 import { renderfullHtmlFromElement } from './renderHtml';
 import { corsMiddleware, cacheControlMiddleware, runMiddlewares } from './middleware';
@@ -133,13 +131,13 @@ async function coreHandler(
   const fontSizeVal = Math.floor(Math.min(width ?? 100, height ?? 100) / 5);
   const parsedChildren = parseTextToElements(text, fontSizeVal);
 
-  const element: React.ReactElement = (<PhElement
-      bgColor={bgColor}
-      fgColor={fgColor}
-      fontName={fontName}
-      fontSize={fontSizeVal}
-      text={text}
-    />);
+  const element = genPhElement({
+    bgColor,
+    fgColor,
+    fontName,
+    fontSize: fontSizeVal,
+    text,
+  });
 
   // bg --------------------------------
   // 若 /bg/ 區塊提供了任意參數，使用 genBgElement 包裹
