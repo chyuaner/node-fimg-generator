@@ -182,7 +182,12 @@ export async function handleRequest(request: Request, assetLoader: AssetLoader, 
 
 
   if (format === 'html') {
-    const html = renderfullHtmlFromElement(finalElement);
+    const html = renderfullHtmlFromElement(finalElement, {
+      ...(hasSize && {
+        width: retina ? width! * 2 : width!,
+        height: retina ? height! * 2 : height!,
+      })
+    });
 
     return new Response(html, {
       status: 200,

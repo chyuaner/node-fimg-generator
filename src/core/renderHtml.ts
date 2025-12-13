@@ -43,13 +43,25 @@ function camelToKebab(str: string): string {
     .toLowerCase();
 }
 
-export function renderfullHtmlFromElement(elem: any): string {
+export function renderfullHtmlFromElement(
+  elem: any,
+  opts?: {
+    width?: number;
+    height?: number;
+  }
+): string {
+  // <body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;">
+  const widthHeightStyle = opts && opts.width && opts.height ?
+    `width:${opts.width}px; height:${opts.height}px;` : '';
+
   const html = `
       <!DOCTYPE html>
       <html lang="zh-Hant">
       <head><meta charset="UTF-8"><title>Debug HTML</title></head>
-      <body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;">
-        ${renderElementToHtml(elem)}   <!-- 下面會示範此 helper -->
+      <body>
+        <div id="main-canvas" style="${widthHeightStyle} border: 1px solid black;">
+          ${renderElementToHtml(elem)}
+        </div>
       </body>
       </html>`.trim();
   return html;
