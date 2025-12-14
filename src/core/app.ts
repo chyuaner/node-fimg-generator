@@ -1,5 +1,6 @@
 import React from "react";
 import { AssetLoader } from './loaders/AssetLoader';
+import { loadFonts } from "./loadFonts";
 import { splitUrl } from './splitUrl';
 import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPath } from './parseUrl';
 import { genBgElement, genPhElement, parseTextToElements } from './renderHelper';
@@ -93,19 +94,7 @@ async function coreHandler(
 
   // Load font
   const fontName = url.searchParams.get('font') || 'noto'; // Default to noto
-  let fontData: ArrayBuffer | null = null;
-  try {
-    // Map short names to files
-    const fontFile = fontName === 'lobster' ? 'Lobster-Regular.ttf' : 'NotoSansTC-Medium.ttf';
-    fontData = await assetLoader.loadFont(fontFile);
-  } catch (e) {
-    console.error('Font load error:', e);
-    return new Response('Font not found', { status: 500 });
-  }
-
-  if (!fontData) {
-    return new Response('Font not found', { status: 500 });
-  }
+  const fonts = await loadFonts(assetLoader, [fontName]);
 
 
   // canvas (sizeParam) ----------------
@@ -260,14 +249,7 @@ async function coreHandler(
         width: retina ? width! * 2 : width!,
         height: retina ? height! * 2 : height!,
       }),
-      fonts: [
-        {
-          name: fontName,
-          data: fontData!, // fontData is checked above
-          weight: 400,
-          style: 'normal',
-        },
-      ],
+      fonts,
       format: format as any,
     });
 
