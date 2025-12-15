@@ -14,9 +14,9 @@ const PhElement = ({
   fgColor,
   fontName,
   fontSize,
-  text,
   style = {},
-}: PhElementProps & { style?: React.CSSProperties }) => {
+  children,
+}: React.PropsWithChildren<PhElementProps & { style?: React.CSSProperties }>) => {
   return (
     <div
       style={{
@@ -32,7 +32,7 @@ const PhElement = ({
         ...style,
       }}
     >
-      {text ? parseTextToElements(text, fontSize) : null}
+      {children ? parseTextToElements(children, fontSize) : null}
     </div>
   );
 };

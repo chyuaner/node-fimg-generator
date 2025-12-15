@@ -28,8 +28,9 @@ export class Canvas {
         fgColor={fgColor}
         fontName={fontName}
         fontSize={fontSize}
-        text={text}
-      />
+      >
+        {text}
+      </PhElement>
     );
     return this;
   }
