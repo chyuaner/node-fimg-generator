@@ -32,7 +32,9 @@ const PhElement = ({
         ...style,
       }}
     >
-      {children ? parseTextToElements(children, fontSize) : null}
+      {typeof children === "string" || typeof children === "number"
+        ? parseTextToElements(String(children), fontSize)
+        : children}
     </div>
   );
 };
