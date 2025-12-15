@@ -182,11 +182,20 @@ export function splitUrl(
   // 處理 named keys for content (ph)
   let contentObj: any = { type: contentKey, parts: contentParts };
   if (contentKey === 'ph') {
-    contentObj = {
-      ...contentObj,
-      bgcolor: contentParts[0],
-      fgcolor: contentParts[1],
-    };
+    if (!isCanvas) {
+      contentObj = {
+        ...contentObj,
+        size: contentParts[0],
+        bgcolor: contentParts[1],
+        fgcolor: contentParts[2],
+      };
+    } else {
+      contentObj = {
+        ...contentObj,
+        bgcolor: contentParts[0],
+        fgcolor: contentParts[1],
+      };
+    }
   }
 
   // 處理 named keys for bg

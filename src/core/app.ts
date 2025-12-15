@@ -144,7 +144,18 @@ async function coreHandler(
   const sizeParam = rawCanvasParam ?? null;
   // 只有在提供 sizeParam 時才解析尺寸
   const hasSize = !!sizeParam;
-  const { width, height } = hasSize ? parseSize(sizeParam) : { width: undefined, height: undefined };
+  const { width: origWidth, height: origHeight } = hasSize ? parseSize(sizeParam) : { width: undefined, height: undefined };
+  const innerSizeParam = content.size ?? null;
+  const hasInnerSize = !!innerSizeParam;
+  const { width: innerWidth, height: innerHeight } = hasInnerSize ? parseSize(innerSizeParam) : { width: undefined, height: undefined };
+  let width, height;
+  if (hasInnerSize) {
+    width = innerWidth;
+    height = innerHeight;
+  } else {
+    width = origWidth;
+    height = origHeight;
+  }
 
   // content (ph)  ---------------------
   // content.parts[0] → 主內容背景顏色 (原本的 bgColor)
@@ -232,10 +243,9 @@ async function coreHandler(
 
   finalElement = canvas.gen();
 
-
   if (format === 'html') {
     const html = renderfullHtmlFromElement(finalElement, {
-      ...(hasSize && {
+      ...((hasSize||hasInnerSize) && {
         width: width! * scale,
         height: height! * scale,
       })
@@ -252,7 +262,7 @@ async function coreHandler(
 
     const imageResponse = new ImageResponseClass(finalElement as any, {
       // 若未提供 sizeParam，寬高會是 undefined，ImageResponse 會自行根據內容決定畫布大小
-      ...(hasSize && {
+      ...((hasSize||hasInnerSize) && {
         width: width! * scale,
         height: height! * scale,
       }),
