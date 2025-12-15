@@ -1,5 +1,6 @@
 import React from "react";
 import PhElement from "./components/PhElement";
+import BgElement from "./components/BgElement";
 
 // -----------------------------------------------------------------------------
 // Generator Element
@@ -53,75 +54,18 @@ export function genBgElement(
     wrapperStyle = {},
   } = opts;
 
-  /* -------------------------------------------------
-   * 🔹 建立絕對定位的容器（相對定位）
-   * ------------------------------------------------- */
-  const containerStyle: React.CSSProperties = {
-    position: 'relative',
-    display: 'flex',
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...(bgColor ? { backgroundColor: bgColor } : {}),
-    ...(bgUrl ? { background: `url(${bgUrl})` } : {}),
-    backgroundSize: '100% 100%',
-    ...(padding !== undefined
-      ? { padding: typeof padding === 'number' ? `${padding}px` : padding }
-      : {}),
-    ...wrapperStyle,
-  };
-
-  let children: React.ReactElement[] = [];
-
-  /* -------------------------------------------------
-   * 🔹 底層陰影元素（與原元素大小位置完全相同）
-   * ------------------------------------------------- */
-  if (shadow && !['0', 0, '0px'].includes(String(shadow))) {
-    const shadowStyle: React.CSSProperties = {
-      ...inner.props?.style,
-      position: 'absolute',
-      ...(radius !== undefined
-          ? { borderRadius: typeof radius === 'number' ? `${radius}px` : radius }
-          : {}),
-      inset: 0,
-      filter: shadow
-        ? `drop-shadow(0 0 ${typeof shadow === 'number' ? `${shadow}px` : shadow} #000)`
-        : undefined,
-      pointerEvents: 'none', // 防止陰影層擋住點擊
-      zIndex: 0,
-    };
-
-    const shadowElement = React.cloneElement(inner, {
-      style: shadowStyle,
-      key: 'shadow',
-    });
-
-    children.push(shadowElement);
-  }
-
-  /* -------------------------------------------------
-   * 🔹 上層原內容（不加陰影，正常顯示）
-   * ------------------------------------------------- */
-  const contentStyle: React.CSSProperties = {
-    ...inner.props?.style,
-    position: 'relative',
-    ...(radius !== undefined
-      ? { borderRadius: typeof radius === 'number' ? `${radius}px` : radius }
-      : {}),
-    zIndex: 1,
-  };
-
-  const contentElement = React.cloneElement(inner, {
-    style: contentStyle,
-    key: 'content',
-  });
-
-  children.push(contentElement);
-
-  return (
-    <div style={containerStyle}>
-      {children}
-    </div>
+  const wrapped = (
+    <BgElement
+      bgColor={bgColor}
+      bgUrl={bgUrl}
+      padding={padding}
+      shadow={shadow}
+      radius={radius}
+      wrapperStyle={wrapperStyle}
+    >
+      {inner}
+    </BgElement>
   );
+
+  return wrapped;
 }
