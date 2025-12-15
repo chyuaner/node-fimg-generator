@@ -149,8 +149,8 @@ async function coreHandler(
   // content (ph)  ---------------------
   // content.parts[0] → 主內容背景顏色 (原本的 bgColor)
   // content.parts[1] → 主內容文字顏色 (原本的 fgColor)
-  const bgPart = content.parts[0] ?? null;
-  const fgPart = content.parts[1] ?? null;
+  const bgPart = content.bgcolor ?? null;
+  const fgPart = content.fgcolor ?? null;
 
   // 若沒有提供顏色，使用預設值
   const bgColor = bgPart ? parseColor(bgPart) : '#cccccc';   // 預設灰
