@@ -106,6 +106,13 @@ async function coreHandler(
       fontSize: 45,
       text,
     });
+    // canvas.addWm("Hello World", {
+    //     bgColor: '#282828',
+    //     fgColor: '#eae0d0',
+    //     fontName,
+    //     fontSize: 12,
+    //     margin: '10px',
+    // });
     const finalElement = canvas.gen();
 
     const fonts = await loadFonts(assetLoader, [fontName]);
