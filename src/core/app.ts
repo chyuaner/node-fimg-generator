@@ -159,13 +159,22 @@ async function coreHandler(
   // Parse query parameters
   const text = url.searchParams.get('text') || (hasSize ? `${width}x${height}` : undefined);
   const retina = url.searchParams.has('retina');
+  const scaleParam = url.searchParams.get('scale');
+
+  let scale = 1;
+  if (scaleParam) {
+    scale = parseFloat(scaleParam);
+    if (isNaN(scale)) scale = 1;
+  } else if (retina) {
+    scale = 2;
+  }
 
   // Generate Image
   const fontSizeVal = Math.floor(Math.min(width ?? 100, height ?? 100) / 5);
 
   const canvas = new Canvas();
-  if (retina) {
-    canvas.setCanvasScale(2);
+  if (scale !== 1) {
+    canvas.setCanvasScale(scale);
   }
   canvas.setCanvasSize(width, height);
   canvas.addPh({
@@ -227,8 +236,8 @@ async function coreHandler(
   if (format === 'html') {
     const html = renderfullHtmlFromElement(finalElement, {
       ...(hasSize && {
-        width: retina ? width! * 2 : width!,
-        height: retina ? height! * 2 : height!,
+        width: width! * scale,
+        height: height! * scale,
       })
     });
 
@@ -244,8 +253,8 @@ async function coreHandler(
     const imageResponse = new ImageResponseClass(finalElement as any, {
       // 若未提供 sizeParam，寬高會是 undefined，ImageResponse 會自行根據內容決定畫布大小
       ...(hasSize && {
-        width: retina ? width! * 2 : width!,
-        height: retina ? height! * 2 : height!,
+        width: width! * scale,
+        height: height! * scale,
       }),
       fonts,
       format: format as any,
