@@ -1,8 +1,8 @@
 import React from "react";
 import { AssetLoader } from './loaders/AssetLoader';
-import { loadFonts } from "./loadFonts";
-import { splitUrl } from './splitUrl';
-import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad } from './parseUrl';
+import { loadFonts } from "./loaders/loadFonts";
+import { splitUrl } from './urlUtils/splitUrl';
+import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad } from './urlUtils/parseUrl';
 import { Canvas } from './Canvas';
 import { renderfullHtmlFromElement } from './renderHtml';
 import { corsMiddleware, cacheControlMiddleware, runMiddlewares } from './middleware';

@@ -1,4 +1,4 @@
-import { AssetLoader } from "./loaders/AssetLoader";
+import { AssetLoader } from "./AssetLoader";
 
 // --- 內建字型簡稱 對應表 ---
 const fontFileMap = {

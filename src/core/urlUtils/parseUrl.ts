@@ -2,8 +2,8 @@
 // Params Paser functions
 // -----------------------------------------------------------------------------
 
-import { getBackgroundPath } from "./assets";
-import { AssetLoader } from "./loaders/AssetLoader";
+import { getBackgroundPath } from "../loaders/assets";
+import { AssetLoader } from "../loaders/AssetLoader";
 
 /**
  * 解析尺寸字串（支援單一值與「x」分隔的雙值）
@@ -204,12 +204,12 @@ export const parseColorOrPathLoad = async (colorStr: string, assetLoader?:AssetL
     return {...originData, base64Url};
   } else {
     // If we don't have assetLoader, we can't load the base64Url for 'tpl'.
-    // We return originData as is. If strict return type requires base64Url for 'tpl', 
+    // We return originData as is. If strict return type requires base64Url for 'tpl',
     // we use 'as any' to bypass the check for this edge case.
     if (originData.type === 'color') {
-        return originData; 
+        return originData;
     }
-    return originData as any; 
+    return originData as any;
   }
 };
 
