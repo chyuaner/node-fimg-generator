@@ -239,6 +239,14 @@ async function coreHandler(
         ...(radiusValue !== undefined ? { radius: `${radiusValue}px` } : {}),
         // 若還想自行加入其他 style，可在此追加 wrapperStyle
       });
+
+
+    if (hasInnerSize) {
+      width = (innerWidth ?? 0) + (paddingX ?? 0) * 2;
+      height = (innerHeight ?? 0) + (paddingY ?? 0) * 2;
+      canvas.setCanvasSize(width, height);
+    }
+
   }
 
   finalElement = canvas.gen();
