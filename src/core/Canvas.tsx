@@ -68,29 +68,33 @@ export class Canvas {
   }
 
   gen(): React.ReactElement {
+    let mainElement: React.ReactElement = <></>;
+
     if (this.bgElement && this.phElement) {
        // Inject phElement into bgElement
-       // React.cloneElement(element, [props], [...children])
-       // passing undefined props to keep original props of bgElement
-       // passing this.phElement as children to replace <></>
-       return React.cloneElement(this.bgElement, undefined, this.phElement);
+       mainElement = React.cloneElement(this.bgElement, undefined, this.phElement);
+    } else if (this.bgElement) {
+        // Only bg
+        mainElement = this.bgElement;
+    } else if (this.phElement) {
+        // Only ph
+        mainElement = this.phElement;
     }
 
-    if (this.bgElement) {
-        // If only bgElement exists but no phElement?
-        // BgElement requires children to render anything meaningful usually (shadow/content clone)
-        // Check BgElement.tsx: it clones children.
-        // If children is <></>, it clones Fragment? 
-        // <></>.props is empty object. style is undefined.
-        // It should render safely as empty div with background.
-        return this.bgElement;
-    }
-    
-    if (this.phElement) {
-      return this.phElement;
-    }
-
-    // Fallback if nothing added
-    return <></>; 
+    // Wrap in canvasElement (root container)
+    // This allows adding overlays (watermarks, debug info) later
+    return (
+      <div
+        style={{
+          display: "flex",
+          width: this.width || "100%",
+          height: this.height || "100%",
+          // Ensure mainElement takes full space if needed or centers
+          // Usually children handle their own size, but we provide the stage.
+        }}
+      >
+        {mainElement}
+      </div>
+    );
   }
 }
