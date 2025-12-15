@@ -16,8 +16,13 @@ const pathMap: Record<string, string> = {
 }
 
 // 以 function 形式導出，並註明回傳型別
-export function getPath(id: string): string | undefined {
-    return pathMap[id];
+export function getPath(id: string): string {
+    return pathMap[id] || id
+}
+
+
+export function getBackgroundPath(id: string): string {
+    return pathMap[id] || '/background/'+id
 }
 
 // ... 其餘程式碼 ...

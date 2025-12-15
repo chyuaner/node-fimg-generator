@@ -2,7 +2,7 @@ import React from "react";
 import { AssetLoader } from './loaders/AssetLoader';
 import { loadFonts } from "./loadFonts";
 import { splitUrl } from './splitUrl';
-import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPath } from './parseUrl';
+import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad } from './parseUrl';
 import { genBgElement, genPhElement } from './renderHelper';
 import { renderfullHtmlFromElement } from './renderHtml';
 import { corsMiddleware, cacheControlMiddleware, runMiddlewares } from './middleware';
@@ -179,65 +179,17 @@ async function coreHandler(
     const shadowValue = bg.shadow ? parseSingleSize(bg.shadow, { width, height }) : undefined;
     const radiusValue = bg.radius ? parseSingleSize(bg.radius, { width, height }) : undefined;
 
-    const bgBackground = bg.bgcolor ? parseColorOrPath(bg.bgcolor) : undefined;
+    const bgBackground = bg.bgcolor ? await parseColorOrPathLoad(bg.bgcolor, assetLoader) : undefined;
     let bgBackgroundParm;
     if (bgBackground !== undefined) {
-      switch (bgBackground.type) {
-        case 'tpl':
-          let bgPath = bgBackground.value;
-          const mimeType = getMimeType(bgPath);
-          const bgImgData = await assetLoader.loadImage(bgPath);
-          if (bgImgData === null || bgImgData === undefined) {
-            throw new Error('bgImgData is null or undefined');
-          }
-
-          // Prevent Maximum call stack size exceeded by avoiding spread operator on large arrays
-          let base64String;
-          if (typeof Buffer !== 'undefined') {
-             base64String = Buffer.from(bgImgData).toString('base64');
-          } else {
-             // Fallback for environments without Buffer (unlikely in Node/CF, but safe)
-             const bytes = new Uint8Array(bgImgData);
-             let binary = '';
-             const len = bytes.byteLength;
-             // Process in chunks to avoid freezing UI (if strictly necessary) or just loop
-             // Simple loop is safer than spread
-             for (let i = 0; i < len; i++) {
-               binary += String.fromCharCode(bytes[i]);
-             }
-             base64String = btoa(binary);
-          }
-
-          const base64Url = `data:${mimeType};base64,${base64String}`;
-
-          function getMimeType(path: string): string {
-            const extension = path.split('.').pop();
-            switch (extension) {
-              case 'jpg':
-              case 'jpeg':
-                return 'image/jpeg';
-              case 'png':
-                return 'image/png';
-              case 'gif':
-                return 'image/gif';
-              case 'svg':
-                return 'image/svg+xml';
-              // ...
-              default:
-                return 'application/octet-stream';
-            }
-          }
-
-          bgBackgroundParm = {
-            bgUrl: base64Url,
-          }
-          break;
-        default:
-        case 'color':
-          bgBackgroundParm = {
-            bgColor: bgBackground.value,
-          }
-          break;
+      if (bgBackground.type == 'tpl' && bgBackground.base64Url) {
+        bgBackgroundParm = {
+          bgUrl: bgBackground.base64Url,
+        }
+      } else {
+        bgBackgroundParm = {
+          bgColor: bgBackground.value,
+        }
       }
     }
 

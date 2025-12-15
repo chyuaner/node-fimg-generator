@@ -2,7 +2,8 @@
 // Params Paser functions
 // -----------------------------------------------------------------------------
 
-import { getPath } from "./assets";
+import { getBackgroundPath } from "./assets";
+import { AssetLoader } from "./loaders/AssetLoader";
 
 /**
  * 解析尺寸字串（支援單一值與「x」分隔的雙值）
@@ -139,14 +140,70 @@ export const parseColorOrPath = (colorStr: string) => {
     // 取得資源檔範本名稱
     const tplName = colorStr.slice(4, -1);
     // 從 assets 取得路徑
-    const path = getPath(tplName);
-    // 如果路徑存在，則返回路徑
-    if (path) {
-      return {type:'tpl', value: path};
-    }
+    const path = getBackgroundPath(tplName);
+
+    let result = {type:'tpl', value: path};
+    return result;
   }
-  else {
-      return {type:'color', value: parseColor(colorStr)};
+  return {type:'color', value: parseColor(colorStr)};
+};
+
+export const parseColorOrPathLoad = async (colorStr: string, assetLoader?:AssetLoader): Promise<{
+  type: 'color';
+  value: string;
+} | {
+  type: 'tpl';
+  value: string;
+  base64Url: string;
+}> => {
+  const originData = parseColorOrPath(colorStr);
+  if (originData.type == 'tpl' && assetLoader) {
+    let bgPath = originData.value;
+    const mimeType = getMimeType(bgPath);
+    const bgImgData = await assetLoader.loadImage(bgPath);
+    if (bgImgData === null || bgImgData === undefined) {
+      throw new Error('bgImgData is null or undefined');
+    }
+
+    // Prevent Maximum call stack size exceeded by avoiding spread operator on large arrays
+    let base64String;
+    if (typeof Buffer !== 'undefined') {
+        base64String = Buffer.from(bgImgData).toString('base64');
+    } else {
+        // Fallback for environments without Buffer (unlikely in Node/CF, but safe)
+        const bytes = new Uint8Array(bgImgData);
+        let binary = '';
+        const len = bytes.byteLength;
+        // Process in chunks to avoid freezing UI (if strictly necessary) or just loop
+        // Simple loop is safer than spread
+        for (let i = 0; i < len; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        base64String = btoa(binary);
+    }
+
+    const base64Url = `data:${mimeType};base64,${base64String}`;
+
+    function getMimeType(path: string): string {
+      const extension = path.split('.').pop();
+      switch (extension) {
+        case 'jpg':
+        case 'jpeg':
+          return 'image/jpeg';
+        case 'png':
+          return 'image/png';
+        case 'gif':
+          return 'image/gif';
+        case 'svg':
+          return 'image/svg+xml';
+        // ...
+        default:
+          return 'application/octet-stream';
+      }
+    }
+    return {...originData, base64Url};
+  } else {
+    return originData;
   }
 };
 
