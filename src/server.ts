@@ -27,13 +27,13 @@ app.use(async (req, res, next) => {
     });
 
     const loader = new NodeAssetLoader();
-    
+
     // 從 process.env 讀取環境變數
     const env = {
       ENABLE_DEBUG: process.env.ENABLE_DEBUG,
     };
-    
-    const response = await handleRequest(request, loader, env, ImageResponse);
+
+    const response = await handleRequest(request, {assetLoader: loader, ImageResponseClass: ImageResponse}, env);
 
     // 直接把 Web API Response 轉回 Express 回應
     res.status(response.status);

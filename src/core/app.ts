@@ -28,15 +28,17 @@ export type ImageResponseConstructor = new (
 // -----------------------------------------------------------------------------
 export async function handleRequest(
   request: Request,
-  assetLoader: AssetLoader,
+  loaders: {
+    assetLoader: AssetLoader,
+    ImageResponseClass?: ImageResponseConstructor
+  },
   env?: Record<string, any>,
-  ImageResponseClass?: ImageResponseConstructor
 ): Promise<Response> {
   return runMiddlewares(
     request,
     // [corsMiddleware, cacheControlMiddleware],
     [corsMiddleware],
-    () => coreHandler(request, assetLoader, env, ImageResponseClass)
+    () => coreHandler(request, { assetLoader: loaders.assetLoader, ImageResponseClass: loaders.ImageResponseClass! }, env)
   );
 }
 
@@ -45,13 +47,18 @@ export async function handleRequest(
 // -----------------------------------------------------------------------------
 async function coreHandler(
   request: Request,
-  assetLoader: AssetLoader,
+  loaders: {
+    assetLoader: AssetLoader,
+    ImageResponseClass?: ImageResponseConstructor
+  },
   env?: Record<string, any>,
-  ImageResponseClass?: ImageResponseConstructor
+
 ): Promise<Response> {
   // ---------------------------------------------------------------------------
   // 設置環境參數
   // ---------------------------------------------------------------------------
+  const assetLoader = loaders.assetLoader;
+  const ImageResponseClass = loaders.ImageResponseClass;
   const enableDebug = env?.ENABLE_DEBUG === 'true';
 
   // ---------------------------------------------------------------------------

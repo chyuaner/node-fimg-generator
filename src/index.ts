@@ -24,6 +24,6 @@ export default {
 
     // Handle dynamic image generation
     const loader = new CloudflareAssetLoader(env.ASSETS);
-    return handleRequest(request, loader, env, ImageResponse);
+    return handleRequest(request, {assetLoader: loader, ImageResponseClass: ImageResponse}, env);
   },
 } satisfies ExportedHandler<CloudflareBindings>;
