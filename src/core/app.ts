@@ -255,8 +255,9 @@ async function coreHandler(
 
   }
 
-  if (!!query.debug) {
-    canvas.addDebug(splitUrl(fullPath), {platform: environmentInfo.platform});
+  const envInfo = environmentInfo as any; // 轉型為 any 以使用 platform
+  if (!!query.debug && env?.platform) {
+    canvas.addDebug(splitUrl(fullPath), { platform: envInfo.platform });
   }
 
   finalElement = canvas.gen();
