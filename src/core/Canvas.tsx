@@ -267,7 +267,7 @@ export class Canvas {
       padding: '10%',
     });
 
-    let mainElement = React.cloneElement(this.bgElement, undefined, this.phElement);
+    let mainElement = this.bgElement ? React.cloneElement(this.bgElement, undefined, this.phElement) : this.phElement;
 
     return (
       <div
