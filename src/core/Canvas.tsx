@@ -7,12 +7,13 @@ import { FontLoader } from "./loaders/loadFonts";
 
 
 export type Weight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+export type FontStyle = 'normal' | 'italic';
 
 export type Font = {
   name: string;
   data: ArrayBuffer;
   weight: Weight;
-  style: string;
+  style: FontStyle;
 }
 
 export class Canvas {

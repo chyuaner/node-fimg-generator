@@ -2,7 +2,7 @@ import React from "react";
 import { AssetLoader } from './loaders/AssetLoader';
 import { splitUrl } from './urlUtils/splitUrl';
 import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad } from './urlUtils/parseUrl';
-import { Canvas, Weight } from './Canvas';
+import { Canvas, Weight, FontStyle } from './Canvas';
 import { renderfullHtmlFromElement } from './renderHtml';
 import { corsMiddleware, cacheControlMiddleware, runMiddlewares } from './middleware';
 
@@ -16,7 +16,7 @@ export type ImageResponseConstructor = new (
       name: string;
       data: ArrayBuffer;
       weight: Weight;
-      style: string;
+      style: FontStyle;
     }[];
     format?: 'svg' | 'png'; // specific usage
     [key: string]: any;
