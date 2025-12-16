@@ -1,6 +1,5 @@
 import React from "react";
 import { AssetLoader } from './loaders/AssetLoader';
-import { loadFonts } from "./loaders/loadFonts";
 import { splitUrl } from './urlUtils/splitUrl';
 import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad } from './urlUtils/parseUrl';
 import { Canvas } from './Canvas';
@@ -16,8 +15,8 @@ export type ImageResponseConstructor = new (
     fonts?: {
       name: string;
       data: ArrayBuffer;
-      weight: 400; // specific usage
-      style: 'normal'; // specific usage
+      weight: number;
+      style: string;
     }[];
     format?: 'svg' | 'png'; // specific usage
     [key: string]: any;
@@ -97,7 +96,7 @@ async function coreHandler(
   if (pathname.startsWith('/favicon.png')) {
     const text = 'fimg';
     const fontName = 'noto';
-    const canvas = new Canvas();
+    const canvas = new Canvas(assetLoader);
     canvas.setCanvasSize(128, 128);
     canvas.addPh({
       bgColor: '#282828',
@@ -115,7 +114,7 @@ async function coreHandler(
     // });
     const finalElement = canvas.gen();
 
-    const fonts = await loadFonts(assetLoader, [fontName]);
+    const fonts = await canvas.loadFonts();
     const imageResponse = new ImageResponseClass(finalElement as any, {
       width: 128,
       height: 128,
@@ -136,8 +135,6 @@ async function coreHandler(
 
   // Load font
   const fontName = url.searchParams.get('font') || 'noto'; // Default to noto
-  const fonts = await loadFonts(assetLoader, [fontName]);
-
 
   // canvas (sizeParam) ----------------
   // 若未提供則不設定 width / height，交由 ImageResponse 依內容自動決定畫布大小
@@ -183,7 +180,7 @@ async function coreHandler(
   // Generate Image
   const fontSizeVal = Math.floor(Math.min(width ?? 100, height ?? 100) / 5);
 
-  const canvas = new Canvas();
+  const canvas = new Canvas(assetLoader);
   if (scale !== 1) {
     canvas.setCanvasScale(scale);
   }
@@ -268,6 +265,7 @@ async function coreHandler(
         throw new Error('ImageResponseClass is required for non-html output');
     }
 
+    const fonts = await canvas.loadFonts();
     const imageResponse = new ImageResponseClass(finalElement as any, {
       // 若未提供 sizeParam，寬高會是 undefined，ImageResponse 會自行根據內容決定畫布大小
       ...((hasSize||hasInnerSize) && {

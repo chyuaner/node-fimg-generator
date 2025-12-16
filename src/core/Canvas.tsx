@@ -2,7 +2,15 @@ import React from "react";
 import PhElement from "./components/PhElement";
 import BgElement from "./components/BgElement";
 import { parseTextToElements } from "./components/elementUtils";
+import { AssetLoader } from "./loaders/AssetLoader";
+import { FontLoader } from "./loaders/loadFonts";
 
+export type Font = {
+  name: string;
+  data: ArrayBuffer;
+  weight: number;
+  style: string;
+}
 export class Canvas {
   private width?: number;
   private height?: number;
@@ -10,6 +18,14 @@ export class Canvas {
   private phElement: React.ReactElement | null = null;
   private bgElement: React.ReactElement | null = null;
   private watermarkElement: React.ReactElement | null = null;
+
+  private assetLoader: AssetLoader;
+  private fontLoader: FontLoader;
+
+  constructor(assetLoader: AssetLoader) {
+    this.assetLoader = assetLoader;
+    this.fontLoader = new FontLoader(assetLoader);
+  }
 
   setCanvasScale(scale: number) {
     this.scale = scale;
@@ -43,6 +59,8 @@ export class Canvas {
     const { bgColor, fgColor, fontName, fontSize, text } = opts;
     // Scale fontSize (always number)
     const scaledFontSize = fontSize * this.scale;
+
+    this.fontLoader.add(fontName);
 
     this.phElement = (
       <PhElement
@@ -79,7 +97,7 @@ export class Canvas {
     // My scalePx helper handles number -> multiply, string with px -> multiply px values.
     // If string has %, it is left alone by scalePx (unless it also has px mixed in?? unlikely for these properties usually).
     // Note: padding usually "10px 20px" or "5%".
-    
+
     this.bgElement = (
       <BgElement
         bgColor={bgColor}
@@ -107,10 +125,12 @@ export class Canvas {
     }
   ) {
     const { bgColor, fgColor, fontName, fontSize, margin = '10px' } = opts;
-    
+
     const scaledFontSize = fontSize * this.scale;
     // Margin default '10px' should scale.
     const scaledMargin = this.scalePx(margin);
+
+    this.fontLoader.add(fontName);
 
     const content =
       typeof text === "string" ? parseTextToElements(text, scaledFontSize) : text;
@@ -134,6 +154,10 @@ export class Canvas {
       </div>
     );
     return this;
+  }
+
+  loadFonts(): Promise<Font[]> {
+    return this.fontLoader.loadFonts();
   }
 
   gen(): React.ReactElement {
