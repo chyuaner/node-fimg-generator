@@ -4,6 +4,7 @@ import BgElement from "./components/BgElement";
 import { parseTextToElements } from "./components/elementUtils";
 import { AssetLoader } from "./loaders/AssetLoader";
 import { FontLoader } from "./loaders/loadFonts";
+import WmElement from "./components/WmElement";
 
 
 export type Weight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
@@ -133,30 +134,19 @@ export class Canvas {
 
     const scaledFontSize = fontSize * this.scale;
     // Margin default '10px' should scale.
-    const scaledMargin = this.scalePx(margin);
+    const scaledMargin = this.scalePx(margin) as string | number;
 
     this.fontLoader.add(fontName);
 
-    const content =
-      typeof text === "string" ? parseTextToElements(text, scaledFontSize) : text;
-
     this.watermarkElement = (
-      <div
-        style={{
-          position: "absolute",
-          bottom: scaledMargin,
-          right: scaledMargin,
-          backgroundColor: bgColor || "transparent",
-          color: fgColor,
-          fontFamily: fontName,
-          fontSize: scaledFontSize,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {content}
-      </div>
+      <WmElement
+        content={text}
+        bgColor={bgColor}
+        fgColor={fgColor}
+        fontName={fontName}
+        fontSize={scaledFontSize}
+        margin={scaledMargin}
+      />
     );
     return this;
   }
