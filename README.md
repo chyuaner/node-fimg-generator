@@ -1,27 +1,100 @@
 # Cloudflare Image Gen (FakeImg Clone)
-本專案以Fake images please?為基礎，重新以能在Cloudflare Worker原生運行的程式語言重新撰寫。並在不破壞Fake images please原有網址結構設計的情況下，加入分組式的網址結構，大幅加入功能擴充的彈性。
+本專案以Fake images please?為基礎，重新以能在Cloudflare Worker、Vercel原生運行為前提重新撰寫。並在不破壞Fake images please原有網址結構設計的情況下，加入分組式的網址結構，大幅加入功能擴充的彈性。
 
 A high-performance image generation service running on Cloudflare Workers using @cf-wasm/og.
 
 
 ## 專案特色
-* 完全針對Cloudflare Workers (Serverless Edge)設計，以高效能、能完全於CDN環節 為主要賣點。
+* 本專案兼容Cloudflare Worker、Vercel (Serverless Edge)原生運行設計，
     - [x] 不使用 nodejs_compat compatibility_flags 相容模式，以取得最佳效能與穩定性
     - [ ] 亦提供Docker獨立執行方式，可在自有主機架設
     - [x] 亦提供NodeJS獨立執行方式，可在自有主機架設
-- [ ] 繼承Fake images please?舊有功能
+- [x] 繼承Fake images please?舊有功能
     - [x] There are options too, you can pass a text, or change some colors.
     - [x] Colors must be hexadecimal, the first one is the background color.
     - [x] You can add the alpha value of the color with a comma, (hex,a).
-    - [ ] The support for japanese, korean and chinese text is available with the use of the Noto font (font=noto)  （僅繁體中文測試過）
+    - [x] The support for japanese, korean and chinese text is available with the use of the Noto font (font=noto)  （僅繁體中文測試過）
     - [x] You can now use emojis as well and Discord emotes. The format for Discord emotes is like that: `<:rooThink:596576798351949847>`
         * 雖然有實裝此功能，但是會額外產生外連到Discord伺服器的流量，若你在意效能就不建議使用
-- [ ] 結合Gnome應用程式Gradia的邊緣背景設計
+- [x] 結合Gnome應用程式Gradia的邊緣背景設計
 * 重新設計分組式的語意結構化網址
     * 可相容Fake images please?舊有功能
     * 網址結構分為三大組：
     * 若沒有需求，可直接省略
 - [ ] 前端界面優化
+
+## 📦 目錄結構
+### 程式啟動點
+* Cloudflare Workers專用： /src/index.ts
+* Vercel專用(Next.JS模式)
+    * /src/app/route.tsx
+    * /src/app/\[...slug\]/route.tsx
+* 傳統Node.JS (express)專用： /src/server.ts
+
+```text
+├── src/
+│   ├── app/ # Vercel專用
+│   │   ├── route.tsx
+│   │   └── [...slug]/
+│   │       └── route.tsx
+│   ├── index.ts # Cloudflare Workers專用
+│   └── server.ts # 傳統node.js server專用
+├── vercel.json
+├── worker-configuration.d.ts
+└── wrangler.jsonc
+```
+
+
+### 核心功能相關
+
+```text
+├── package.json
+├── public/ 執行 npm run build 後產出靜態包
+├── src/
+│   └── core/
+│       ├── app.ts # 主Router，
+│       ├── Canvas.tsx # 定義元素內容的邏輯
+│       ├── components/ # 純定義該元素的外觀排版
+│       ├── loaders/
+│       │   ├── AssetLoader.ts
+│       │   ├── assets.ts # 資源檔案載入器
+│       │   ├── CloudflareAssetLoader.ts
+│       │   ├── loadFonts.ts # 字體管理模組
+│       │   ├── NodeAssetLoader.ts
+│       │   └── VercelAssetLoader.ts
+│       ├── middleware.ts #處理Response Header相關，如:CDN快取設定、CORS
+│       ├── renderHtml.ts #直接輸出HTML，僅Debug用
+│       └── urlUtils/
+│           ├── parseUrl.ts # 將拆解後的文字再進一步解析成內部統一格式
+│           └── splitUrl.ts # 處理網址結構拆解
+└── static/
+    ├── background/
+    └── font/
+```
+
+### 前端頁面相關
+```text
+├── public/ #執行 npm run build 後產出靜態包
+├── src/
+│   ├── frontend/
+│   │   ├── components/
+│   │   │   ├── Footer.astro
+│   │   │   └── Navbar.astro
+│   │   ├── layouts/
+│   │   │   └── Layout.astro
+│   │   ├── pages/
+│   │   │   ├── examples.astro
+│   │   │   ├── index.astro
+│   │   │   └── intro.astro
+│   │   └── styles/
+│   │       ├── eurl.css
+│   │       └── global.css
+└── static/ # 在 npm run build時會直接複製到 /public 裡
+│   ├── background/
+│   └── font/
+└── astro.config.mjs
+```
+
 
 ## 基本用法
 
@@ -31,12 +104,12 @@ https://fimg.yuaner.tw/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-radius]/[bg
 
 網址參數（目前已實裝的功能）
 - [x] size = 350x200
-- [ ] padding = 3
-- [ ] padding = 4x1
-- [ ] shadow = 3
-- [ ] radius = 5
+- [x] padding = 3
+- [x] padding = 4x1
+- [x] shadow = 3
+- [x] radius = 5
 - [x] bgcolor = ff0000,128
-- [ ] bgcolor = tpl(aaa)
+- [x] bgcolor = tpl(aaa)
 - [ ] bgcolor = url("https://example.com/a.png")
 - [x] fgcolor = 000,255
 
