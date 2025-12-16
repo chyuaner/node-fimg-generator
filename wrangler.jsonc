@@ -14,9 +14,6 @@
     "observability": {
         "enabled": true
     },
-    "limits": {
-        "cpu_ms": 100000, // default is 30000 (30 seconds)
-    },
     "vars": {
         "ENABLE_DEBUG": "false"
     }
