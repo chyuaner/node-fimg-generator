@@ -71,11 +71,10 @@ export const BgElement: React.FC<BgElementProps> = ({
     const shadowStyle: React.CSSProperties = {
       ...children.props?.style,
       position: "absolute",
-      inset: 0,
       filter:
         typeof shadow === "number"
-          ? `drop-shadow(0 0 ${shadow}px #000)`
-          : `drop-shadow(0 0 ${shadow} #000)`,
+          ? `drop-shadow(0 0 ${shadow}px #00000060)`
+          : `drop-shadow(0 0 ${shadow} #00000060)`,
       pointerEvents: "none", // 防止遮住滑鼠事件
       zIndex: 0,
       ...(radius !== undefined

@@ -262,8 +262,8 @@ export class Canvas {
 
     this.addBg({
       bgColor: '#d7e4ef',
-      shadow: '0',
-      radius: '30',
+      shadow: '4px',
+      radius: '30px',
       padding: '10%',
     });
 
