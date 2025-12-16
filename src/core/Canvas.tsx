@@ -140,13 +140,14 @@ export class Canvas {
 
     this.watermarkElement = (
       <WmElement
-        content={text}
         bgColor={bgColor}
         fgColor={fgColor}
         fontName={fontName}
         fontSize={scaledFontSize}
         margin={scaledMargin}
-      />
+      >
+        {text}
+      </WmElement>
     );
     return this;
   }

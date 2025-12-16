@@ -2,7 +2,6 @@ import React from "react";
 import { parseTextToElements } from "./elementUtils";
 
 interface WmElementProps {
-  content: string | React.ReactNode;
   bgColor?: string;
   fgColor: string;
   fontName: string;
@@ -11,13 +10,13 @@ interface WmElementProps {
 }
 
 const WmElement = ({
-  content,
   bgColor,
   fgColor,
   fontName,
   fontSize,
   margin,
-}: WmElementProps) => {
+  children,
+}: React.PropsWithChildren<WmElementProps>) => {
 
   return (
     <div
@@ -34,9 +33,9 @@ const WmElement = ({
         justifyContent: "center",
       }}
     >
-      {typeof content === "string"
-        ? parseTextToElements(content, fontSize)
-        : content}
+      {typeof children === "string"
+        ? parseTextToElements(children, fontSize)
+        : children}
     </div>
   );
 };
