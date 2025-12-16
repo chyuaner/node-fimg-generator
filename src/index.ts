@@ -2,7 +2,7 @@ import { handleRequest } from "./core/app";
 import { CloudflareAssetLoader } from "./core/loaders/CloudflareAssetLoader";
 import { ImageResponse } from '@cf-wasm/og';
 import { splitUrl } from "./core/urlUtils/splitUrl";
-import { parseColorOrPath, parseSingleSize, parseSize } from "./core/urlUtils/parseUrl";
+import { fileType, parseColorOrPath, parseSingleSize, parseSize } from "./core/urlUtils/parseUrl";
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {
@@ -26,7 +26,10 @@ export default {
       }
     }
 
-    if (enableRedirect) {
+    let format = fileType(url, request);
+
+    // 若有啟用多後端分流，而且輸出檔案格式要是png這種負荷較重的才需要分流
+    if (enableRedirect && format == 'png') {
       // 處理結尾斜線
       const normalizedPath = pathname.endsWith('/') && pathname.length > 1
       ? pathname.slice(0, -1)
