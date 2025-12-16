@@ -25,6 +25,32 @@ export async function runMiddlewares(
 }
 
 /**
+ * Middleware factory that adds fixed headers:
+ *   - `date`  : 當前 UTC 時間
+ *   - `platform` : 依據傳入的 environmentInfo 取得平台名稱
+ *
+ * 使用方式:
+ *   const addHeaders = addHeadersMiddleware(environmentInfo);
+ *   runMiddlewares(request, [corsMiddleware, addHeaders, ...], handler);
+ */
+export const addHeadersMiddleware = (environmentInfo: { platform?: string }) => {
+  const middleware: Middleware = async (request, next) => {
+    const response = await next();
+
+    // 加上當前時間 (UTC 字串)
+    response.headers.set('Date', new Date().toUTCString());
+
+    // 若有提供 platform，寫入平台資訊
+    if (environmentInfo?.platform) {
+      response.headers.set('Platform', environmentInfo.platform);
+    }
+
+    return response;
+  };
+  return middleware;
+};
+
+/**
  * Middleware to handle Cross-Origin Resource Sharing (CORS).
  * Handles preflight OPTIONS requests and adds CORS headers to responses.
  */

@@ -4,7 +4,7 @@ import { splitUrl } from './urlUtils/splitUrl';
 import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad, bgBackgroundToParm } from './urlUtils/parseUrl';
 import { Canvas, Weight, FontStyle } from './Canvas';
 import { renderfullHtmlFromElement } from './renderHtml';
-import { corsMiddleware, cacheControlMiddleware, runMiddlewares } from './middleware';
+import { addHeadersMiddleware, corsMiddleware, cacheControlMiddleware, runMiddlewares } from './middleware';
 
 // Define a type that matches the ImageResponse class signature we use
 export type ImageResponseConstructor = new (
@@ -35,9 +35,12 @@ export async function handleRequest(
   env?: Record<string, any>,
   environmentInfo?: object
 ): Promise<Response> {
+  // 建立帶有 platform 資訊的 middleware
+  const platformHeaders = addHeadersMiddleware(environmentInfo as any);
+
   return runMiddlewares(
     request,
-    [corsMiddleware, cacheControlMiddleware],
+    [platformHeaders, corsMiddleware, cacheControlMiddleware],
     () => coreHandler(request, { assetLoader: loaders.assetLoader, ImageResponseClass: loaders.ImageResponseClass! }, env, environmentInfo)
   );
 }
