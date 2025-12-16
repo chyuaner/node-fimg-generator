@@ -5,12 +5,16 @@ import { parseTextToElements } from "./components/elementUtils";
 import { AssetLoader } from "./loaders/AssetLoader";
 import { FontLoader } from "./loaders/loadFonts";
 
+
+export type Weight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+
 export type Font = {
   name: string;
   data: ArrayBuffer;
-  weight: number;
+  weight: Weight;
   style: string;
 }
+
 export class Canvas {
   private width?: number;
   private height?: number;
