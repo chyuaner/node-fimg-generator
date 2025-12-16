@@ -10,6 +10,9 @@ export async function GET(request: Request) {
 
   const loader = new VercelAssetLoader(origin);
   const env = { ENABLE_DEBUG: process.env.ENABLE_DEBUG };
+  const environmentInfo = {
+    platform: 'Vercel'
+  };
 
-  return handleRequest(request, {assetLoader: loader, ImageResponseClass: ImageResponse}, env);
+  return handleRequest(request, {assetLoader: loader, ImageResponseClass: ImageResponse}, env, environmentInfo);
 }

@@ -33,12 +33,13 @@ export async function handleRequest(
     ImageResponseClass?: ImageResponseConstructor
   },
   env?: Record<string, any>,
+  environmentInfo?: object
 ): Promise<Response> {
   return runMiddlewares(
     request,
     // [corsMiddleware, cacheControlMiddleware],
     [corsMiddleware],
-    () => coreHandler(request, { assetLoader: loaders.assetLoader, ImageResponseClass: loaders.ImageResponseClass! }, env)
+    () => coreHandler(request, { assetLoader: loaders.assetLoader, ImageResponseClass: loaders.ImageResponseClass! }, env, environmentInfo)
   );
 }
 
@@ -52,6 +53,7 @@ async function coreHandler(
     ImageResponseClass?: ImageResponseConstructor
   },
   env?: Record<string, any>,
+  environmentInfo?: object
 
 ): Promise<Response> {
   // ---------------------------------------------------------------------------
@@ -254,8 +256,7 @@ async function coreHandler(
   }
 
   if (!!query.debug) {
-    canvas.addDebug(splitUrl(fullPath));
-
+    canvas.addDebug(splitUrl(fullPath), {platform: environmentInfo.platform});
   }
 
   finalElement = canvas.gen();

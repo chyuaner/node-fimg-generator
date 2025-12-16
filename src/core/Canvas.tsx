@@ -157,6 +157,7 @@ export class Canvas {
 
   addDebug(
     splitUrl: SplitUrlProps,
+    otherInfo?: object,
     opts?: {
       fgColor?: string;
     }
@@ -169,6 +170,7 @@ export class Canvas {
         otherInfo={{
           width: this.width,
           height: this.height,
+          ...otherInfo,
         }}
         fgColor={opts?.fgColor}
       />

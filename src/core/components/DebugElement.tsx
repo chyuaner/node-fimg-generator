@@ -24,6 +24,7 @@ const DebugElement = ({
       >
         <div style={{
           display: 'flex',
+          alignItems: 'flex-end',
           gap: '8'
         }}>
           <ul style={{

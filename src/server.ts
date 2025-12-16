@@ -32,8 +32,11 @@ app.use(async (req, res, next) => {
     const env = {
       ENABLE_DEBUG: process.env.ENABLE_DEBUG,
     };
+    const environmentInfo = {
+      platform: 'Node.JS'
+    };
 
-    const response = await handleRequest(request, {assetLoader: loader, ImageResponseClass: ImageResponse}, env);
+    const response = await handleRequest(request, {assetLoader: loader, ImageResponseClass: ImageResponse}, env, environmentInfo);
 
     // 直接把 Web API Response 轉回 Express 回應
     res.status(response.status);
