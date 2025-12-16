@@ -1,7 +1,7 @@
 import React from "react";
 import { AssetLoader } from './loaders/AssetLoader';
 import { splitUrl } from './urlUtils/splitUrl';
-import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad } from './urlUtils/parseUrl';
+import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad, bgBackgroundToParm } from './urlUtils/parseUrl';
 import { Canvas, Weight, FontStyle } from './Canvas';
 import { renderfullHtmlFromElement } from './renderHtml';
 import { corsMiddleware, cacheControlMiddleware, runMiddlewares } from './middleware';
@@ -171,6 +171,8 @@ async function coreHandler(
 
   // 若沒有提供顏色，使用預設值
   const bgColor = bgPart ? parseColor(bgPart) : '#cccccc';   // 預設灰
+  const bgPreParm = bgPart ? await parseColorOrPathLoad(bgPart, assetLoader) : {type: 'color',value: '#cccccc'};
+  const bgParm = bgBackgroundToParm(bgPreParm);
   const fgColor = fgPart ? parseColor(fgPart) : '#969696';   // 預設較深的灰
 
   // Parse query parameters
@@ -195,7 +197,7 @@ async function coreHandler(
   }
   canvas.setCanvasSize(width, height);
   canvas.addPh({
-    bgColor,
+    ...bgParm!,
     fgColor,
     fontName,
     fontSize: fontSizeVal,
@@ -221,18 +223,7 @@ async function coreHandler(
     const radiusValue = bg.radius ? parseSingleSize(bg.radius, { width, height }) : undefined;
 
     const bgBackground = bg.bgcolor ? await parseColorOrPathLoad(bg.bgcolor, assetLoader) : undefined;
-    let bgBackgroundParm;
-    if (bgBackground !== undefined) {
-      if (bgBackground.type == 'tpl' && bgBackground.base64Url) {
-        bgBackgroundParm = {
-          bgUrl: bgBackground.base64Url,
-        }
-      } else {
-        bgBackgroundParm = {
-          bgColor: bgBackground.value,
-        }
-      }
-    }
+    let bgBackgroundParm = bgBackgroundToParm(bgBackground);
 
     canvas.addBg({
         ...bgBackgroundParm,

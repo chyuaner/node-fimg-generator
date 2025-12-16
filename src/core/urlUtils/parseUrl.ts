@@ -148,14 +148,10 @@ export const parseColorOrPath = (colorStr: string) => {
   return {type:'color' as const, value: parseColor(colorStr)};
 };
 
-export const parseColorOrPathLoad = async (colorStr: string, assetLoader?:AssetLoader): Promise<{
-  type: 'color';
-  value: string;
-} | {
-  type: 'tpl';
-  value: string;
-  base64Url: string;
-}> => {
+type BgObject =
+  | { type: 'color'; value: string }
+  | { type: 'tpl'; value: string; base64Url: string | null };
+export const parseColorOrPathLoad = async (colorStr: string, assetLoader?:AssetLoader): Promise<BgObject> => {
   const originData = parseColorOrPath(colorStr);
   if (originData.type == 'tpl' && assetLoader) {
     let bgPath = originData.value;
@@ -212,6 +208,20 @@ export const parseColorOrPathLoad = async (colorStr: string, assetLoader?:AssetL
     return originData as any;
   }
 };
+
+export const bgBackgroundToParm = (bgBackground: BgObject | undefined) => {
+  // 只要 bgBackground 存在，就直接處理
+  if (bgBackground !== undefined) {
+    if (bgBackground.type === 'tpl' && bgBackground.base64Url) {
+      return { bgUrl: bgBackground.base64Url };
+    }
+    // 'color' 或 'tpl' 但沒 base64Url（不應發生）
+    return { bgColor: bgBackground.value };
+  }
+  // 無資料時返回 undefined
+  return undefined;
+};
+
 
 export const parseColor = (colorStr: string) => {
   // Support "ff0000" -> "#ff0000", "000" -> "#000"

@@ -59,13 +59,14 @@ export class Canvas {
   }
 
   addPh(opts: {
-    bgColor: string;
+    bgColor?: string;
+    bgUrl?: string;
     fgColor: string;
     fontName: string;
     fontSize: number;
     text?: string;
   }) {
-    const { bgColor, fgColor, fontName, fontSize, text } = opts;
+    const { bgColor, bgUrl, fgColor, fontName, fontSize, text } = opts;
     // Scale fontSize (always number)
     const scaledFontSize = fontSize * this.scale;
 
@@ -74,6 +75,7 @@ export class Canvas {
     this.phElement = (
       <PhElement
         bgColor={bgColor}
+        bgUrl={bgUrl}
         fgColor={fgColor}
         fontName={fontName}
         fontSize={scaledFontSize}

@@ -2,7 +2,8 @@ import React from "react";
 import { parseTextToElements } from "./elementUtils";
 
 interface PhElementProps {
-  bgColor: string;
+  bgUrl?: string;
+  bgColor?: string;
   fgColor: string;
   fontName: string;
   fontSize: number;
@@ -11,19 +12,23 @@ interface PhElementProps {
 
 const PhElement = ({
   bgColor,
+  bgUrl,
   fgColor,
   fontName,
   fontSize,
   style = {},
   children,
 }: React.PropsWithChildren<PhElementProps & { style?: React.CSSProperties }>) => {
+  console.log(bgUrl);
   return (
     <div
       style={{
         display: "flex",
         width: "100%",
         height: "100%",
-        backgroundColor: bgColor,
+        ...(bgColor ? { backgroundColor: bgColor } : {}),
+        ...(bgUrl ? { background: `url(${bgUrl})` } : {}),
+        backgroundSize: "100% 100%",
         color: fgColor,
         alignItems: "center",
         justifyContent: "center",
