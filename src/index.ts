@@ -47,7 +47,7 @@ export default {
     // 一旦有用到檔案
     const bgBackground = bg.bgcolor ? parseColorOrPath(bg.bgcolor) : {type: ''};
     // 而且總大小超過1600*900，直接導流到下游主機商
-    if (!!bgBackground && bgBackground.type == 'tpl' && !!width && !! height && (width*height > 1440000)) {
+    if (!!bgBackground && bgBackground.type == 'tpl' && !!width && !! height && (width*height > 1000000)) {
       return fetch(url.toString(), request);
     }
 
