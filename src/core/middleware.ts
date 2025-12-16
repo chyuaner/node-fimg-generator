@@ -38,7 +38,7 @@ export const addHeadersMiddleware = (environmentInfo: { platform?: string }) => 
     const response = await next();
 
     // 加上當前時間 (UTC 字串)
-    response.headers.set('Date', new Date().toUTCString());
+    response.headers.set('Generate-Date', new Date().toUTCString());
 
     // 若有提供 platform，寫入平台資訊
     if (environmentInfo?.platform) {
