@@ -16,7 +16,7 @@ export default defineConfig({
   },
 
   // -------------------------------------------------
-  // Vite 設定 – 只針對「符合規則」的路徑走代理
+  // Vite 設定 – 用一個通用的 proxy，並在 bypass 裡自行判斷
   // -------------------------------------------------
   vite: {
     plugins: [
@@ -26,14 +26,39 @@ export default defineConfig({
     ],
     server: {
       proxy: {
-        // 正則：數字 / 數字x數字、/bg、/ph、/404
-        //   ^/(\d+(x\d+)?)/.*$   → 例如 /60/abc、/800x600/foo
-        //   |^/(bg|ph)/.*$       → 例如 /bg/logo.png、/ph/avatar.jpg
-        //   |^/404$              → 正好是 /404
-        '^/(\\d+(x\\d+)?)/.*$|^/(bg|ph)/.*$|^/404$': {
-          target: 'http://localhost:8787', // 你的 API 伺服器
+        // ★ 只要請求符合「要走 API」的條件，就交給 http://localhost:8787
+        '/': {
+          target: 'http://localhost:8787',
           changeOrigin: true,
-          // 只要符合正則就直接代理，不需要任何 bypass 處理
+
+          /**
+           * bypass:
+           *   - 只檢查 URL 的 pathname（不含 query、hash）
+           *   - 符合任一條件 → 回傳 null → 交給代理
+           *   - 不符合 → 回傳原始 URL → 交給 Astro / Vite 本身
+           */
+          bypass: (req) => {
+            const url = new URL(req.url, `http://${req.headers.host}`);
+            const pathname = decodeURIComponent(url.pathname);   // 只拿路徑部份
+
+            // 1️⃣ 數字或「數字x數字」 + 可有斜線子路徑或副檔名
+            //    例：/300   /300.png   /800x600   /800x600.webp   /400x200?…
+            const isNumberPattern = /^\/\d+(x\d+)?(?:\/.*|\.[^/]+)?$/;
+
+            // 2️⃣ /bg/...  或  /ph/...
+            const isBgPhPattern = /^\/(bg|ph)\/.*$/;
+
+            // 3️⃣ 正好是 /404
+            const is404 = pathname === '/404';
+
+            if (isNumberPattern.test(pathname) || isBgPhPattern.test(pathname) || is404) {
+              // 符合任一條件 → 直接走代理
+              return null;          // 交給 http://localhost:8787
+            }
+
+            // 其餘保持原樣 → 交給 Astro / Vite 處理（不會走代理）
+            return req.url;
+          },
         },
       },
     },
