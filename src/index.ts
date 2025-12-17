@@ -1,8 +1,8 @@
 import { handleRequest } from "./core/app";
 import { CloudflareAssetLoader } from "./core/loaders/CloudflareAssetLoader";
 import { ImageResponse } from "@cf-wasm/og";
-import { splitUrl } from "./core/urlUtils/splitUrl";
-import { fileType, parseColorOrPath, parseSingleSize, parseSize } from "./core/urlUtils/parseUrl";
+import { splitUrl } from "./core/utils/splitUrl";
+import { fileType, parseColorOrPath, parseSingleSize, parseSize } from "./core/utils/parseUrl";
 import { envStringToBoolean } from "./helpers";
 
 /* -------------------------------------------------

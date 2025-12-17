@@ -1,6 +1,6 @@
 import React from "react";
 import WmElement from "./WmElement";
-import { SplitUrlProps } from "../urlUtils/splitUrl";
+import { SplitUrlProps } from "../utils/splitUrl";
 
 
 interface DebugElementProps {

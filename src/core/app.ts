@@ -1,11 +1,11 @@
 import React from "react";
 import { AssetLoader } from './loaders/AssetLoader';
-import { splitUrl } from './urlUtils/splitUrl';
-import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad, bgBackgroundToParm } from './urlUtils/parseUrl';
+import { splitUrl } from './utils/splitUrl';
+import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad, bgBackgroundToParm } from './utils/parseUrl';
 import { Canvas, Weight, FontStyle } from './Canvas';
 import { renderfullHtmlFromElement } from './renderHtml';
 import { addHeadersMiddleware, corsMiddleware, cacheControlMiddleware, runMiddlewares } from './middleware';
-import { encodeIco } from './util/encodeIco';
+import { encodeIco } from './utils/encodeIco';
 
 // Define a type that matches the ImageResponse class signature we use
 export type ImageResponseConstructor = new (

@@ -6,7 +6,7 @@ import { parseTextToElements } from "./components/elementUtils";
 import { AssetLoader } from "./loaders/AssetLoader";
 import { FontLoader } from "./loaders/loadFonts";
 import WmElement from "./components/WmElement";
-import { SplitUrlProps } from "./urlUtils/splitUrl";
+import { SplitUrlProps } from "./utils/splitUrl";
 import DebugElement from "./components/DebugElement";
 import D404Element from "./components/D404Element";
 
