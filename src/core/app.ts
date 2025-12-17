@@ -216,13 +216,12 @@ async function coreHandler(
   const fgPart = content.fgcolor ?? null;
 
   // 若沒有提供顏色，使用預設值
-  const bgColor = bgPart ? parseColor(bgPart) : '#cccccc';   // 預設灰
   const bgPreParm = bgPart ? await parseColorOrPathLoad(bgPart, assetLoader) : {type: 'color' as const, value: '#cccccc'};
   const bgParm = bgBackgroundToParm(bgPreParm);
   const fgColor = fgPart ? parseColor(fgPart) : '#969696';   // 預設較深的灰
 
   // Parse query parameters
-  const text = query.text ?? (hasSize ? `${width}x${height}` : undefined);
+  const text = query.text ?? (hasSize||hasInnerSize ? `${width}x${height}` : undefined);
   const retina = Object.prototype.hasOwnProperty.call(query, 'retina');
   const scaleParam = query.scale;
 
