@@ -5,6 +5,7 @@ import { parseSize, parseColor, fileType, parseSingleSize, parseColorOrPathLoad,
 import { Canvas, Weight, FontStyle } from './Canvas';
 import { renderfullHtmlFromElement } from './renderHtml';
 import { addHeadersMiddleware, corsMiddleware, cacheControlMiddleware, runMiddlewares } from './middleware';
+import { encodeIco } from './util/encodeIco';
 
 // Define a type that matches the ImageResponse class signature we use
 export type ImageResponseConstructor = new (
@@ -282,7 +283,8 @@ async function coreHandler(
 
   finalElement = canvas.gen();
 
-  if (format === 'html') {
+  if (format === 'html') 
+  {
     const html = renderfullHtmlFromElement(finalElement, {
       ...((hasSize||hasInnerSize) && {
         width: width! * scale,
@@ -294,7 +296,39 @@ async function coreHandler(
       status: 200,
       headers: { 'Content-Type': 'text/html; charset=utf-8' },
     });
-  } else {
+  } 
+  else if (format === 'ico') 
+  {
+    // 這裡先產生 PNG Buffer（ImageResponse 會回傳 Response，我們只要拿到原始 Uint8Array）
+    const pngResponse = new ImageResponseClass(finalElement as any, {
+      width: width! * scale,
+      height: height! * scale,
+      fonts: await canvas.loadFonts(),
+      format: 'png' as any,               // 只取 PNG
+    }) as any;
+
+    // pngResponse.body 可能是 ReadableStream，先轉成 Uint8Array
+    const pngArrayBuffer = await new Response(pngResponse.body).arrayBuffer();
+    const pngUint8 = new Uint8Array(pngArrayBuffer);
+
+    // === 2️⃣ 使用自製 encodeIco 包裝成 ICO ==========================
+    // 注意：width/height 這裡是 **最終要顯示的尺寸**（不含 scale）
+    //       若你在前面有調整 `canvas.setCanvasScale(scale)`，就以
+    //       原始 width/height（未乘以 scale）為基礎。
+    const icoUint8 = encodeIco(pngUint8, width ?? 0, height ?? 0);
+
+    // 3️⃣ 回傳 ICO
+    return new Response(icoUint8, {
+      status: 200,
+      headers: {
+        'Content-Type': 'image/x-icon',
+        // 可自行加快取 Header
+        'Cache-Control': 'public, max-age=86400',
+      },
+    });
+  }
+  else
+  {
     if (!ImageResponseClass) {
         throw new Error('ImageResponseClass is required for non-html output');
     }

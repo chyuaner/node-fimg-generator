@@ -257,11 +257,16 @@ export const parseColor = (colorStr: string) => {
 // 預設: SVG
 export function fileType(url: URL, request: Request) {
   const pathname = url.pathname;
-  let format: 'svg' | 'png' | 'html' = 'svg';
+  let format: 'svg' | 'png' | 'ico' | 'html' = 'svg';
 
   // 1️⃣ query param
   const filetypeParam = url.searchParams.get('filetype')?.toLowerCase();
-  if (filetypeParam === 'png' || filetypeParam === 'svg' || filetypeParam === 'html') {
+  if (
+    filetypeParam === 'png' ||
+    filetypeParam === 'svg' ||
+    filetypeParam === 'html' ||
+    filetypeParam === 'ico'
+  ) {
     format = filetypeParam as typeof format;
   } else {
     // 2️⃣ 檔名副檔名
@@ -271,6 +276,8 @@ export function fileType(url: URL, request: Request) {
       format = 'svg';
     } else if (pathname.endsWith('.html')) {
       format = 'html';
+    } else if (pathname.endsWith('.ico')) {
+      format = 'ico';
     } else {
       // 3️⃣ Accept header
       const acceptHeader = request.headers.get('Accept')?.toLowerCase() ?? '';
@@ -278,6 +285,11 @@ export function fileType(url: URL, request: Request) {
         format = 'svg';
       } else if (acceptHeader.includes('image/png')) {
         format = 'png';
+      } else if (
+        acceptHeader.includes('image/x-icon') ||
+        acceptHeader.includes('image/vnd.microsoft.icon')
+      ) {
+        format = 'ico';
       }
     }
   }
