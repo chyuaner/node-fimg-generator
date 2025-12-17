@@ -68,11 +68,11 @@ export default {
     // -------------------------------------------------
     // A. 先嘗試從 Edge Cache 取得（包含 query string）
     // -------------------------------------------------
-    const cached = await getFromEdgeCache(request);
-    if (cached) {
-      // 已命中 → 完全不跑 Workers
-      return cached;
-    }
+    // const cached = await getFromEdgeCache(request);
+    // if (cached) {
+    //   // 已命中 → 完全不跑 Workers
+    //   return cached;
+    // }
 
     // -------------------------------------------------
     // B. 一般靜態資源 (Astro) - 直接走 ASSETS
