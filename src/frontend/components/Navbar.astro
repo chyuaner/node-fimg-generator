@@ -12,14 +12,12 @@ const currentPath = pathname.slice(1);
         </div>
     </div>
     <div class="flex-none">
-        <nav class="mr-4">
-            <ul class="tabs max-[330px]:tabs-box min-[330px]:tabs-lift md:tabs-xl">
-                <li class=`tab [--tab-border-color:transparent] ${currentPath === 'intro'    ? 'tab-active' : ''}` ><a href="/intro">簡介</a></li>
-                <li class=`tab [--tab-border-color:transparent] ${currentPath === ''         ? 'tab-active' : ''}` ><a href="/">首頁</a></li>
-                <li class=`tab [--tab-border-color:transparent] ${currentPath === 'use'      ? 'tab-active' : ''}` ><a href="/use">使用說明</a></li>
-                <li class=`tab [--tab-border-color:transparent] ${currentPath === 'resources'? 'tab-active' : ''}` ><a href="/resources">素材</a></li>
-                <li class=`tab [--tab-border-color:transparent] ${currentPath === 'examples' ? 'tab-active' : ''}` ><a href="/examples">範例</a></li>
-            </ul>
+        <nav role="tablist" class="mr-4 tabs max-[340px]:tabs-box min-[340px]:tabs-lift md:tabs-xl">
+            <a role="tab" class=`tab [--tab-border-color:transparent] ${currentPath === 'intro'    ? 'tab-active' : ''}` href="/intro">簡介</a>
+            <a role="tab" class=`tab [--tab-border-color:transparent] ${currentPath === ''         ? 'tab-active' : ''}` href="/">首頁</a>
+            <a role="tab" class=`tab [--tab-border-color:transparent] ${currentPath === 'use'      ? 'tab-active' : ''}` href="/use">使用說明</a>
+            <a role="tab" class=`tab [--tab-border-color:transparent] ${currentPath === 'resources'? 'tab-active' : ''}` href="/resources">素材</a>
+            <a role="tab" class=`tab [--tab-border-color:transparent] ${currentPath === 'examples' ? 'tab-active' : ''}` href="/examples">範例</a>
         </nav>
     </div>
 </header>
