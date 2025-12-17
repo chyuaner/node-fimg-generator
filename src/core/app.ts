@@ -138,23 +138,13 @@ async function coreHandler(
     });
 
     if (format == 'ico') {
-      // 把 PNG 的 Body 轉成 Uint8Array
       const pngArrayBuffer = await new Response(pngResp.body).arrayBuffer();
       const pngUint8 = new Uint8Array(pngArrayBuffer);
-
-      // === 2️⃣ 使用自製 encodeIco 包裝成 ICO ==========================
-      // 注意：width/height 這裡是 **最終要顯示的尺寸**（不含 scale）
-      //       若你在前面有調整 `canvas.setCanvasScale(scale)`，就以
-      //       原始 width/height（未乘以 scale）為基礎。
       const icoUint8 = encodeIco(pngUint8, width ?? 0, height ?? 0);
-
-      // === 3️⃣ 回傳 ICO ==============================================
       return new Response(icoUint8, {
         status: 200,
         headers: {
-          'Content-Type': 'image/x-icon',
-          // 可自行調整快取時間
-          'Cache-Control': 'public, max-age=86400',
+          'Content-Type': 'image/x-icon'
         },
       });
       
@@ -347,9 +337,7 @@ async function coreHandler(
     return new Response(icoUint8, {
       status: 200,
       headers: {
-        'Content-Type': 'image/x-icon',
-        // 可自行加快取 Header
-        'Cache-Control': 'public, max-age=86400',
+        'Content-Type': 'image/x-icon'
       },
     });
   }
