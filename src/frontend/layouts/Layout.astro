@@ -8,7 +8,7 @@ const path = Astro.url.pathname.replace(/\//g, '') || 'index';
 const { title } = Astro.props;
 ---
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-tw">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,22 +17,34 @@ const { title } = Astro.props;
     <link rel="icon" href="/favicon.png" type="image/png">
 </head>
 <body class="flex flex-col min-h-screen bg-base-200">
-
 <div class="container grid mx-auto p-4">
 
-
-    <div class="container mx-auto mt-8 mb-8">
-        <h1 class="text-4xl font-bold">FimgFlare (Fake Image on Cloudflare)</h1>
-        <!-- <Navbar /> -->
-    </div>
+    <header class="md:flex items-end">
+        <div class="flex-1">
+            <div class="container mx-auto mt-8 mb-4">
+                <h1 class="text-3xl md:text-4xl font-bold">Fimg假圖產生站</h1>
+                <h2 class="text-2xl md:text-2xl"><small>Fake Image Generator</small></h2>
+                <!-- <Navbar /> -->
+            </div>
+        </div>
+        <div class="flex-none">
+            <nav class="mr-4">
+                <ul class="tabs max-[330px]:tabs-box min-[330px]:tabs-lift md:tabs-xl">
+                    <li class="tab [--tab-border-color:transparent]">簡介</li>
+                    <li class="tab [--tab-border-color:transparent] tab-active">首頁</li>
+                    <li class="tab [--tab-border-color:transparent]">使用說明</li>
+                    <li class="tab [--tab-border-color:transparent]">素材</li>
+                    <li class="tab [--tab-border-color:transparent]">範例</li>
+                </ul>
+            </nav>
+        </div>
+    </header>
     <div class="container mx-auto bg-base-100 shadow-lg rounded-xl p-4 md:p-8">
         <main class="" data-barba="wrapper">
             <div class="grid" data-barba="container" data-barba-namespace={path}>
                 <slot />
             </div>
         </main>
-
-
     </div>
 
     <div class="container mx-auto mt-8">
@@ -41,7 +53,5 @@ const { title } = Astro.props;
         </footer>
     </div>
 </div>
-
-
 </body>
 </html>
