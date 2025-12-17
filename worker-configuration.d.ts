@@ -6,6 +6,7 @@ declare namespace Cloudflare {
 		mainModule: typeof import("./src/index");
 	}
 	interface Env {
+		ENABLE_CF_EDGE_CACHE: "false";
 		ENABLE_CF_REDIRECT: "false";
 		ENABLE_DEBUG: "false";
 		ASSETS: Fetcher;

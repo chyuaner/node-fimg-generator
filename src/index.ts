@@ -1,8 +1,9 @@
 import { handleRequest } from "./core/app";
 import { CloudflareAssetLoader } from "./core/loaders/CloudflareAssetLoader";
-import { ImageResponse } from '@cf-wasm/og';
+import { ImageResponse } from "@cf-wasm/og";
 import { splitUrl } from "./core/urlUtils/splitUrl";
 import { fileType, parseColorOrPath, parseSingleSize, parseSize } from "./core/urlUtils/parseUrl";
+import { envStringToBoolean } from "./helpers";
 
 /* -------------------------------------------------
    1️⃣ Helper: 讀取 Edge Cache（只在 Workers 環境有效）
@@ -63,23 +64,33 @@ async function maybeCacheResponse(
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {
-    const enableRedirect = !['false', '0', 0, null, undefined].includes(env?.ENABLE_CF_REDIRECT);
+    const enableRedirect = envStringToBoolean(env?.ENABLE_CF_REDIRECT, undefined);
+    const url = new URL(request.url);
+    const pathname = url.pathname;
 
     // -------------------------------------------------
     // A. 先嘗試從 Edge Cache 取得（包含 query string）
     // -------------------------------------------------
-    const cached = await getFromEdgeCache(request);
-    if (cached) {
-      // 已命中 → 完全不跑 Workers
-      return cached;
+    // 1️⃣ 依環境變數（在 Cloudflare Dashboard → Workers → Settings → Variables）：// string | undefined
+    const envEnableCache = envStringToBoolean(env?.ENABLE_CF_EDGE_CACHE, undefined);
+    // 2️⃣ 依 URL query（即時繞過）：
+    const bypassQuery = url.searchParams.has("nocache");
+
+    // 若任一條件指示「不使用 Edge Cache」：
+    const shouldUseEdgeCache = !(bypassQuery || envEnableCache === false);
+    // -------------------------------------------------
+    // B. 先嘗試從 Edge Cache 取得（包含 query string）
+    // -------------------------------------------------
+    if (shouldUseEdgeCache) {
+      const cached = await getFromEdgeCache(request);
+      if (cached) {
+        // 已命中 → 完全不跑 Workers
+        return cached;
+      }
     }
-
     // -------------------------------------------------
-    // B. 一般靜態資源 (Astro) - 直接走 ASSETS
+    // C. 一般靜態資源 (Astro) - 直接走 ASSETS
     // -------------------------------------------------
-    const url = new URL(request.url);
-    const pathname = url.pathname;
-
     // Serve static assets (HTML, CSS, JS) from the ASSETS binding
     // These are built by Astro and deployed with the worker
     if (pathname === '/' || pathname.startsWith('/assets/') || pathname.endsWith('.html') || pathname.endsWith('.css') || pathname.endsWith('.js')) {
@@ -154,7 +165,13 @@ export default {
     // -------------------------------------------------
     // E. 把成功且可快取的回應寫入 Edge Cache
     // -------------------------------------------------
-    const finalResp = await maybeCacheResponse(request, rawResp);
-    return finalResp;
+    if (shouldUseEdgeCache) {
+      // 只在「允許快取」的情況下寫入
+      return await maybeCacheResponse(request, rawResp);
+    }
+
+    // 若明確關閉快取，直接回傳原始結果
+    return rawResp;
   },
 } satisfies ExportedHandler<CloudflareBindings>;
+

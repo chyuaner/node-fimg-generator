@@ -16,7 +16,8 @@
     },
     "vars": {
         "ENABLE_DEBUG": "false",
-        "ENABLE_CF_REDIRECT": "true"
+        "ENABLE_CF_REDIRECT": "true",
+        "ENABLE_CF_EDGE_CACHE": "true"
     }
     /**
      * Smart Placement
