@@ -4,10 +4,76 @@ import { ImageResponse } from '@cf-wasm/og';
 import { splitUrl } from "./core/urlUtils/splitUrl";
 import { fileType, parseColorOrPath, parseSingleSize, parseSize } from "./core/urlUtils/parseUrl";
 
+/* -------------------------------------------------
+   1️⃣ Helper: 讀取 Edge Cache（只在 Workers 環境有效）
+   ------------------------------------------------- */
+async function getFromEdgeCache(request: Request): Promise<Response | null> {
+  // `caches` 只在 Cloudflare Workers 中存在
+  if (typeof caches !== "undefined" && caches?.default) {
+    // 完整 URL（含 query）作為快取鍵
+    return await caches.default.match(request);
+  }
+  return null; // 非 Workers（例如在本機測試）直接視為「沒快取」
+}
+
+/* -------------------------------------------------
+   2️⃣ Helper: 把成功且「public」的 Response 寫入 Edge Cache
+   ------------------------------------------------- */
+async function maybeCacheResponse(
+  request: Request,
+  response: Response
+): Promise<Response> {
+  // 只在 Workers 中執行
+  if (typeof caches === "undefined" || !caches?.default) return response;
+
+  // 只快取 200 OK，且必須是「public」才允許 cache
+  if (response.status !== 200) return response;
+  const cc = response.headers.get("Cache-Control");
+  if (!cc || !/public/.test(cc)) return response; // 沒 public → 不寫入
+
+  try {
+    // Body 只能讀一次 → clone 再取出 binary
+    const body = await response.clone().arrayBuffer();
+
+    // 建立快取用的 Response（保留所有 Header）
+    const cacheResp = new Response(body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+    });
+
+    // 把完整的 request（含 query）寫入 Edge Cache
+    await caches.default.put(request, cacheResp);
+
+    // 回傳給瀏覽器的 Response（同樣的 body）
+    return new Response(body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+    });
+  } catch (e) {
+    console.warn("[CF‑Cache] write failed:", e);
+    return response; // 若寫入失敗，直接回傳原始結果
+  }
+}
+
+
 export default {
   async fetch(request, env, ctx): Promise<Response> {
     const enableRedirect = !['false', '0', 0, null, undefined].includes(env?.ENABLE_CF_REDIRECT);
 
+    // -------------------------------------------------
+    // A. 先嘗試從 Edge Cache 取得（包含 query string）
+    // -------------------------------------------------
+    const cached = await getFromEdgeCache(request);
+    if (cached) {
+      // 已命中 → 完全不跑 Workers
+      return cached;
+    }
+
+    // -------------------------------------------------
+    // B. 一般靜態資源 (Astro) - 直接走 ASSETS
+    // -------------------------------------------------
     const url = new URL(request.url);
     const pathname = url.pathname;
 
@@ -26,6 +92,9 @@ export default {
       }
     }
 
+    // -------------------------------------------------
+    // C. 判斷是不是要導流到 Vercel（負載過重）
+    // -------------------------------------------------
     let format = fileType(url, request);
 
     // 若有啟用多後端分流，而且輸出檔案格式要是png這種負荷較重的才需要分流
@@ -63,12 +132,26 @@ export default {
       }
     }
 
-    // 使用Cloudflare Workers運算產圖
+    // -------------------------------------------------
+    // D. 正常走 Workers 產圖
+    // -------------------------------------------------
     const environmentInfo = {
       platform: 'Cloudflare Workers'
     };
     // Handle dynamic image generation
     const loader = new CloudflareAssetLoader(env.ASSETS);
-    return handleRequest(request, {assetLoader: loader, ImageResponseClass: ImageResponse}, env, environmentInfo);
+
+    const rawResp = await handleRequest(
+      request,
+      { assetLoader: loader, ImageResponseClass: ImageResponse },
+      env,
+      environmentInfo
+    );
+
+    // -------------------------------------------------
+    // E. 把成功且可快取的回應寫入 Edge Cache
+    // -------------------------------------------------
+    const finalResp = await maybeCacheResponse(request, rawResp);
+    return finalResp;
   },
 } satisfies ExportedHandler<CloudflareBindings>;
