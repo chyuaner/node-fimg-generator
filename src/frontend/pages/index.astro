@@ -1,4 +1,5 @@
 ---
+import { PUBLIC_BASE_URL } from 'astro:env/client';
 import Layout from '../layouts/Layout.astro';
 import "../styles/eurl.css";
 ---
@@ -10,11 +11,11 @@ import "../styles/eurl.css";
             <p class="xl:inline">本站提供URL直連網址，可讓你在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。同時也新增邊緣背景設計的功能，方便用於製作螢幕截圖示意圖、簡報圖美化用途。</p>
             <p class="xl:inline xl:pl-[1em]">更多介紹與使用說明，請看 ➤ <a href="/intro">更多介紹</a></p>
             <h3>常用範例</h3>
-            <pre class="overflow-x-auto">&lt;img src=&quot;https://fimg.yuaner.tw/300x200.svg&quot;&gt; &lt;!-- &#x4E00;&#x822C;&#x9810;&#x7559;&#x5716; --&gt;
-&lt;img src=&quot;https://fimg.yuaner.tw/400x200?text=&#x1F5BC;&#xFE0F;&#x9810;&#x7559;&#x5716;&#x1F609;&amp;filetype=png&quot;&gt; &lt;!-- &#x81EA;&#x8A02;&#x6587;&#x6848;&#x9810;&#x7559;&#x5716; --&gt;
-&lt;img src=&quot;https://fimg.yuaner.tw/400x200/ff0000/FFF/?text=I am red.&quot;&gt; &lt;!-- &#x81EA;&#x8A02;&#x80CC;&#x666F;&#x8272;&#x8207;&#x6587;&#x5B57;&#x984F;&#x8272;&#x7684;&#x9810;&#x7559;&#x5716; --&gt;
-&lt;img src=&quot;https://fimg.yuaner.tw/300x200/bg/5/10/ph.svg&quot;&gt; &lt;!-- &#x5E36;&#x6709;&#x5E36;&#x6709;&#x9670;&#x5F71;&#x7684;&#x900F;&#x660E;&#x908A;&#x7DE3;&#x7684;&#x9810;&#x7559;&#x5716; --&gt;
-&lt;img src=&quot;https://fimg.yuaner.tw/300x200/bg/5/10/4/tpl(drool)/ph.svg&quot;&gt; &lt;!--&#x5E36;&#x6709;&#x5E36;&#x6709;&#x5713;&#x89D2;&#x9670;&#x5F71;&#x7684;&#x5716;&#x6848;&#x908A;&#x7DE3;&#x7684;&#x9810;&#x7559;&#x5716;--&gt;</pre>
+            <pre class="overflow-x-auto">&lt;img src=&quot;{PUBLIC_BASE_URL}/300x200.svg&quot;&gt; &lt;!-- &#x4E00;&#x822C;&#x9810;&#x7559;&#x5716; --&gt;
+&lt;img src=&quot;{PUBLIC_BASE_URL}/400x200?text=&#x1F5BC;&#xFE0F;&#x9810;&#x7559;&#x5716;&#x1F609;&amp;filetype=png&quot;&gt; &lt;!-- &#x81EA;&#x8A02;&#x6587;&#x6848;&#x9810;&#x7559;&#x5716; --&gt;
+&lt;img src=&quot;{PUBLIC_BASE_URL}/400x200/ff0000/FFF/?text=I am red.&quot;&gt; &lt;!-- &#x81EA;&#x8A02;&#x80CC;&#x666F;&#x8272;&#x8207;&#x6587;&#x5B57;&#x984F;&#x8272;&#x7684;&#x9810;&#x7559;&#x5716; --&gt;
+&lt;img src=&quot;{PUBLIC_BASE_URL}/300x200/bg/5/10/ph.svg&quot;&gt; &lt;!-- &#x5E36;&#x6709;&#x5E36;&#x6709;&#x9670;&#x5F71;&#x7684;&#x900F;&#x660E;&#x908A;&#x7DE3;&#x7684;&#x9810;&#x7559;&#x5716; --&gt;
+&lt;img src=&quot;{PUBLIC_BASE_URL}/300x200/bg/5/10/4/tpl(drool)/ph.svg&quot;&gt; &lt;!--&#x5E36;&#x6709;&#x5E36;&#x6709;&#x5713;&#x89D2;&#x9670;&#x5F71;&#x7684;&#x5716;&#x6848;&#x908A;&#x7DE3;&#x7684;&#x9810;&#x7559;&#x5716;--&gt;</pre>
         </div>
         <div class="prose-img:m-2 hidden lg:flex">
             <img class="" alt="fakeimg.pl" src="/440x250/bg/5/3/ph/282828/eae0d0">
@@ -28,7 +29,7 @@ import "../styles/eurl.css";
     </header>
 
     <div class="eurl my-6 p-2 rounded-xl w-full whitespace-nowrap bg-neutral text-neutral-content">
-      <span class="eurl-base"><span class="eurl-group">https://fimg.yuaner.tw</span></span>
+      <span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
       <span class="eurl-content">
           <span class="eurl-group hover:bg-indigo-600/30 inline">/<span class="eurl-part" data-url-ptitle="Canvas Size">300x200</span></span>
           <span class="eurl-group hover:bg-cyan-600/30">/bg/<span class="eurl-part" data-url-ptitle="Padding">2x3</span>/<span class="eurl-part" data-url-ptitle="Shadow">5</span>/<span class="eurl-part" data-url-ptitle="Radius">3</span>/<span class="eurl-part" data-url-ptitle="Color">A5D0E5</span></span>

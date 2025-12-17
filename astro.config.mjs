@@ -1,9 +1,15 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import fs from 'fs'; // ES‑module 方式
 
 export default defineConfig({
+  env: {
+    schema: {
+      PUBLIC_BASE_URL: envField.string({ context: "client", access: "public", optional: true, default: "http://localhost:4321", }),
+    }
+  },
+
   // ---------- 基本目錄 ----------
   outDir: './public',          // 產出目錄（build 時使用）
   publicDir: './static',      // 靜態資源目錄
