@@ -17,39 +17,39 @@ const swup = new Swup({
 });
 
 // Height transition for container
-swup.hooks.on('visit:start', () => {
-    const container = document.getElementById('layout-container');
-    if (container) {
-        // Lock the height to current pixel value before content changes
-        container.style.height = `${container.offsetHeight}px`;
-    }
-});
+// swup.hooks.on('visit:start', () => {
+//     const container = document.getElementById('layout-container');
+//     if (container) {
+//         // Lock the height to current pixel value before content changes
+//         container.style.height = `${container.offsetHeight}px`;
+//     }
+// });
 
-swup.hooks.before('animation:in:start', async () => {
-    const container = document.getElementById('layout-container');
-    if (!container) return;
+// swup.hooks.before('animation:in:start', async () => {
+//     const container = document.getElementById('layout-container');
+//     if (!container) return;
 
-    // We have the new content in DOM (opacity 0), but container height is locked to old height.
-    // 1. Measure new required height (by temporary unlock)
-    const currentHeight = container.style.height;
-    container.style.height = 'auto';
-    const targetHeight = container.offsetHeight;
-    container.style.height = currentHeight;
+//     // We have the new content in DOM (opacity 0), but container height is locked to old height.
+//     // 1. Measure new required height (by temporary unlock)
+//     const currentHeight = container.style.height;
+//     container.style.height = 'auto';
+//     const targetHeight = container.offsetHeight;
+//     container.style.height = currentHeight;
     
-    // Force reflow
-    container.offsetHeight;
+//     // Force reflow
+//     container.offsetHeight;
 
-    // 2. Animate to new height
-    container.style.transition = 'height 0.5s ease-in-out';
-    container.style.height = `${targetHeight}px`;
+//     // 2. Animate to new height
+//     container.style.transition = 'height 0.5s ease-in-out';
+//     container.style.height = `${targetHeight}px`;
 
-    // 3. Wait for animation to finish
-    await new Promise((resolve) => setTimeout(resolve, 500));
+//     // 3. Wait for animation to finish
+//     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Cleanup
-    container.style.height = 'auto';
-    container.style.transition = '';
-});
+//     // Cleanup
+//     container.style.height = 'auto';
+//     container.style.transition = '';
+// });
 
 // Update Navbar active state
 swup.hooks.on('page:view', () => {
