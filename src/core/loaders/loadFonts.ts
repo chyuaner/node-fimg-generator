@@ -4,6 +4,15 @@ import { AssetLoader } from "./AssetLoader";
 const fontFileMap = {
   noto: 'NotoSansTC-Medium.ttf',
   huninn: 'jf-openhuninn-2.1.ttf',
+  JasonHandwriting1: 'JasonHandwriting1.ttf',
+  JasonHandwriting2: 'JasonHandwriting2.ttf',
+  JasonHandwriting3: 'JasonHandwriting3.ttf',
+  JasonHandwriting3p: 'JasonHandwriting3p.ttf',
+  JasonHandwriting4: 'JasonHandwriting4.ttf',
+  JasonHandwriting5: 'JasonHandwriting5.ttf',
+  JasonHandwriting5p: 'JasonHandwriting5p.ttf',
+  JasonHandwriting6: 'JasonHandwriting6.ttf',
+  JasonHandwriting6p: 'JasonHandwriting6p.ttf',
 } as const;
 
 /**
