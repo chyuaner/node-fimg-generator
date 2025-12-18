@@ -4,6 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import fs from 'fs'; // ES‑module 方式
 
+import inoxToolsPortalGun from '@inox-tools/portal-gun';
+
 export default defineConfig({
   env: {
     schema: {
@@ -19,10 +21,8 @@ export default defineConfig({
   markdown: {
     syntaxHighlight: false,
   },
-  integrations: [
-    mdx({
-    })
-  ],
+  integrations: [mdx({
+  }), inoxToolsPortalGun()],
 
   // ---------- 開發伺服器 ----------
   server: {
