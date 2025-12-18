@@ -3,6 +3,8 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import fs from 'fs'; // ES‑module 方式
 
+import cloudflare from '@astrojs/cloudflare';
+
 export default defineConfig({
   env: {
     schema: {
@@ -11,9 +13,14 @@ export default defineConfig({
   },
 
   // ---------- 基本目錄 ----------
-  outDir: './public',          // 產出目錄（build 時使用）
-  publicDir: './static',      // 靜態資源目錄
-  srcDir: './src/frontend',   // 前端原始檔案目錄
+  // 產出目錄（build 時使用）
+  outDir: './public',
+
+  // 靜態資源目錄
+  publicDir: './static',
+
+  // 前端原始檔案目錄
+  srcDir: './src/frontend',
 
   // ---------- 開發伺服器 ----------
   server: {
@@ -69,4 +76,6 @@ export default defineConfig({
       },
     },
   },
+
+  adapter: cloudflare(),
 });
