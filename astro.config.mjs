@@ -1,4 +1,5 @@
 import { defineConfig, envField } from 'astro/config';
+import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import fs from 'fs'; // ES‑module 方式
@@ -14,6 +15,14 @@ export default defineConfig({
   outDir: './public',          // 產出目錄（build 時使用）
   publicDir: './static',      // 靜態資源目錄
   srcDir: './src/frontend',   // 前端原始檔案目錄
+
+  markdown: {
+    syntaxHighlight: false,
+  },
+  integrations: [
+    mdx({
+    })
+  ],
 
   // ---------- 開發伺服器 ----------
   server: {

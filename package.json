@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@astrojs/cloudflare": "^12.6.12",
+        "@astrojs/mdx": "^4.3.13",
         "@cf-wasm/og": "^0.3.3",
         "@swup/head-plugin": "^2.3.1",
         "@types/express": "^5.0.6",

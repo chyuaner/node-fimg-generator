@@ -1,0 +1,44 @@
+---
+layout: ../layouts/MdLayout.astro
+title: 關於本站
+---
+
+import { PUBLIC_BASE_URL } from 'astro:env/client';
+
+## 如何使用
+### 網址結構
+
+<div class="eurl p-4 md:py-0 rounded-md w-full whitespace-nowrap bg-neutral text-neutral-content">
+
+<span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
+<span class="eurl-content">
+<span class="eurl-group bg-indigo-600/30 inline" data-url-gtitle="畫布大小">/<span class="eurl-part">[canvas-size]</span></span>
+<span class="eurl-group bg-cyan-600/30" data-url-gtitle="邊緣背景">/bg/<span class="eurl-part">[bg-padding]</span>/<span class="eurl-part">[bg-shadow]</span>/<span class="eurl-part">[bg-radius]</span>/<span class="eurl-part">[bg-bgcolor]</span></span>
+<span class="eurl-group bg-yellow-600/30" data-url-gtitle="主內容">/ph/<span class="eurl-part">[bgcolor]</span>/<span class="eurl-part">[fgcolor]</span>/?<span class="eurl-part">text=[text]</span></span>
+<span class="eurl-group bg-green-600/30" data-url-gtitle="額外設定">&<span class="eurl-part">filetype=[svg|png]</span></span>
+</span>
+</div>
+
+
+
+#### 基本用法（PlaceHolder = ph）
+<pre>{PUBLIC_BASE_URL}/[size]/[bgcolor]/[fgcolor]/?text=[text]&filetype=[svg|png]</pre>
+
+
+#### 加上邊緣背景 (Background = bg, PlaceHolder = ph)
+<pre>{PUBLIC_BASE_URL}/bg/[bg-padding]/[bg-shadow]/[bg-radius]/[bg-bgcolor]/ph/[size]/[bgcolor]/[fgcolor]/?text=[text]&filetype=[svg|png]</pre>
+以基本用法為基礎，
+
+#### 先決定畫布大小，再決定內容
+<pre>{PUBLIC_BASE_URL}/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-radius]/[bg-bgcolor]/ph/[bgcolor]/[fgcolor]/?text=[text]&filetype=[svg|png]</pre>
+若你的需求是圖檔大小就要固定下來，可直接把大小寫在最前段。
+
+### 參數說明
+
+padding、shadow、radius數字的部份，可帶入
+- [int]：會當作整個畫布的%比例來處理
+- [int]p：會直接以px為單位
+
+pagging
+- [int]x[int]：
+- [int]px[int]p：

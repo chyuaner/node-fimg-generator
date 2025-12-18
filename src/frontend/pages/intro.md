@@ -4,34 +4,12 @@ title: 關於本站
 ---
 
 
-## 架設簡介
+## 本站簡介
 以在CDN原生直接運行的條件下，重新復刻 Fake images please? 的原有功能。在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。
 
 並在原有的網址結構基礎下，加入分組式的網址結構，預留未來加入其他內容類型的彈性。
 
 同時也新增邊緣背景設計的功能，方便用於製作螢幕截圖示意圖、簡報圖美化用途。
-
-## 可架設在
-
-本後端是以Serverless Edge無伺服器為前提重新開發的，目前支援架設在Cloudflare Workers、Vercel空間
-
-也可以
-
-
-## 本站簡介
-本站是採用雙層混合伺服器的方式來建置
-
-公網 -> Cloudflare CDN -> Cloudflare Workers -> Vercel
-
-Cloudflare CDN
-將已生成圖片直接在CDN層
-
-Cloudflare Workers
-
-
-Vercel
-
-
 
 
 ## 本站特色
@@ -64,7 +42,7 @@ Vercel
 
 本專案提供輸出SVG與PNG格式，並提供三種方式控制你想拿的檔案格式：
 
-若網址參數帶入 ?filetype=png ，或是 Header帶入 Accept: image/png，或是網址結尾以 .png 字串的話，就控制由png輸出。 
+若網址參數帶入 `?filetype=png` ，或是 Header帶入 `Accept: image/png`，或是網址結尾以 .png 字串的話，就控制由png輸出。 
 
 優先順序： `?filetype=png` > `.png` > `Accept: image/png`  然後SVG也比照。
 
@@ -93,9 +71,28 @@ PNG: 主流的圖片格式，絕大部分軟體都支援，可用於PPT簡報，
 
 
 
-
 ### 尚未實做的未來功能
 https://fimg.yuaner.tw/bg/5
 
 ### 
 https://fimg.yuaner.tw/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-radius]/[bg-bgcolor]/ph/[bgcolor]/[fgcolor]/?text=[text]&filetype=[svg|png]
+
+
+## 本站簡介
+本站是採用雙層混合伺服器的方式來建置
+
+公網 -> Cloudflare CDN -> Cloudflare Workers -> Vercel
+
+Cloudflare CDN
+將已生成圖片直接在CDN層
+
+Cloudflare Workers
+
+
+Vercel
+
+## 可架設在
+
+本後端是以Serverless Edge無伺服器為前提重新開發的，目前支援架設在Cloudflare Workers、Vercel空間
+
+也可以
