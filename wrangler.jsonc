@@ -17,7 +17,8 @@
     "vars": {
         "ENABLE_DEBUG": "false",
         "ENABLE_CF_REDIRECT": "true",
-        "ENABLE_CF_EDGE_CACHE": "true"
+        "ENABLE_CF_EDGE_CACHE": "true",
+        "PUBLIC_BASE_URL": "https://fimg.yuaner.tw"
     }
     /**
      * Smart Placement
