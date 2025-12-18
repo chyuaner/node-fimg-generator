@@ -9,3 +9,23 @@
 }
 
 /* Custom Styles */
+@font-face {
+  font-family: "huninn";                         /* 字體名稱 */
+  src: url("/font/jf-openhuninn-2.1.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;                         /* 提升載入體驗 */
+}
+@font-face {
+  font-family: "noto";                         /* 字體名稱 */
+  src: url("/font/NotoSansTC-Medium.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;                         /* 提升載入體驗 */
+}
+:root {
+  --font-display: "huninn", "noto", sans-serif;          /* 若要備援字體可加在後面 */
+}
+html, body {
+  font-family: var(--font-display);
+}
