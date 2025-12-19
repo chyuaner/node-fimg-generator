@@ -1,4 +1,23 @@
 ---
+const examples = [
+  {url: '/300x200.svg'},
+  {url: '/400x200?text=🖼️預留圖😉&filetype=png'},
+  {url: '/440x250/bg/12/8/4/FCF1CE/ph/2D4556/FFF/?text=Test～～～&filetype=png'},
+  {url: '/400x200/ff0000/FFF/?text=I am red.'},
+  {url: '/300x200/bg/5/10/4/FCF1CE/ph/A5D0E5?text=Test'},
+  {url: '/300x200/bg/5/10/4/tpl(drool-l)/ph'},
+  {url: '/bg/15/10/4/D0EFFE/ph/800x300/F5F7F9/000?text=Test~Test~Test~Teaast~&scale=1&debug=1'},
+  {url: '/bg/15/0/10/tpl(adwaita-l)/ph/800x300/2D4556/FFF?text=404 Error'},
+  {url: '/1920x1080/bg/8/5/4/FCF1CE/ph/2D4556/FFF?filetype=png&text=TEST_TEXT'},
+  {url: '/300'},
+  {url: '/250x100'},
+  {url: '/350x200/ff0000/fff'},
+  {url: '/350x200/?text=Hello+World&font=noto'},
+  {url: '/300.png', title: '/300.png (Force PNG)'},
+]
+
+import ExampleCard from '../components/ExampleCard.astro';
+import { PUBLIC_BASE_URL } from 'astro:env/client';
 import Layout from '../layouts/Layout.astro';
 import "../styles/eurl.css";
 ---
@@ -7,87 +26,13 @@ import "../styles/eurl.css";
   <section class="">
     <header class="prose !max-w-none mb-6">
         <h2 class="">使用範例 (Usage Examples)</h2>
-        <p>以下示範不同的 URL 產生方式與對應的預覽圖，供開發者直接引用。</p>
+        <p>以下示範不同的 URL 產生方式與對應的預覽圖，可拿來參考並視情況以你的需求來修改。</p>
     </header>
 
-    <div class="space-y-6">
+    <div class="grid gap-4">
+      {examples.map(item => (
+        <ExampleCard {...item} url={`${PUBLIC_BASE_URL}${item.url}`} />
+      ))}
 
-        <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-            <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/300x200.svg</code>
-            <img src="/300x200.svg" class="border rounded shadow-sm">
-        </div>
-
-        <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-            <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/400x200?text=🖼️預留圖😉&filetype=png</code>
-            <img src="/400x200?text=🖼️預留圖😉&filetype=png" class="border rounded shadow-sm">
-        </div>
-
-        <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-            <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/440x250/bg/12/8/4/FCF1CE/ph/2D4556/FFF/?text=Test～～～&filetype=png</code>
-            <img src="/440x250/bg/12/8/4/FCF1CE/ph/2D4556/FFF/?text=Test～～～&filetype=png" class="border rounded shadow-sm">
-        </div>
-
-        <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-            <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/400x200/ff0000/FFF/?text=I am red.</code>
-            <img src="/400x200/ff0000/FFF/?text=I am red." class="border rounded shadow-sm">
-        </div>
-
-        <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-            <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/300x200/bg/5/10/4/FCF1CE/ph/A5D0E5?text=Test</code>
-            <img src="/300x200/bg/5/10/4/FCF1CE/ph/A5D0E5?text=Test" class="border rounded shadow-sm">
-        </div>
-
-        <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-            <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/300x200/bg/5/10/4/tpl(drool-l)/ph.svg</code>
-            <img src="/300x200/bg/5/10/4/tpl(drool-l)/ph.svg" class="border rounded shadow-sm">
-        </div>
-
-        <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-            <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/bg/15/10/4/D0EFFE/ph/800x300/F5F7F9/000?text=Test~Test~Test~Teaast~&scale=1&debug=1</code>
-            <img src="/bg/15/10/4/D0EFFE/ph/800x300/F5F7F9/000?text=Test~Test~Test~Teaast~&scale=1&debug=1" class="border rounded shadow-sm">
-        </div>
-
-        <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-            <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/bg/15/0/10/tpl(adwaita-l)/ph/800x300/2D4556/FFF?text=404 Error</code>
-            <img src="/bg/15/0/10/tpl(adwaita-l)/ph/800x300/2D4556/FFF?text=404+Error" class="border rounded shadow-sm">
-        </div>
-
-        <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-            <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/1920x1080/bg/8/5/4/FCF1CE/ph/2D4556/FFF?filetype=png&text=TEST_TEXT</code>
-            <img src="/1920x1080/bg/8/5/4/FCF1CE/ph/2D4556/FFF?filetype=png&text=TEST_TEXT" class="border rounded shadow-sm">
-        </div>
-
-
-
-      <!-- 單一尺寸 -->
-      <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-        <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/300</code>
-        <img src="/300" alt="300x300" class="border rounded shadow-sm">
-      </div>
-
-      <!-- 自訂寬高 -->
-      <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-        <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/250x100</code>
-        <img src="/250x100" alt="250x100" class="border rounded shadow-sm">
-      </div>
-
-      <!-- 背景色 / 文字顏色 -->
-      <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-        <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/350x200/ff0000/fff</code>
-        <img src="/350x200/ff0000/fff" alt="Colored" class="border rounded shadow-sm">
-      </div>
-
-      <!-- 自訂文字與字型 -->
-      <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-        <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/350x200/?text=Hello+World&font=noto</code>
-        <img src="/350x200/?text=Hello+World&font=noto" alt="Text and Font" class="border rounded shadow-sm">
-      </div>
-
-      <!-- 強制 PNG -->
-      <div class="p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center gap-4">
-        <code class="bg-neutral text-neutral-content flex-1 rounded-lg">/300.png (Force PNG)</code>
-        <img src="/300.png" alt="PNG Force" class="border rounded shadow-sm">
-      </div>
     </div>
-  </section>
 </Layout>

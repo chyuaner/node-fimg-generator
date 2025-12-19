@@ -1,0 +1,17 @@
+---
+const { url, title} = Astro.props;
+---
+
+<div class="card lg:card-side bg-base-200 shadow-sm max-h-100 overflow-hidden">
+    <figure class="lg:max-w-xl lg:order-last lg:rounded-l-none">
+        <img src={url} alt={title} class="" />
+    </figure>
+
+    <div class="card-body">
+        {title && <h3 class="card-title mb-4">{title}</h3>}
+        <code class="bg-neutral text-neutral-content flex-1 flex items-center rounded-lg p-4">{url}</code>
+        <!-- <div class="card-actions justify-end">
+        <button class="btn btn-primary">Listen</button>
+        </div> -->
+    </div>
+</div>
