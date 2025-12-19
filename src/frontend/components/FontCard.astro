@@ -1,0 +1,21 @@
+---
+import {getPath as assetGetPath} from '../../core/loaders/assets'
+const { id, exWidth=400, exHeight=200, exText='魚兒魚兒水中游～', title} = Astro.props;
+---
+
+<div class="card max-w-80 not-prose bg-base-200 shadow-sm">
+    <figure>
+        <img
+        src=`/${exWidth}x${exHeight}?font=${id}&text=${exText}`
+        alt={id} />
+    </figure>
+    <div class="card-body">
+        <header class="flex justify-center items-center">
+            <h2 class="card-title">{id}</h2>
+        </header>
+        <!-- <p>A card component has a figure, a body part, and inside body there are title and actions parts</p> -->
+        <div class="card-actions">
+            <pre class="w-full bg-neutral text-neutral-content rounded-lg p-4">font=({id})</pre>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 ---
-import TplCard from '../components/TplCard.astro';
 import Layout from '../layouts/Layout.astro';
+import TplCard from '../components/TplCard.astro';
+import FontCard from '../components/FontCard.astro';
 import { PUBLIC_BASE_URL } from 'astro:env/client';
 ---
 
@@ -9,16 +10,14 @@ import { PUBLIC_BASE_URL } from 'astro:env/client';
     <section id="outline">
         <h2 class="mt-1">可用素材總覽</h2>
     </section>
-    <section id="fonts" class="grid">
+    <section id="fonts" class="">
         <h2>字體</h2>
 
         <article>
             <header>
                 <h3>jf open 粉圓</h3>
-                <ul>
-                    <li>huninn</li>
-                </ul>
             </header>
+            <FontCard id="huninn" />
             <p>jf-openhuninn-2.1.ttf</p>
             <p>https://github.com/justfont/open-huninn-font?tab=readme-ov-file</p>
             <p>https://justfont.com/huninn/</p>
@@ -27,43 +26,49 @@ import { PUBLIC_BASE_URL } from 'astro:env/client';
         <article>
             <header>
                 <h3>Noto Sans Traditional Chinese</h3>
-                <ul>
-                    <li>noto</li>
-                </ul>
             </header>
-            <p>NotoSansTC-Medium.ttf</p>
-            <p>https://fonts.google.com/noto/specimen/Noto+Sans+TC</p>
+        
+            <div class="flex">
+                <div class="flex-auto">
+                    <p>NotoSansTC-Medium.ttf</p>
+                    <p>https://fonts.google.com/noto/specimen/Noto+Sans+TC</p>
+                </div>
+                <div class="flex-none not-prose grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <FontCard id="noto" />
+                </div>
+            </div>
         </article>
 
         <article>
             <header>
                 <h3>台北黑體 - 翰字鑄造 JT Foundry</h3>
-                <ul>
-                    <li>TaipeiSans</li>
-                    <li>TaipeiSansB</li>
-                </ul>
             </header>
             <p>TaipeiSansTCBeta-Regular.ttf</p>
             <p>TaipeiSansTCBeta-Bold.ttf</p>
             <p>https://sites.google.com/view/jtfoundry/zh-tw</p>
+            <div class="not-prose grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <FontCard id="TaipeiSans" />
+                <FontCard id="TaipeiSansB" />
+            </div>
         </article>
+
 
         <article>
             <header>
                 <h3>清松手寫體</h3>
-                <ul>
-                    <li>JasonHandwriting1</li>
-                    <li>JasonHandwriting2</li>
-                    <li>JasonHandwriting3</li>
-                    <li>JasonHandwriting3p</li>
-                    <li>JasonHandwriting4</li>
-                    <li>JasonHandwriting5</li>
-                    <li>JasonHandwriting5p</li>
-                    <li>JasonHandwriting6</li>
-                    <li>JasonHandwriting6p</li>
-                </ul>
             </header>
             <p>https://jasonfonts.max-everyday.com/</p>
+            <div class="not-prose grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <FontCard id="JasonHandwriting1" />
+                <FontCard id="JasonHandwriting2" />
+                <FontCard id="JasonHandwriting3" />
+                <FontCard id="JasonHandwriting3p" />
+                <FontCard id="JasonHandwriting4" />
+                <FontCard id="JasonHandwriting5" />
+                <FontCard id="JasonHandwriting5p" />
+                <FontCard id="JasonHandwriting6" />
+                <FontCard id="JasonHandwriting6p" />
+            </div>
         </article>
 
 
