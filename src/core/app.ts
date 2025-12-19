@@ -83,7 +83,7 @@ async function coreHandler(
   // /debug 路由
   // ---------------------------------------------------------------------------
   // Note: Use original pathname (not normalizedPath) to preserve trailing slashes
-  if (enableDebug && pathname.startsWith('/debug/')) {
+  if (pathname.startsWith('/debug/')) {
     const debugPath = pathname.slice(7); // Remove '/debug/' prefix
     const fullDebugPath = debugPath + url.search; // Include query string
     const parsed = splitUrl(fullDebugPath);
@@ -292,7 +292,7 @@ async function coreHandler(
   }
 
   const envInfo = environmentInfo as any; // 轉型為 any 以使用 platform
-  if (enableDebug && !!query.debug && envInfo?.platform) {
+  if (!!query.debug && envInfo?.platform) {
     canvas.addDebug(splitUrl(fullPath), { platform: envInfo.platform });
   }
 
