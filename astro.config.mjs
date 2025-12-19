@@ -63,10 +63,11 @@ export default defineConfig({
             // 2️⃣ /bg/...  或  /ph/...
             const isBgPhPattern = /^\/(bg|ph)\/.*$/;
 
-            // 3️⃣ 正好是 /404
-            const is404 = pathname === '/404';
+            // 3️⃣ 白名單（目前列出 /404、/favicon.png、/favicon.ico）
+            const whitelist = new Set(['/404', '/favicon.png', '/favicon.ico']);
+            const isWhitelisted = whitelist.has(pathname);
 
-            if (isNumberPattern.test(pathname) || isBgPhPattern.test(pathname) || is404) {
+            if (isNumberPattern.test(pathname) || isBgPhPattern.test(pathname) || isWhitelisted) {
               // 符合任一條件 → 直接走代理
               return null;          // 交給 http://localhost:8787
             }

@@ -6,14 +6,19 @@ const examples = [
   {url: '/400x200/ff0000/FFF/?text=I am red.'},
   {url: '/300x200/bg/5/10/4/FCF1CE/ph/A5D0E5?text=Test'},
   {url: '/300x200/bg/5/10/4/tpl(drool-l)/ph'},
-  {url: '/bg/15/10/4/D0EFFE/ph/800x300/F5F7F9/000?text=Test~Test~Test~Teaast~&scale=1&debug=1'},
-  {url: '/bg/15/0/10/tpl(adwaita-l)/ph/800x300/2D4556/FFF?text=404 Error'},
+  {url: '/bg/15/10/4/D0EFFE/ph/800x300/F5F7F9/000?text=Test~Test~Test~Teaast~&scale=3'},
+  {url: '/bg/15/0/10/tpl(adwaita-l)/ph/500x150/2D4556/FFF?text=Yuaner&debug=1'},
   {url: '/1920x1080/bg/8/5/4/FCF1CE/ph/2D4556/FFF?filetype=png&text=TEST_TEXT'},
   {url: '/300'},
   {url: '/250x100'},
   {url: '/350x200/ff0000/fff'},
   {url: '/350x200/?text=Hello+World&font=noto'},
   {url: '/300.png', title: '/300.png (Force PNG)'},
+]
+
+const sp_examples = [
+  {url: '/favicon.png'},
+  {url: '/404'},
 ]
 
 import ExampleCard from '../components/ExampleCard.astro';
@@ -23,7 +28,7 @@ import "../styles/eurl.css";
 ---
 
 <Layout>
-  <section class="">
+  <section class="mb-8">
     <header class="prose !max-w-none mb-6">
         <h2 class="">使用範例 (Usage Examples)</h2>
         <p>以下示範不同的 URL 產生方式與對應的預覽圖，可拿來參考並視情況以你的需求來修改。</p>
@@ -33,6 +38,19 @@ import "../styles/eurl.css";
       {examples.map(item => (
         <ExampleCard {...item} url={`${PUBLIC_BASE_URL}${item.url}`} />
       ))}
-
     </div>
+  </section>
+
+  <section>
+    <header class="prose !max-w-none mb-6">
+        <h2 class="">特殊製作的使用範例</h2>
+        <p>以下是針對特殊需求特別製作的</p>
+    </header>
+
+    <div class="grid gap-4">
+      {sp_examples.map(item => (
+        <ExampleCard {...item} url={`${PUBLIC_BASE_URL}${item.url}`} />
+      ))}
+    </div>
+  </section>
 </Layout>
