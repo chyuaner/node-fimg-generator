@@ -4,12 +4,14 @@ title: 關於本站
 ---
 <portal-gate to="end:head">
   <style>{`  
-.eurl { display: block!important; }
-.eurl-content { margin-left: 0!important; }
-.eurl-base, .eurl-content { display: inline-block!important;}
-.eurl-group { margin: 0 0.1em!important; padding-left: 0.1em!important; padding-right: 0.1em!important; }
-/* .eurl-group { margin: 0 0; padding-left: 0; padding-right: 0; } */
-.eurl-part { margin: 0!important; }
+.eurl-inline { 
+  display: block!important; 
+  .eurl-content { margin-left: 0!important; }
+  .eurl-base, .eurl-content { display: inline-block!important;}
+  .eurl-group { margin: 0 0.1em!important; padding-left: 0.1em!important; padding-right: 0.1em!important; }
+  /* .eurl-group { margin: 0 0; padding-left: 0; padding-right: 0; } */
+  .eurl-part { margin: 0!important; }
+}
   `}</style> 
 </portal-gate>
 import { PUBLIC_BASE_URL } from 'astro:env/client';
@@ -19,15 +21,14 @@ import { PUBLIC_BASE_URL } from 'astro:env/client';
 
 本站是以 Fake images please? 的基礎下，加入大量功能擴充。若覺得這部份說明太複雜冗長，可直接跳去看 [常用範例](#常用範例) 。
 
-<div class="mt-4 eurl p-4 md:py-0 rounded-md w-full whitespace-nowrap bg-neutral text-neutral-content">
-
-<span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
-<span class="eurl-content">
-<span class="eurl-group bg-indigo-600/30 inline" data-url-gtitle="畫布大小">/<span class="eurl-part">[canvas-size]</span></span>
-<span class="eurl-group bg-cyan-600/30" data-url-gtitle="邊緣背景">/bg/<span class="eurl-part">[bg-padding]</span>/<span class="eurl-part">[bg-shadow]</span>/<span class="eurl-part">[bg-radius]</span>/<span class="eurl-part">[bg-bgcolor]</span></span>
-<span class="eurl-group bg-yellow-600/30" data-url-gtitle="主內容">/ph/<span class="eurl-part">[bgcolor]</span>/<span class="eurl-part">[fgcolor]</span>/?<span class="eurl-part">text=[text]</span></span>
-<span class="eurl-group bg-green-600/30" data-url-gtitle="額外設定">&<span class="eurl-part">filetype=[svg|png]</span></span>
-</span>
+<div class="eurl mt-6 p-2 rounded-xl w-full whitespace-nowrap bg-neutral text-neutral-content">
+  <span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
+  <span class="eurl-content">
+      <span class="eurl-group bg-indigo-600/30 inline" data-url-gtitle="畫布大小">/<span class="eurl-part" data-url-ptitle="Canvas Size">300x200</span></span>
+      <span class="eurl-group bg-cyan-600/30" data-url-gtitle="邊緣背景">/bg/<span class="eurl-part" data-url-ptitle="Padding">2x3</span>/<span class="eurl-part" data-url-ptitle="Shadow">5</span>/<span class="eurl-part" data-url-ptitle="Radius">3</span>/<span class="eurl-part" data-url-ptitle="Color">A5D0E5</span></span>
+      <span class="eurl-group bg-yellow-600/30" data-url-gtitle="主內容">/ph/<span class="eurl-part" data-url-ptitle="bgcolor">ff0000,128</span>/<span class="eurl-part" data-url-ptitle="fgcolor">000,255</span>/?<span class="eurl-part">text=Hello+World</span></span>
+      <span class="eurl-group bg-green-600/30" data-url-gtitle="額外設定">&<span class="eurl-part">filetype=svg</span></span>
+  </span>
 </div>
 
 基本上分為四大部份：
@@ -75,15 +76,35 @@ import { PUBLIC_BASE_URL } from 'astro:env/client';
 
 
 ### 基本用法（PlaceHolder = ph）
-<pre>{PUBLIC_BASE_URL}/[size]/[bgcolor]/[fgcolor]/?text=[text]&filetype=[svg|png]</pre>
-
+<div class="mt-4 eurl eurl-inline p-4 md:py-0 rounded-md w-full whitespace-nowrap bg-neutral text-neutral-content">
+<span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
+<span class="eurl-content">
+  <span class="eurl-group bg-yellow-600/30" data-url-gtitle="主內容">/ph/<span class="eurl-part">[size]</span>/<span class="eurl-part">[bgcolor]</span>/<span class="eurl-part">[fgcolor]</span>/?<span class="eurl-part">text=[text]</span></span>
+  <span class="eurl-group bg-green-600/30" data-url-gtitle="額外設定">&<span class="eurl-part">filetype=[svg|png]</span></span>
+</span>
+</div>
 
 ### 加上邊緣背景 (Background = bg, PlaceHolder = ph)
-<pre>{PUBLIC_BASE_URL}/bg/[bg-padding]/[bg-shadow]/[bg-radius]/[bg-bgcolor]/ph/[size]/[bgcolor]/[fgcolor]/?text=[text]&filetype=[svg|png]</pre>
+<div class="mt-4 eurl eurl-inline p-4 md:py-0 rounded-md w-full whitespace-nowrap bg-neutral text-neutral-content">
+<span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
+<span class="eurl-content">
+  <span class="eurl-group bg-cyan-600/30" data-url-gtitle="邊緣背景">/bg/<span class="eurl-part">[bg-padding]</span>/<span class="eurl-part">[bg-shadow]</span>/<span class="eurl-part">[bg-radius]</span>/<span class="eurl-part">[bg-bgcolor]</span></span>
+  <span class="eurl-group bg-yellow-600/30" data-url-gtitle="主內容">/ph/<span class="eurl-part">[size]</span>/<span class="eurl-part">[bgcolor]</span>/<span class="eurl-part">[fgcolor]</span>/?<span class="eurl-part">text=[text]</span></span>
+  <span class="eurl-group bg-green-600/30" data-url-gtitle="額外設定">&<span class="eurl-part">filetype=[svg|png]</span></span>
+</span>
+</div>
 以基本用法為基礎，
 
 ### 先決定畫布大小，再決定內容
-<pre>{PUBLIC_BASE_URL}/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-radius]/[bg-bgcolor]/ph/[bgcolor]/[fgcolor]/?text=[text]&filetype=[svg|png]</pre>
+<div class="mt-4 eurl eurl-inline p-4 md:py-0 rounded-md w-full whitespace-nowrap bg-neutral text-neutral-content">
+<span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
+<span class="eurl-content">
+  <span class="eurl-group bg-indigo-600/30 inline" data-url-gtitle="畫布大小">/<span class="eurl-part">[canvas-size]</span></span>
+  <span class="eurl-group bg-cyan-600/30" data-url-gtitle="邊緣背景">/bg/<span class="eurl-part">[bg-padding]</span>/<span class="eurl-part">[bg-shadow]</span>/<span class="eurl-part">[bg-radius]</span>/<span class="eurl-part">[bg-bgcolor]</span></span>
+  <span class="eurl-group bg-yellow-600/30" data-url-gtitle="主內容">/ph/<span class="eurl-part">[bgcolor]</span>/<span class="eurl-part">[fgcolor]</span>/?<span class="eurl-part">text=[text]</span></span>
+  <span class="eurl-group bg-green-600/30" data-url-gtitle="額外設定">&<span class="eurl-part">filetype=[svg|png]</span></span>
+</span>
+</div>
 若你的需求是圖檔大小就要固定下來，可直接把大小寫在最前段。
 
 
