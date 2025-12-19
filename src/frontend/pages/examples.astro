@@ -36,7 +36,7 @@ import "../styles/eurl.css";
 
     <div class="grid gap-4">
       {examples.map(item => (
-        <ExampleCard {...item} url={`${PUBLIC_BASE_URL}${item.url}`} />
+        <ExampleCard {...item} src={item.url} url={`${PUBLIC_BASE_URL}${item.url}`} />
       ))}
     </div>
   </section>
@@ -49,7 +49,7 @@ import "../styles/eurl.css";
 
     <div class="grid gap-4">
       {sp_examples.map(item => (
-        <ExampleCard {...item} url={`${PUBLIC_BASE_URL}${item.url}`} />
+        <ExampleCard {...item} src={item.url} url={`${PUBLIC_BASE_URL}${item.url}`} />
       ))}
     </div>
   </section>

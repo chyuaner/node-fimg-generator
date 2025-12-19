@@ -1,10 +1,10 @@
 ---
-const { url, title} = Astro.props;
+const { src, url, title} = Astro.props;
 ---
 
 <div class="card lg:card-side bg-base-200 shadow-sm max-h-100 overflow-hidden">
     <figure class="lg:max-w-xl lg:order-last lg:rounded-l-none">
-        <img src={url} alt={title} class="" />
+        <img src={src} alt={title} class="" />
     </figure>
 
     <div class="card-body">
