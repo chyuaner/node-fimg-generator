@@ -84,7 +84,8 @@ export const corsMiddleware: Middleware = async (request, next) => {
  */
 export const cacheControlMiddleware: Middleware = async (request, next) => {
   // 本常數是最後修改時間，若本專案有會影響舊有圖片的改動，請更新這個字串
-  const UPDATE_TIME = 'Tue, 16 Dec 2025 23:29:28 GMT';
+  // 取得現在時間 node -e 'console.log(new Date().toUTCString())'
+  const UPDATE_TIME = 'Fri, 19 Dec 2025 06:50:03 GMT';
 
   const response = await next();
 
