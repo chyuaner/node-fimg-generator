@@ -4,6 +4,8 @@ import Layout from '../layouts/Layout.astro';
 import "../styles/eurl.css";
 import ColorInput from '../components/ColorInput.astro';
 import TplInput from '../components/TplInput.astro';
+import { fontFileMap } from '../../core/loaders/loadFonts';
+import { pathMap } from '../../core/loaders/assets';
 ---
 <Layout>
 <section id="intro" class="prose prose-sm !max-w-none -mt-[1em] border-b-1 mb-6">
@@ -38,73 +40,72 @@ import TplInput from '../components/TplInput.astro';
         <span>本頁施工中，請直接看 ➤ <a href="/use">使用說明</a></span>
     </div>
 
-    <div class="sticky top-4 eurl my-6 p-2 rounded-xl w-full whitespace-nowrap bg-neutral text-neutral-content">
+    <!-- eurl section -->
+    <div class="sticky top-4 eurl my-6 p-2 rounded-xl w-full whitespace-nowrap bg-neutral text-neutral-content z-20 shadow-lg">
       <span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
-      <span class="eurl-content">
-          <span class="eurl-group hover:bg-indigo-600/30 inline">/<span class="eurl-part" data-url-ptitle="Canvas Size">800x500</span></span>
-          <span class="eurl-group hover:bg-cyan-600/30">/bg/<span class="eurl-part" data-url-ptitle="Padding">15</span>/<span class="eurl-part" data-url-ptitle="Shadow">10</span>/<span class="eurl-part" data-url-ptitle="Radius">4</span>/<span class="eurl-part" data-url-ptitle="Color">D0EFFE</span></span>
-          <span class="eurl-group hover:bg-yellow-600/30">/ph/<span class="eurl-part" data-url-ptitle="bgcolor">F5F7F9,128</span>/<span class="eurl-part" data-url-ptitle="fgcolor">000,255</span>/?<span class="eurl-part">text=Hello World</span></span>
-          <span class="eurl-group hover:bg-green-600/30">&<span class="eurl-part">filetype=svg</span></span>
+      <span class="eurl-content" id="eurl-content">
+          <!-- Dynamic content will be injected here by JS -->
       </span>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
         <div class="lg:col-span-5">
 
-            <form>
+            <form id="generator-form" action="/generate" method="GET">
             <div class="grid gap-4">
+                    <!-- Canvas Size Section -->
                     <section class="card bg-indigo-600/30 shadow-sm">
                         <div class="card-body">
                             <header class="md:flex items-center justify-between">
                                 <h2 class="card-title md:flex mb-0">畫布大小</h2>
                                 <div>
                                     <p class="label">Optional</p>
-                                    <input type="checkbox" checked="checked" class="toggle" />
+                                    <input type="checkbox" id="toggle-canvas-size" class="toggle" checked />
                                 </div>
                             </header>
 
-                            <div class="content">
+                            <div class="content" id="content-canvas-size">
                                 <fieldset class="fieldset">
-                                    <!-- <legend class="fieldset-legend">What is your name?</legend> -->
                                     <label class="input w-full">
-                                        <input type="text" placeholder="300" /><span class="label">px</span>
+                                        <input type="number" name="canvas_width" placeholder="Width" class="w-full" /><span class="label">px</span>
                                         x
-                                        <input type="text" placeholder="300" /><span class="label">px</span>
+                                        <input type="number" name="canvas_height" placeholder="Height" class="w-full" /><span class="label">px</span>
                                     </label>
                                 </fieldset>
                             </div>
                         </div>
                     </section>
 
+                    <!-- Edge Background Section -->
                     <section class="card bg-cyan-600/30 shadow-sm">
                         <div class="card-body">
                             <header class="md:flex items-center justify-between">
                                 <h2 class="card-title md:flex mb-0">邊緣背景</h2>
                                 <div>
                                     <p class="label">Optional</p>
-                                    <input type="checkbox" checked="checked" class="toggle" />
+                                    <input type="checkbox" id="toggle-edge-bg" class="toggle" checked />
                                 </div>
                             </header>
 
-                            <div class="content">
+                            <div class="content" id="content-edge-bg">
                                 <fieldset class="fieldset">
                                     <legend class="fieldset-legend">Padding</legend>
                                     <label class="input w-full">
-                                        <input type="text" placeholder="300" /><span class="label">px</span>
+                                        <input type="number" name="bg_padding_w" placeholder="Width" class="w-full" /><span class="label">%</span>
                                         x
-                                        <input type="text" placeholder="300" /><span class="label">px</span>
+                                        <input type="number" name="bg_padding_h" placeholder="Height" class="w-full" /><span class="label">%</span>
                                     </label>
                                 </fieldset>
 
                                 <fieldset class="fieldset">
                                     <legend class="fieldset-legend">Shadow</legend>
-                                    <input type="number" class="input w-full" placeholder="0" />
+                                    <input type="number" name="bg_shadow" class="input w-full" placeholder="0" />
                                     <p class="label">Optional</p>
                                 </fieldset>
 
                                 <fieldset class="fieldset">
                                     <legend class="fieldset-legend">Radius</legend>
-                                    <input type="number" class="input w-full" placeholder="0" />
+                                    <input type="number" name="bg_radius" class="input w-full" placeholder="0" />
                                     <p class="label">Optional</p>
                                 </fieldset>
 
@@ -112,26 +113,26 @@ import TplInput from '../components/TplInput.astro';
                                     <div class="tabs">
                                         <legend class="fieldset-legend mr-6">Background</legend>
                                         <label class="label pr-4">
-                                            <input type="radio" id="bg-color" name="bgcolor-type" class="tab radio" value="color" checked="checked" />
+                                            <input type="radio" name="bg_type" class="tab radio" value="color" checked />
                                             Color
                                         </label>
                                         <div class="tab-content">
-                                            <ColorInput />
+                                            <ColorInput name="bg_color" />
                                         </div>
 
                                         <label class="label pr-4">
-                                            <input type="radio" id="bg-tpl" name="bgcolor-type" class="tab radio" value="tpl" />
+                                            <input type="radio" name="bg_type" class="tab radio" value="tpl" />
                                             Template
                                         </label>
                                         <div class="tab-content">
-                                            <TplInput />
+                                            <TplInput name="bg_tpl" options={pathMap} />
                                         </div>
 
                                         <label class="label">
-                                            <input type="radio" id="bg-none" name="bgcolor-type" class="tab radio" value="" />None
+                                            <input type="radio" name="bg_type" class="tab radio" value="none" />None
                                         </label>
                                         <div class="tab-content">
-                                            <ColorInput disabled />
+                                            <div class="p-2 text-sm opacity-50">Transarent Background</div>
                                         </div>
                                     </div>
                                 </fieldset>
@@ -139,27 +140,27 @@ import TplInput from '../components/TplInput.astro';
                         </div>
                     </section>
 
+                    <!-- Main Content Section -->
                     <section class="card bg-yellow-600/30 shadow-sm">
                         <div class="p-3">
 
-                            <!-- name of each tab group should be unique -->
                             <div class="tabs tabs-lift">
                                 <header class="items-center justify-between mr-4 ml-2 mt-2">
                                     <h2 class="card-title mb-0">主內容</h2>
                                 </header>
 
                                 <label class="tab">
-                                    <input type="radio" name="my_tabs_4" checked="checked" />
+                                    <input type="radio" name="content_tab" checked />
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 me-2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" /></svg>
                                     placeholder
                                 </label>
                                 <div class="tab-content bg-base-100/50 border-base-300 p-3">
-                                    <fieldset class="fieldset">
-                                        <legend class="fieldset-legend">區塊大小</legend>
+                                    <fieldset class="fieldset" id="block-size-fieldset">
+                                        <legend class="fieldset-legend">區塊大小 (Block Size)</legend>
                                         <label class="input w-full">
-                                            <input type="text" placeholder="300" /><span class="label">px</span>
+                                            <input type="number" name="ph_width" placeholder="Width" class="w-full" /><span class="label">px</span>
                                             x
-                                            <input type="text" placeholder="300" /><span class="label">px</span>
+                                            <input type="number" name="ph_height" placeholder="Height" class="w-full" /><span class="label">px</span>
                                         </label>
                                     </fieldset>
 
@@ -167,26 +168,26 @@ import TplInput from '../components/TplInput.astro';
                                         <div class="tabs">
                                             <legend class="fieldset-legend mr-6">Background</legend>
                                             <label class="label pr-4">
-                                                <input type="radio" id="bg-color" name="ph-bgcolor-type" class="tab radio" value="color" checked="checked" />
+                                                <input type="radio" name="ph_bg_type" class="tab radio" value="color" checked />
                                                 Color
                                             </label>
                                             <div class="tab-content">
-                                                <ColorInput />
+                                                <ColorInput name="ph_bg_color" />
                                             </div>
 
                                             <label class="label pr-4">
-                                                <input type="radio" id="bg-tpl" name="ph-bgcolor-type" class="tab radio" value="tpl" />
+                                                <input type="radio" name="ph_bg_type" class="tab radio" value="tpl" />
                                                 Template
                                             </label>
                                             <div class="tab-content">
-                                                <TplInput />
+                                                <TplInput name="ph_bg_tpl" options={pathMap} />
                                             </div>
 
                                             <label class="label">
-                                                <input type="radio" id="bg-none" name="ph-bgcolor-type" class="tab radio" value="" />Default
+                                                <input type="radio" name="ph_bg_type" class="tab radio" value="default" />Default
                                             </label>
                                             <div class="tab-content">
-                                                <ColorInput disabled />
+                                                <div class="p-2 text-sm opacity-50">Default Color</div>
                                             </div>
                                         </div>
                                     </fieldset>
@@ -195,56 +196,41 @@ import TplInput from '../components/TplInput.astro';
                                         <div class="tabs">
                                             <legend class="fieldset-legend mr-6">Foreground Color</legend>
                                             <label class="label pr-4">
-                                                <input type="radio" id="bg-color" name="ph-fgcolor-type" class="tab radio" value="color" checked="checked" />
+                                                <input type="radio" name="ph_fg_type" class="tab radio" value="color" checked />
                                                 Color
                                             </label>
                                             <div class="tab-content">
-                                                <ColorInput />
+                                                <ColorInput name="ph_fg_color" />
                                             </div>
 
                                             <label class="label">
-                                                <input type="radio" id="bg-none" name="ph-fgcolor-type" class="tab radio" value="" />Default
+                                                <input type="radio" name="ph_fg_type" class="tab radio" value="default" />Default
                                             </label>
                                             <div class="tab-content">
-                                                <ColorInput disabled />
+                                                <div class="p-2 text-sm opacity-50">Default Color</div>
                                             </div>
                                         </div>
                                     </fieldset>
 
                                     <fieldset class="fieldset">
                                         <legend class="fieldset-legend">Text</legend>
-                                        <input type="text" class="input w-full" placeholder="" />
+                                        <input type="text" name="text" class="input w-full" placeholder="" />
                                         <p class="label">Optional</p>
                                     </fieldset>
 
                                     <fieldset class="fieldset">
                                         <legend class="fieldset-legend">Font</legend>
-                                        <select class="select w-full">
-                                            <option value="">預設 (Default)</option><optgroup label="圓體"><option value="huninn">jf open 粉圓</option></optgroup><optgroup label="黑體"><option value="noto">Noto Sans TC</option><option value="TaipeiSans">台北黑體 Regular</option><option value="TaipeiSansB">台北黑體 Bold</option></optgroup><optgroup label="手寫體"><option value="JasonHandwriting1">清松手寫體 1</option><option value="JasonHandwriting2">清松手寫體 2</option><option value="JasonHandwriting3">清松手寫體 3</option><option value="JasonHandwriting3p">清松手寫體 3p</option><option value="JasonHandwriting4">清松手寫體 4</option><option value="JasonHandwriting5">清松手寫體 5</option><option value="JasonHandwriting5p">清松手寫體 5p</option><option value="JasonHandwriting6">清松手寫體 6</option><option value="JasonHandwriting6p">清松手寫體 6p</option></optgroup><optgroup label="其他"><option value="lobster">Lobster</option></optgroup>
+                                        <select name="font" class="select w-full">
+                                            <option value="">預設 (Default)</option>
+                                            {Object.entries(fontFileMap).map(([key, value]) => (
+                                                <option value={key}>{key}</option>
+                                            ))}
                                         </select>
                                     <span class="label">Optional</span>
                                     </fieldset>
 
                                 </div>
-
-                                <!-- <label class="tab">
-                                    <input type="radio" name="my_tabs_4" />
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 me-2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" /></svg>
-                                    Code
-                                </label>
-                                <div class="tab-content bg-base-100/50 border-base-300 p-6">
-                                    Tab content 2
-                                </div>
-
-                                <label class="tab">
-                                    <input type="radio" name="my_tabs_4" />
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 me-2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>
-                                    Image
-                                </label>
-                                <div class="tab-content bg-base-100/50 border-base-300 p-6">
-                                    Tab content 3
-                                </div>
-                            </div> -->
+                            </div>
 
                         </div>
                     </section>
@@ -259,12 +245,12 @@ import TplInput from '../components/TplInput.astro';
                             <fieldset class="fieldset">
                                 <legend class="fieldset-legend">Scale</legend>
                                 <label class="input px-0">
-                                    <select class="select rounded-r-none">
-                                        <option selected>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
+                                    <select name="scale" class="select rounded-r-none">
+                                        <option value="1" selected>1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
                                     </select>
                                     <span class="label m-0 -ml-2.5">px</span>
                                 </label>
@@ -273,7 +259,7 @@ import TplInput from '../components/TplInput.astro';
                             <fieldset class="fieldset">
                                 <legend class="fieldset-legend">Login options</legend>
                                 <label class="label">
-                                    <input type="checkbox" class="checkbox" />
+                                    <input type="checkbox" name="debug" value="1" class="checkbox" />
                                     Debug Mode
                                 </label>
                             </fieldset>
@@ -281,12 +267,16 @@ import TplInput from '../components/TplInput.astro';
                             <fieldset class="fieldset">
                                 <legend class="fieldset-legend">輸出格式</legend>
                                 <div class="join">
-                                    <input class="join-item btn" type="radio" name="filetype" value="null" aria-label="預設" checked="checked" />
+                                    <input class="join-item btn" type="radio" name="filetype" value="null" aria-label="預設" checked />
                                     <input class="join-item btn" type="radio" name="filetype" value="svg" aria-label=".svg" />
                                     <input class="join-item btn" type="radio" name="filetype" value="png" aria-label=".png" />
                                     <input class="join-item btn" type="radio" name="filetype" value="ico" aria-label=".ico" />
                                 </div>
                             </fieldset>
+
+                            <noscript>
+                                <button type="submit" class="btn btn-primary w-full mt-4">Generate URL (No JS)</button>
+                            </noscript>
 
                         </div>
                     </section>
@@ -295,23 +285,23 @@ import TplInput from '../components/TplInput.astro';
         </div>
 
         <div class="lg:col-span-7">
-            <div class="sticky top-4 grid gap-4">
+            <div class="sticky top-32 grid gap-4 z-10">
 
                 <section class="mockup-browser border-base-300 border w-full">
                     <div class="mockup-browser-toolbar">
-                        <span class="loading loading-spinner loading-md"></span>
-                        <div class="input w-[65%] p-2">http://localhost:4321/800x500/bg/15/10/4/D0EFFE/ph/F5F7F9,128/000,255/?text=Hello World&filetype=svg</div>
+                        <span id="preview-loading" class="loading loading-spinner loading-md hidden"></span>
+                        <div class="input w-[65%] p-2 overflow-hidden text-ellipsis whitespace-nowrap" id="preview-url-display">...</div>
                         <div class="dropdown dropdown-end">
                         <div tabindex="0" role="button" class="btn m-0">下載▼</div>
                         <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                            <li><a>.svg</a></li>
-                            <li><a>.png</a></li>
-                            <li><a>.ico</a></li>
+                            <li><a id="download-svg" target="_blank" download>.svg</a></li>
+                            <li><a id="download-png" target="_blank" download>.png</a></li>
+                            <li><a id="download-ico" target="_blank" download>.ico</a></li>
                         </ul>
                         </div>
                     </div>
-                    <div class="grid place-content-center p-8 border-t border-base-300 backgroundImg-grid">
-                        <img src="/800x500/bg/15/10/4/D0EFFE/ph/F5F7F9,128/000,255/?text=Hello World&filetype=svg" />
+                    <div class="grid place-content-center p-8 border-t border-base-300 backgroundImg-grid min-h-[300px]">
+                        <img id="preview-image" src="" alt="Preview" class="max-w-full h-auto shadow-lg" />
                     </div>
                 </section>
 
@@ -322,21 +312,15 @@ import TplInput from '../components/TplInput.astro';
                         </header>
                         <!-- name of each tab group should be unique -->
                         <div class="tabs tabs-lift">
-                        <input type="radio" name="embed" class="tab" aria-label="HTML" />
+                        <input type="radio" name="embed" class="tab" aria-label="HTML" checked />
                         <div class="tab-content break-all border-base-300 bg-base-100 p-6">
-                            <pre class="text-wrap break-all">&lt;img src=&quot;http://localhost:4321/800x500/bg/15/10/4/D0EFFE/ph/F5F7F9,128/000,255/?text=Hello World&amp;filetype=svg&quot;&gt;</pre>
+                            <pre class="text-wrap break-all" id="embed-html"></pre>
                         </div>
 
-                        <input type="radio" name="embed" class="tab" aria-label="Markdown" checked="checked" />
+                        <input type="radio" name="embed" class="tab" aria-label="Markdown" />
                         <div class="tab-content break-all border-base-300 bg-base-100 p-6">
-                            <pre class="text-wrap break-all">![Hello World](http://localhost:4321/800x500/bg/15/10/4/D0EFFE/ph/F5F7F9,128/000,255/?text=Hello World&amp;filetype=svg)</pre>
+                            <pre class="text-wrap break-all" id="embed-markdown"></pre>
                         </div>
-
-                        <input type="radio" name="embed" class="tab" aria-label="curl" />
-                        <div class="tab-content break-all border-base-300 bg-base-100 p-6">
-                            <pre class="text-wrap break-all"></pre>
-                        </div>
-
                         </div>
                     </div>
                 </section>
@@ -347,3 +331,323 @@ import TplInput from '../components/TplInput.astro';
 
 </article>
 </Layout>
+
+<script>
+    import { PUBLIC_BASE_URL } from 'astro:env/client';
+
+    // Helper to get element by ID with type safety
+    function getEl<T extends HTMLElement>(id: string): T | null {
+        return document.getElementById(id) as T | null;
+    }
+
+    function getInputs(containerId: string): NodeListOf<HTMLInputElement | HTMLSelectElement> {
+        const container = getEl(containerId);
+        return container ? container.querySelectorAll('input, select') : document.querySelectorAll('should-not-match');
+    }
+
+    const sections = {
+        canvasSize: {
+            toggle: getEl<HTMLInputElement>('toggle-canvas-size'),
+            content: getEl<HTMLElement>('content-canvas-size'),
+            inputs: getInputs('content-canvas-size')
+        },
+        edgeBg: {
+            toggle: getEl<HTMLInputElement>('toggle-edge-bg'),
+            content: getEl<HTMLElement>('content-edge-bg'),
+            inputs: getInputs('content-edge-bg')
+        },
+        blockSize: {
+            fieldset: getEl<HTMLFieldSetElement>('block-size-fieldset'),
+            inputs: getEl<HTMLFieldSetElement>('block-size-fieldset')?.querySelectorAll('input')
+        }
+    };
+
+    const form = getEl<HTMLFormElement>('generator-form');
+    const previewImage = getEl<HTMLImageElement>('preview-image');
+    const previewUrlDisplay = getEl<HTMLElement>('preview-url-display');
+    const eurlContent = getEl<HTMLElement>('eurl-content');
+    const embedHtml = getEl<HTMLElement>('embed-html');
+    const embedMarkdown = getEl<HTMLElement>('embed-markdown');
+    const downloadLinks = {
+        svg: getEl<HTMLAnchorElement>('download-svg'),
+        png: getEl<HTMLAnchorElement>('download-png'),
+        ico: getEl<HTMLAnchorElement>('download-ico')
+    };
+
+    function updateUIState() {
+        // Toggle Canvas Size visibility
+        if (sections.canvasSize.toggle && sections.canvasSize.content) {
+            const isCanvasSizeEnabled = sections.canvasSize.toggle.checked;
+            sections.canvasSize.content.style.display = isCanvasSizeEnabled ? 'block' : 'none';
+
+            // Check if Canvas Size inputs have values
+            let hasCanvasValues = false;
+            if (isCanvasSizeEnabled) {
+                const w = (form?.elements.namedItem('canvas_width') as HTMLInputElement)?.value;
+                const h = (form?.elements.namedItem('canvas_height') as HTMLInputElement)?.value;
+                if (w || h) hasCanvasValues = true;
+            }
+
+            // Disable/Enable Block Size based on Canvas Size usage
+            if (sections.blockSize.fieldset && sections.blockSize.inputs) {
+                // If Canvas Size is enabled AND has values, we disable Block Size
+                // If Canvas Size is disabled OR empty, we enable Block Size
+                const shouldDisableBlockSize = isCanvasSizeEnabled && hasCanvasValues;
+                sections.blockSize.fieldset.disabled = shouldDisableBlockSize;
+                sections.blockSize.fieldset.style.opacity = shouldDisableBlockSize ? '0.5' : '1';
+                
+                if (!shouldDisableBlockSize && sections.blockSize.fieldset.disabled) {
+                     sections.blockSize.fieldset.disabled = false;
+                }
+            }
+        }
+
+        // Toggle Edge Bg visibility
+        if (sections.edgeBg.toggle && sections.edgeBg.content) {
+            const isEdgeBgEnabled = sections.edgeBg.toggle.checked;
+            sections.edgeBg.content.style.display = isEdgeBgEnabled ? 'block' : 'none';
+        }
+    }
+
+    function generateURL() {
+        if (!form) return;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        let urlParts: string[] = [];
+
+        // Helper methods
+        const getColor = (prefix: string) => {
+            const hex = (data[`${prefix}_hex`] as string)?.trim();
+            const alpha = data[`${prefix}_alpha`] as string;
+            if (!hex) return '';
+            if (alpha && alpha !== '255') return `${hex},${alpha}`;
+            return hex;
+        };
+
+        const processSegments = (items: {value: string, title: string}[]) => {
+            // 1. Trim trailing empty values
+            let end = items.length - 1;
+            while (end >= 0 && !items[end].value) {
+                end--;
+            }
+            if (end < 0) return []; // All empty
+
+            // 2. Map up to end, replacing empty with 'null'
+            const result = [];
+            for (let i = 0; i <= end; i++) {
+                const item = items[i];
+                if (item.value) {
+                    result.push(item);
+                } else {
+                    result.push({ value: 'null', title: item.title });
+                }
+            }
+            return result;
+        };
+
+        // 1. Canvas Size
+        let canvasHtml = '';
+        const isCanvasSizeEnabled = sections.canvasSize.toggle?.checked;
+        const canvasW = data.canvas_width as string;
+        const canvasH = data.canvas_height as string;
+        const hasCanvasValues = canvasW || canvasH;
+
+        if (isCanvasSizeEnabled && hasCanvasValues) {
+            let val = '';
+            if (canvasW && canvasH) {
+                 val = `${canvasW}x${canvasH}`;
+            } else if (canvasW) {
+                 val = canvasW;
+            } else if (canvasH) {
+                 val = canvasH;
+            }
+
+            if (val) {
+                 urlParts.push(val);
+                 canvasHtml = `<span class="eurl-group hover:bg-indigo-600/30 inline">/<span class="eurl-part" data-url-ptitle="Canvas Size">${val}</span></span>`;
+            }
+        }
+
+        // 2. Edge Background
+        let edgeBgHtml = '';
+        const isEdgeBgEnabled = sections.edgeBg.toggle?.checked;
+        if (isEdgeBgEnabled) {
+             const pw = (data.bg_padding_w || '') as string;
+             const ph = (data.bg_padding_h || '') as string;
+             let padding = '';
+
+             if (pw && ph) {
+                 padding = (pw === ph) ? pw : `${pw}x${ph}`;
+             } else if (pw) {
+                 padding = pw;
+             } else if (ph) {
+                 padding = `0x${ph}`;
+             }
+             // NOTE: Removed forced default '15' for padding to allow omission
+
+             const shadow = (data.bg_shadow === '0' || data.bg_shadow === '') ? '' : data.bg_shadow as string;
+             const radius = (data.bg_radius === '0' || data.bg_radius === '') ? '' : data.bg_radius as string;
+
+             let color = '';
+             if (data.bg_type === 'color') color = getColor('bg_color');
+             else if (data.bg_type === 'tpl' && data.bg_tpl) color = `tpl(${data.bg_tpl})`;
+
+             // Segments: Padding, Shadow, Radius, Color
+             const segments = [
+                 { value: padding, title: 'Padding' },
+                 { value: shadow, title: 'Shadow' },
+                 { value: radius, title: 'Radius' },
+                 { value: color, title: 'Color' }
+             ];
+
+             const processed = processSegments(segments);
+
+             if (processed.length > 0) {
+                 urlParts.push('bg');
+                 processed.forEach(p => urlParts.push(p.value));
+
+                 // Display HTML
+                 edgeBgHtml = `<span class="eurl-group hover:bg-cyan-600/30">/bg`;
+                 processed.forEach(p => {
+                     // Check if value includes standard default, maybe warn or something? No, user wants clean URL.
+                     edgeBgHtml += `/<span class="eurl-part" data-url-ptitle="${p.title}">${p.value}</span>`;
+                 });
+                 edgeBgHtml += `</span>`;
+             }
+        }
+
+        // 3. Main Content (Placeholder)
+        let phHtml = '';
+        const phSegments: {value: string, title: string}[] = [];
+
+        // Size
+        if (!(isCanvasSizeEnabled && hasCanvasValues)) {
+            const w = data.ph_width as string;
+            const h = data.ph_height as string;
+            let val = '';
+            
+            if (w && h) val = `${w}x${h}`;
+            else if (w) val = w;
+            else if (h) val = h;
+            
+            phSegments.push({ value: val, title: 'Block Size' });
+        }
+
+        // BG
+        let phBg = '';
+        if (data.ph_bg_type === 'color') phBg = getColor('ph_bg_color');
+        else if (data.ph_bg_type === 'tpl') phBg = `tpl(${data.ph_bg_tpl})`;
+        // If default/empty, phBg is ''.
+
+        phSegments.push({ value: phBg, title: 'bgcolor' });
+
+        // FG
+        let phFg = '';
+        if (data.ph_fg_type === 'color') phFg = getColor('ph_fg_color');
+
+        phSegments.push({ value: phFg, title: 'fgcolor' });
+
+        const processedPh = processSegments(phSegments);
+
+        urlParts.push('ph'); // Always present? Yes, core feature.
+        processedPh.forEach(p => urlParts.push(p.value));
+
+        phHtml = `<span class="eurl-group hover:bg-yellow-600/30">/ph`;
+        processedPh.forEach(p => {
+            phHtml += `/<span class="eurl-part" data-url-ptitle="${p.title}">${p.value}</span>`;
+        });
+
+        // Query Params
+        const params = new URLSearchParams();
+        if (data.text) params.append('text', data.text as string);
+        if (data.font) params.append('font', data.font as string);
+        if (data.scale && data.scale !== '1') params.append('scale', data.scale as string);
+        if (data.debug) params.append('debug', '1');
+
+        let filetype = data.filetype as string;
+        if (filetype && filetype !== 'null') {
+             params.append('filetype', filetype);
+        }
+
+        const queryString = params.toString();
+        if (queryString) {
+            phHtml += `/?<span class="eurl-part">${queryString.replace(/&/g, '&<wbr>')}</span>`;
+        }
+        phHtml += `</span>`;
+
+
+        const fullPath = "/" + urlParts.join("/") + (queryString ? `/?${queryString}` : "");
+        const fullUrl = `${PUBLIC_BASE_URL}${fullPath}`;
+
+        // Update EURL Display
+        if (eurlContent) {
+           let html = '';
+           html += canvasHtml;
+           html += edgeBgHtml;
+           html += phHtml;
+           eurlContent.innerHTML = html;
+        }
+
+        // Update Preview (Force SVG)
+        const previewParams = new URLSearchParams(params);
+        previewParams.set('filetype', 'svg');
+        const previewUrl = `/${urlParts.join("/")}/?${previewParams.toString()}`;
+
+        if (previewImage) previewImage.src = previewUrl;
+        if (previewUrlDisplay) previewUrlDisplay.textContent = fullUrl;
+
+        // Update Embeds
+        if (embedHtml) embedHtml.innerText = `<img src="${fullUrl}">`;
+        if (embedMarkdown) embedMarkdown.innerText = `![${data.text || 'Image'}](${fullUrl})`;
+
+        // Update Downloads
+        if (downloadLinks.svg) downloadLinks.svg.href = fullUrl.replace(/filetype=[^&]+/, 'filetype=svg').replace(/\?$/, '') + (fullUrl.includes('?') ? '&' : '?') + 'filetype=svg';
+        if (downloadLinks.png) downloadLinks.png.href = fullUrl.replace(/filetype=[^&]+/, 'filetype=png').replace(/\?$/, '') + (fullUrl.includes('?') ? '&' : '?') + 'filetype=png';
+        if (downloadLinks.ico) downloadLinks.ico.href = fullUrl.replace(/filetype=[^&]+/, 'filetype=ico').replace(/\?$/, '') + (fullUrl.includes('?') ? '&' : '?') + 'filetype=ico';
+    }
+
+    // Event Listeners
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function runPending() {
+       if (debounceTimer) {
+           clearTimeout(debounceTimer);
+           debounceTimer = null;
+       }
+       generateURL();
+    }
+
+    function scheduleRun() {
+       if (debounceTimer) clearTimeout(debounceTimer);
+       debounceTimer = setTimeout(() => {
+           generateURL();
+           debounceTimer = null;
+       }, 1000);
+    }
+
+    if (form) {
+        form.addEventListener('change', runPending);
+        form.addEventListener('input', scheduleRun);
+        form.addEventListener('input', updateUIState); // Instant UI updates
+    }
+
+    if (sections.canvasSize.toggle) {
+        sections.canvasSize.toggle.addEventListener('change', () => {
+            updateUIState();
+            runPending();
+        });
+    }
+
+    if (sections.edgeBg.toggle) {
+        sections.edgeBg.toggle.addEventListener('change', () => {
+            updateUIState();
+            runPending();
+        });
+    }
+
+    // Initialize
+    updateUIState();
+    generateURL();
+
+</script>

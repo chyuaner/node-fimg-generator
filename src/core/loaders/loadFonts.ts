@@ -1,7 +1,7 @@
 import { AssetLoader } from "./AssetLoader";
 
 // --- 內建字型簡稱 對應表 ---
-const fontFileMap = {
+export const fontFileMap = {
   huninn: 'jf-openhuninn-2.1.ttf',
   noto: 'NotoSansTC-Medium.ttf',
   TaipeiSans: 'TaipeiSansTCBeta-Regular.ttf',

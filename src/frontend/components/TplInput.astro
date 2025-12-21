@@ -1,19 +1,16 @@
 ---
-const { } = Astro.props;
+interface Props {
+    name?: string;
+    options?: Record<string, string>;
+    disabled?: boolean;
+}
+
+const { name, options = {}, disabled = false } = Astro.props;
 ---
 
-<select class="select w-full">
-    <option>adwaita-d</option>
-    <option>adwaita-l</option>
-    <option>amber-d</option>
-    <option>amber-l</option>
-    <option>blobs-l</option>
-    <option>drool-d</option>
-    <option>drool-l</option>
-    <option>fold-d</option>
-    <option>fold-l</option>
-    <option>morphogenesis-d</option>
-    <option>morphogenesis-l</option>
-    <option>symbolic-d</option>
-    <option>symbolic-l</option>
+<select name={name} class="select w-full" {disabled}>
+    <option value="" disabled selected>Select a template</option>
+    {Object.keys(options).map(key => (
+        <option value={key}>{key}</option>
+    ))}
 </select>

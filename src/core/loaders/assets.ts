@@ -1,5 +1,5 @@
 // 為 pathMap 加上明確的型別
-const pathMap: Record<string, string> = {
+export const pathMap: Record<string, string> = {
     'adwaita-d': '/background/adwaita-d.jpg',
     'adwaita-l': '/background/adwaita-l.jpg',
     'amber-d': '/background/amber-d.jpg',
