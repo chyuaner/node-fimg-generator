@@ -35,7 +35,9 @@ export function initGenerator() {
 
     function getInputs(containerId: string): NodeListOf<HTMLInputElement | HTMLSelectElement> {
         const container = getEl(containerId);
-        return container ? container.querySelectorAll('input, select') : document.querySelectorAll('should-not-match');
+        return (container 
+            ? container.querySelectorAll('input, select') 
+            : document.querySelectorAll('should-not-match')) as unknown as NodeListOf<HTMLInputElement | HTMLSelectElement>;
     }
 
     const sections = {

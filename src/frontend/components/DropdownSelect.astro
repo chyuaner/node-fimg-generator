@@ -31,7 +31,7 @@ const selectedOption = options.find(o => o.value === defaultValue);
 const displayLabel = selectedOption ? selectedOption.label : placeholder;
 ---
 
-<div class={`dropdown dropdown-bottom w-full dropdown-select ${className} group`} id={id} data-name={name} data-placeholder={placeholder}>
+<dropdown-select class={`block dropdown dropdown-bottom w-full dropdown-select ${className} group`} id={id} data-name={name} data-placeholder={placeholder}>
   <!-- Native Select: Visible by default, hidden when JS is active -->
   <select 
     name={name} 
@@ -76,20 +76,18 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
       </ul>
     )}
   </div>
-</div>
+</dropdown-select>
 
 <script>
-  function initDropdowns() {
-    document.querySelectorAll('.dropdown-select:not([data-dropdown-initialized])').forEach(dropdown => {
-      dropdown.setAttribute('data-dropdown-initialized', 'true');
-      
+  class DropdownSelect extends HTMLElement {
+    connectedCallback() {
       // Enable Custom UI by adding class
-      dropdown.classList.add('is-js');
+      this.classList.add('is-js');
 
-      const nativeSelect = dropdown.querySelector('.native-select') as HTMLSelectElement;
-      const label = dropdown.querySelector('.selected-label') as HTMLElement;
-      const selectedImg = dropdown.querySelector('.selected-img') as HTMLImageElement;
-      const buttons = dropdown.querySelectorAll('ul button') as NodeListOf<HTMLButtonElement>;
+      const nativeSelect = this.querySelector('.native-select') as HTMLSelectElement;
+      const label = this.querySelector('.selected-label') as HTMLElement;
+      const selectedImg = this.querySelector('.selected-img') as HTMLImageElement;
+      const buttons = this.querySelectorAll('ul button') as NodeListOf<HTMLButtonElement>;
 
       const updateUI = (val: string) => {
         const match = Array.from(buttons).find(b => b.dataset.value === val);
@@ -107,7 +105,7 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
             }
           }
         } else if (!val && label) {
-           label.textContent = dropdown.getAttribute('data-placeholder') || 'Select option...';
+           label.textContent = this.getAttribute('data-placeholder') || 'Select option...';
            if (selectedImg) selectedImg.classList.add('hidden');
         }
       };
@@ -139,14 +137,12 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
 
       // Initial sync (in case it was pre-filled)
       updateUI(nativeSelect.value);
-    });
+    }
   }
 
-  // Initialize on load
-  initDropdowns();
-  
-  // Re-init on Swup page transitions
-  document.addEventListener('swup:page:view', initDropdowns);
+  if (!customElements.get('dropdown-select')) {
+    customElements.define('dropdown-select', DropdownSelect);
+  }
 </script>
 
 <style>
