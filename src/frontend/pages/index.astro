@@ -52,7 +52,7 @@ import { pathMap } from '../../core/loaders/assets';
                                 <h2 class="card-title md:flex mb-0">畫布大小</h2>
                                 <div>
                                     <p class="label">Optional</p>
-                                    <input type="checkbox" id="toggle-canvas-size" class="toggle" checked />
+                                    <input type="checkbox" id="toggle-canvas-size" class="toggle" />
                                 </div>
                             </header>
 
@@ -75,7 +75,7 @@ import { pathMap } from '../../core/loaders/assets';
                                 <h2 class="card-title md:flex mb-0">邊緣背景</h2>
                                 <div>
                                     <p class="label">Optional</p>
-                                    <input type="checkbox" id="toggle-edge-bg" class="toggle" checked />
+                                    <input type="checkbox" id="toggle-edge-bg" class="toggle" />
                                 </div>
                             </header>
 
@@ -529,7 +529,7 @@ import { pathMap } from '../../core/loaders/assets';
         // BG
         let phBg = '';
         if (data.ph_bg_type === 'color') phBg = getColor('ph_bg_color');
-        else if (data.ph_bg_type === 'tpl') phBg = `tpl(${data.ph_bg_tpl})`;
+        else if (data.ph_bg_type === 'tpl' && data.ph_bg_tpl) phBg = `tpl(${data.ph_bg_tpl})`;
         // If default/empty, phBg is ''.
 
         phSegments.push({ value: phBg, title: 'bgcolor' });
