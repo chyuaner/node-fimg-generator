@@ -356,6 +356,7 @@ import { pathMap } from '../../core/loaders/assets';
 
     const form = getEl<HTMLFormElement>('generator-form');
     const previewImage = getEl<HTMLImageElement>('preview-image');
+    const previewLoading = getEl<HTMLElement>('preview-loading');
     const previewUrlDisplay = getEl<HTMLElement>('preview-url-display');
     const eurlContent = getEl<HTMLElement>('eurl-content');
     const embedHtml = getEl<HTMLElement>('embed-html');
@@ -586,7 +587,12 @@ import { pathMap } from '../../core/loaders/assets';
         previewParams.set('filetype', 'svg');
         const previewUrl = `/${urlParts.join("/")}/?${previewParams.toString()}`;
 
-        if (previewImage) previewImage.src = previewUrl;
+        if (previewImage) {
+            if (previewImage.src !== previewUrl) {
+                previewLoading?.classList.remove('hidden');
+                previewImage.src = previewUrl;
+            }
+        }
         if (previewUrlDisplay) previewUrlDisplay.textContent = fullUrl;
 
         // Update Embeds
@@ -597,6 +603,16 @@ import { pathMap } from '../../core/loaders/assets';
         if (downloadLinks.svg) downloadLinks.svg.href = fullPath.replace(/filetype=[^&]+/, 'filetype=svg').replace(/\?$/, '') + (fullPath.includes('?') ? '&' : '?') + 'filetype=svg';
         if (downloadLinks.png) downloadLinks.png.href = fullPath.replace(/filetype=[^&]+/, 'filetype=png').replace(/\?$/, '') + (fullPath.includes('?') ? '&' : '?') + 'filetype=png';
         if (downloadLinks.ico) downloadLinks.ico.href = fullPath.replace(/filetype=[^&]+/, 'filetype=ico').replace(/\?$/, '') + (fullPath.includes('?') ? '&' : '?') + 'filetype=ico';
+    }
+
+    // Hide loader when image stays loaded or errors
+    if (previewImage) {
+        previewImage.addEventListener('load', () => {
+            previewLoading?.classList.add('hidden');
+        });
+        previewImage.addEventListener('error', () => {
+            previewLoading?.classList.add('hidden');
+        });
     }
 
     // Event Listeners
@@ -619,9 +635,16 @@ import { pathMap } from '../../core/loaders/assets';
     }
 
     if (form) {
-        form.addEventListener('change', runPending);
-        form.addEventListener('input', scheduleRun);
-        form.addEventListener('input', updateUIState); // Instant UI updates
+        const showLoader = () => previewLoading?.classList.remove('hidden');
+        form.addEventListener('change', () => {
+            showLoader();
+            runPending();
+        });
+        form.addEventListener('input', () => {
+            showLoader();
+            scheduleRun();
+            updateUIState();
+        });
     }
 
     if (sections.canvasSize.toggle) {
