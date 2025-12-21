@@ -3,16 +3,16 @@ layout: ../layouts/MdLayout.astro
 title: 關於本站
 ---
 <portal-gate to="end:head">
-  <style>{`  
-.eurl-inline { 
-  display: block!important; 
+  <style>{`
+.eurl-inline {
+  display: block!important;
   .eurl-content { margin-left: 0!important; }
   .eurl-base, .eurl-content { display: inline-block!important;}
   .eurl-group { margin: 0 0.1em!important; padding-left: 0.1em!important; padding-right: 0.1em!important; }
   /* .eurl-group { margin: 0 0; padding-left: 0; padding-right: 0; } */
   .eurl-part { margin: 0!important; }
 }
-  `}</style> 
+  `}</style>
 </portal-gate>
 import { PUBLIC_BASE_URL } from 'astro:env/client';
 
@@ -137,6 +137,8 @@ import { PUBLIC_BASE_URL } from 'astro:env/client';
 
 ## 相容 Fake images please? 用法範例
 
+<div class="text-wrap break-all">
+
 * {PUBLIC_BASE_URL}/300/
 * {PUBLIC_BASE_URL}/250x100/
 * {PUBLIC_BASE_URL}/250x100/ff0000/
@@ -146,6 +148,8 @@ import { PUBLIC_BASE_URL } from 'astro:env/client';
 * {PUBLIC_BASE_URL}/200x100/?retina=1&text=こんにちは&font=noto
 * {PUBLIC_BASE_URL}/350x200/?text=World&font=lobster
 * {PUBLIC_BASE_URL}/440x230/ff0000,128/000,255/?retina=1&text=Problem?%20%3C%3Apepw%3A989410572514758676%3E
+
+</div>
 
 </article>
 </div>
