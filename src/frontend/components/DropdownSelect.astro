@@ -16,11 +16,11 @@ interface Props {
   disabled?: boolean;
 }
 
-const { 
-  name, 
-  id = `dropdown-${name}`, 
-  options, 
-  defaultValue = '', 
+const {
+  name,
+  id = `dropdown-${name}`,
+  options,
+  defaultValue = '',
   placeholder = 'Select option...',
   class: className = '',
   disabled = false
@@ -33,9 +33,9 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
 
 <dropdown-select class={`block dropdown dropdown-bottom w-full dropdown-select ${className} group`} id={id} data-name={name} data-placeholder={placeholder}>
   <!-- Native Select: Visible by default, hidden when JS is active -->
-  <select 
-    name={name} 
-    class="select select-bordered w-full native-select group-[.is-js]:hidden" 
+  <select
+    name={name}
+    class="select select-bordered w-full native-select group-[.is-js]:hidden"
     {disabled}
   >
     {options.map(opt => (
@@ -47,9 +47,9 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
 
   <!-- Custom UI: Hidden by default, shown when JS is active -->
   <div class="custom-ui hidden group-[.is-js]:block">
-    <div 
-      tabindex={disabled ? -1 : 0} 
-      role="button" 
+    <div
+      tabindex={disabled ? -1 : 0}
+      role="button"
       class={`select select-bordered flex items-center justify-between w-full h-auto py-2 min-h-[38px] ${disabled ? 'select-disabled pointer-events-none opacity-50' : ''}`}
     >
       <div class="flex items-center gap-3 overflow-hidden">
@@ -93,7 +93,7 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
         const match = Array.from(buttons).find(b => b.dataset.value === val);
         if (match) {
           if (label) label.textContent = match.dataset.label || '';
-          
+
           const optionImg = match.querySelector('.option-img') as HTMLImageElement;
           if (selectedImg) {
             if (optionImg && optionImg.src) {
@@ -114,7 +114,7 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           const val = btn.dataset.value || '';
-          
+
           if (nativeSelect.value !== val) {
             nativeSelect.value = val;
             updateUI(val);
