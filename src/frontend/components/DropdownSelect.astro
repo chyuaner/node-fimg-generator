@@ -50,7 +50,7 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
     <div 
       tabindex={disabled ? -1 : 0} 
       role="button" 
-      class={`select select-bordered flex items-center justify-between w-full h-auto py-2 min-h-[3rem] ${disabled ? 'select-disabled pointer-events-none opacity-50' : ''}`}
+      class={`select select-bordered flex items-center justify-between w-full h-auto py-2 min-h-[38px] ${disabled ? 'select-disabled pointer-events-none opacity-50' : ''}`}
     >
       <span class="selected-label truncate">{displayLabel}</span>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50 shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -58,7 +58,7 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
       </svg>
     </div>
     {!disabled && (
-      <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[100] w-full p-2 shadow-xl border border-base-300 max-h-80 overflow-y-auto mt-1">
+      <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[100] w-full p-2 shadow-xl border border-base-300 max-h-160 overflow-y-auto mt-1">
         {options.map(opt => (
           <li>
             <button type="button" class="flex items-center gap-3 text-left w-full hover:bg-base-200 focus:bg-primary focus:text-primary-content" data-value={opt.value} data-label={opt.label}>
