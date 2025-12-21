@@ -39,19 +39,53 @@ html, body {
 }
 
 /* Custom tab styles for radio + label + tab-content structure */
-/* Only target tabs that use .radio class (not DaisyUI native tabs) */
+/* Only target tabs that use .tab.radio structure */
+
+.tabs label:has(.tab.radio) {
+  @apply cursor-pointer transition-all duration-200;
+}
+
+.tabs label:has(.tab.radio):active {
+  @apply scale-95 opacity-80;
+}
 
 /* Hide tab-content that follows a label containing .tab.radio */
+/* We use opacity and height:0 instead of display:none to allow transitions if needed,
+   but since the DOM structure is interleaved, it's safer to keep display:none for layout
+   and use @keyframes for the 'entry' animation. */
 .tabs label:has(.tab.radio) ~ .tab-content {
   display: none;
 }
 
 /* Show tab-content immediately after a label that contains a checked .tab.radio */
-.tabs label:has(.tab.radio:checked) + .tab-content {
-  display: block;
+.tabs label:has(.tab.radio:checked) + .tab-content,
+.tabs-lift label.tab:has(input:checked) + .tab-content {
+  display: block !important;
+  animation: tab-content-slide 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 /* Hide tab-content when a later radio in a later label is checked */
 .tabs label:has(.tab.radio:checked) ~ label:has(.tab.radio) ~ .tab-content {
-  display: none;
+  display: none !important;
+}
+
+@keyframes tab-content-slide {
+  from {
+    opacity: 0;
+    transform: translateX(1.25rem);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+/* Enhance DaisyUI tab appearance */
+.tabs-lift .tab {
+    @apply transition-all duration-300;
+}
+.tabs-lift .tab:has(input:checked) {
+    @apply font-bold;
 }
