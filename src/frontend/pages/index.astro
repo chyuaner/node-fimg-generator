@@ -285,7 +285,7 @@ import { pathMap } from '../../core/loaders/assets';
         </div>
 
         <div class="lg:col-span-7">
-            <div class="sticky top-32 grid gap-4 z-10">
+            <div class="sticky top-28 grid gap-4 z-10">
 
                 <section class="mockup-browser border-base-300 border w-full">
                     <div class="mockup-browser-toolbar">
@@ -395,7 +395,7 @@ import { pathMap } from '../../core/loaders/assets';
                 const shouldDisableBlockSize = isCanvasSizeEnabled && hasCanvasValues;
                 sections.blockSize.fieldset.disabled = shouldDisableBlockSize;
                 sections.blockSize.fieldset.style.opacity = shouldDisableBlockSize ? '0.5' : '1';
-                
+
                 if (!shouldDisableBlockSize && sections.blockSize.fieldset.disabled) {
                      sections.blockSize.fieldset.disabled = false;
                 }
@@ -526,11 +526,11 @@ import { pathMap } from '../../core/loaders/assets';
             const w = data.ph_width as string;
             const h = data.ph_height as string;
             let val = '';
-            
+
             if (w && h) val = `${w}x${h}`;
             else if (w) val = w;
             else if (h) val = h;
-            
+
             phSegments.push({ value: val, title: 'Block Size' });
         }
 
