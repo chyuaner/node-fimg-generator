@@ -110,3 +110,66 @@ html, body {
   overflow: hidden;
   min-height: 0;
 }
+
+/* Dropdown Menu Coverage & Stacking Fixes */
+
+/* 1. Prevent containers from clipping the menu content */
+.card, 
+.card-body, 
+.card > div, 
+.fieldset, 
+.tabs, 
+.tabs-lift, 
+.tab-content, 
+.collapsible-content,
+.content {
+  overflow: visible !important;
+}
+
+/* Specific fix for collapsible animation rows - visible only when open */
+.collapsible-content.is-open > div {
+  overflow: visible !important;
+}
+
+/* 2. Stacking Context & Layering Hierarchy */
+
+/* LEVEL 1: Normal cards (Bottom) */
+.card { z-index: 1; }
+.card-body { position: relative; }
+
+/* LEVEL 2: The sticky live preview header (Middle-Top) 
+   Must be higher than any active card (100) but lower than menus (1100) */
+.eurl {
+  position: sticky !important;
+  top: 0;
+  z-index: 500 !important;
+}
+
+/* LEVEL 3: Lifting the active container to overlap neighboring siblings */
+:is(.card, .card-body, .fieldset, .tabs, .tabs-lift, .tab-content):has(dropdown-select:focus-within) {
+  z-index: 100 !important;
+  position: relative;
+}
+
+/* LEVEL 4: Individual dropdown components */
+dropdown-select {
+  position: relative;
+  display: block;
+}
+
+/* LEVEL 5: The actual dropdown menu (Highest) */
+dropdown-select .dropdown-content {
+  z-index: 1100 !important;
+}
+
+/* Internal focus state for the select wrapper */
+dropdown-select:focus-within {
+  z-index: 1000 !important;
+}
+
+/* Support for DaisyUI animated tabs */
+.tabs label:has(.tab.radio:checked) + .tab-content,
+.tabs-lift label.tab:has(input:checked) + .tab-content {
+  position: relative;
+  z-index: 10;
+}
