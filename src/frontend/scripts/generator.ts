@@ -72,7 +72,7 @@ export function initGenerator() {
     function updateUIState() {
         if (sections.canvasSize.toggle && sections.canvasSize.content) {
             const isCanvasSizeEnabled = sections.canvasSize.toggle.checked;
-            sections.canvasSize.content.style.display = isCanvasSizeEnabled ? 'block' : 'none';
+            sections.canvasSize.content.classList.toggle('is-open', isCanvasSizeEnabled);
 
             let hasCanvasValues = false;
             if (isCanvasSizeEnabled) {
@@ -94,7 +94,7 @@ export function initGenerator() {
 
         if (sections.edgeBg.toggle && sections.edgeBg.content) {
             const isEdgeBgEnabled = sections.edgeBg.toggle.checked;
-            sections.edgeBg.content.style.display = isEdgeBgEnabled ? 'block' : 'none';
+            sections.edgeBg.content.classList.toggle('is-open', isEdgeBgEnabled);
         }
     }
 

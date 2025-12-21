@@ -89,3 +89,24 @@ html, body {
 .tabs-lift .tab:has(input:checked) {
     @apply font-bold;
 }
+
+/* Collapsible Section Animation */
+.collapsible-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.collapsible-content.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  @apply pt-4; /* Add spacing when open */
+}
+
+.collapsible-content > div {
+  overflow: hidden;
+  min-height: 0;
+}
