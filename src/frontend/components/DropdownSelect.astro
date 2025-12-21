@@ -1,0 +1,117 @@
+---
+interface Option {
+  value: string;
+  label: string;
+  image?: string;
+  description?: string;
+}
+
+interface Props {
+  name: string;
+  id?: string;
+  options: Option[];
+  defaultValue?: string;
+  placeholder?: string;
+  class?: string;
+  disabled?: boolean;
+}
+
+const { 
+  name, 
+  id = `dropdown-${name}`, 
+  options, 
+  defaultValue = '', 
+  placeholder = 'Select option...',
+  class: className = '',
+  disabled = false
+} = Astro.props;
+
+// Find the initial label
+const selectedOption = options.find(o => o.value === defaultValue);
+const displayLabel = selectedOption ? selectedOption.label : placeholder;
+---
+
+<div class={`dropdown dropdown-bottom w-full dropdown-select ${className}`} id={id} data-name={name}>
+  <div 
+    tabindex={disabled ? -1 : 0} 
+    role="button" 
+    class={`select select-bordered flex items-center justify-between w-full h-auto py-2 min-h-[3rem] ${disabled ? 'select-disabled pointer-events-none opacity-50' : ''}`}
+  >
+    <span class="selected-label truncate">{displayLabel}</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50 shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+  {!disabled && (
+    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[100] w-full p-2 shadow-xl border border-base-300 max-h-80 overflow-y-auto mt-1">
+      {options.map(opt => (
+        <li>
+          <button type="button" class="flex items-center gap-3 text-left w-full hover:bg-base-200 focus:bg-primary focus:text-primary-content" data-value={opt.value} data-label={opt.label}>
+            {opt.image && <img src={opt.image} alt="" class="w-10 h-10 object-cover rounded bg-base-200 shrink-0" />}
+            <div class="flex flex-col overflow-hidden">
+              <span class="font-medium truncate">{opt.label}</span>
+              {opt.description && <span class="text-xs opacity-60 truncate">{opt.description}</span>}
+            </div>
+          </button>
+        </li>
+      ))}
+    </ul>
+  )}
+  <input type="hidden" name={name} value={defaultValue} class="dropdown-hidden-input" />
+</div>
+
+<script>
+  function initDropdowns() {
+    document.querySelectorAll('.dropdown-select:not([data-dropdown-initialized])').forEach(dropdown => {
+      dropdown.setAttribute('data-dropdown-initialized', 'true');
+      const hiddenInput = dropdown.querySelector('.dropdown-hidden-input') as HTMLInputElement;
+      const label = dropdown.querySelector('.selected-label') as HTMLElement;
+      const buttons = dropdown.querySelectorAll('ul button') as NodeListOf<HTMLButtonElement>;
+
+      const updateLabel = (val: string) => {
+        const match = Array.from(buttons).find(b => b.dataset.value === val);
+        if (match && label) {
+          label.textContent = match.dataset.label || '';
+        }
+      };
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const val = btn.dataset.value || '';
+          
+          if (hiddenInput.value !== val) {
+            hiddenInput.value = val;
+            updateLabel(val);
+            // Dispatch events so the form knows something changed
+            hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+
+          // Close dropdown
+          if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+          }
+        });
+      });
+
+      // Handle programmatic changes (e.g. from generator defaults)
+      hiddenInput.addEventListener('change', () => {
+         updateLabel(hiddenInput.value);
+      });
+    });
+  }
+
+  // Initialize on load
+  initDropdowns();
+  
+  // Re-init on Swup page transitions
+  document.addEventListener('swup:page:view', initDropdowns);
+</script>
+
+<style>
+  .dropdown-select .select {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+</style>

@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import "../styles/eurl.css";
 import ColorInput from '../components/ColorInput.astro';
 import TplInput from '../components/TplInput.astro';
+import DropdownSelect from '../components/DropdownSelect.astro';
 import { fontFileMap } from '../../core/loaders/loadFonts';
 import { pathMap } from '../../core/loaders/assets';
 ---
@@ -212,12 +213,14 @@ import { pathMap } from '../../core/loaders/assets';
 
                                     <fieldset class="fieldset">
                                         <legend class="fieldset-legend">Font</legend>
-                                        <select name="font" class="select w-full">
-                                            <option value="">預設 (Default)</option>
-                                            {Object.entries(fontFileMap).map(([key, value]) => (
-                                                <option value={key}>{key}</option>
-                                            ))}
-                                        </select>
+                                        <DropdownSelect 
+                                            name="font" 
+                                            options={[
+                                                { value: '', label: '預設 (Default)' },
+                                                ...Object.keys(fontFileMap).map(key => ({ value: key, label: key }))
+                                            ]}
+                                            placeholder="預設 (Default)"
+                                        />
                                     <span class="label">Optional</span>
                                     </fieldset>
 
@@ -236,16 +239,21 @@ import { pathMap } from '../../core/loaders/assets';
 
                             <fieldset class="fieldset">
                                 <legend class="fieldset-legend">Scale</legend>
-                                <label class="input px-0">
-                                    <select name="scale" class="select rounded-r-none">
-                                        <option value="1" selected>1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                    <span class="label m-0 -ml-2.5">px</span>
-                                </label>
+                                <div class="join w-full">
+                                    <DropdownSelect 
+                                        name="scale" 
+                                        class="join-item flex-1"
+                                        defaultValue="1"
+                                        options={[
+                                            { value: '1', label: '1' },
+                                            { value: '2', label: '2' },
+                                            { value: '3', label: '3' },
+                                            { value: '4', label: '4' },
+                                            { value: '5', label: '5' },
+                                        ]}
+                                    />
+                                    <span class="join-item btn no-animation pointer-events-none">px</span>
+                                </div>
                             </fieldset>
 
                             <fieldset class="fieldset">

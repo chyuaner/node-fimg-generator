@@ -346,6 +346,9 @@ export function initGenerator() {
             const input = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement;
             if (input && val !== undefined && val !== '') {
                 input.value = val;
+                
+                // Trigger change event so any custom component listeners can update their UI
+                input.dispatchEvent(new Event('change', { bubbles: true }));
             }
         }
     }
