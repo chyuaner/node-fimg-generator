@@ -594,9 +594,9 @@ import { pathMap } from '../../core/loaders/assets';
         if (embedMarkdown) embedMarkdown.innerText = `![${data.text || 'Image'}](${fullUrl})`;
 
         // Update Downloads
-        if (downloadLinks.svg) downloadLinks.svg.href = fullUrl.replace(/filetype=[^&]+/, 'filetype=svg').replace(/\?$/, '') + (fullUrl.includes('?') ? '&' : '?') + 'filetype=svg';
-        if (downloadLinks.png) downloadLinks.png.href = fullUrl.replace(/filetype=[^&]+/, 'filetype=png').replace(/\?$/, '') + (fullUrl.includes('?') ? '&' : '?') + 'filetype=png';
-        if (downloadLinks.ico) downloadLinks.ico.href = fullUrl.replace(/filetype=[^&]+/, 'filetype=ico').replace(/\?$/, '') + (fullUrl.includes('?') ? '&' : '?') + 'filetype=ico';
+        if (downloadLinks.svg) downloadLinks.svg.href = fullPath.replace(/filetype=[^&]+/, 'filetype=svg').replace(/\?$/, '') + (fullPath.includes('?') ? '&' : '?') + 'filetype=svg';
+        if (downloadLinks.png) downloadLinks.png.href = fullPath.replace(/filetype=[^&]+/, 'filetype=png').replace(/\?$/, '') + (fullPath.includes('?') ? '&' : '?') + 'filetype=png';
+        if (downloadLinks.ico) downloadLinks.ico.href = fullPath.replace(/filetype=[^&]+/, 'filetype=ico').replace(/\?$/, '') + (fullPath.includes('?') ? '&' : '?') + 'filetype=ico';
     }
 
     // Event Listeners
