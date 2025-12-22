@@ -69,6 +69,25 @@ export function initGenerator() {
         ico: getEl<HTMLAnchorElement>('download-ico')
     };
 
+    // Dynamic Sticky Top Calculation
+    const eurlSticky = getEl<HTMLElement>('eurl-sticky');
+    const previewSticky = getEl<HTMLElement>('preview-sticky-container');
+
+    if (eurlSticky && previewSticky) {
+        const updateStickyTop = () => {
+            const height = eurlSticky.offsetHeight;
+            // Add a small gap (8px) for better visual spacing, or just use height
+            previewSticky.style.top = `${height + 12}px`;
+        };
+
+        const resizeObserver = new ResizeObserver(() => {
+            updateStickyTop();
+        });
+
+        resizeObserver.observe(eurlSticky);
+        updateStickyTop(); // Initial call
+    }
+
     function updateUIState() {
         if (sections.canvasSize.toggle && sections.canvasSize.content) {
             const isCanvasSizeEnabled = sections.canvasSize.toggle.checked;

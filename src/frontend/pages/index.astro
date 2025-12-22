@@ -65,7 +65,7 @@ const tplOptions = Object.entries(pathMap).map(([key, value]) => ({
     </div>
 
     <!-- eurl section -->
-    <div class="sticky top-0 eurl mb-6 p-2 rounded-xl w-full whitespace-nowrap bg-neutral text-neutral-content z-20 shadow-lg">
+    <div id="eurl-sticky" class="sticky top-0 eurl mb-6 p-2 rounded-xl w-full whitespace-nowrap bg-neutral text-neutral-content z-20 shadow-lg">
       <span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
       <span class="eurl-content" id="eurl-content">
           <!-- Dynamic content will be injected here by JS -->
@@ -317,7 +317,7 @@ const tplOptions = Object.entries(pathMap).map(([key, value]) => ({
         </div>
 
         <div class="lg:col-span-7">
-            <div class="sticky top-24 grid gap-4 z-10">
+            <div id="preview-sticky-container" class="sticky top-24 grid gap-4 z-10 transition-[top] duration-300">
 
                 <section class="mockup-browser border-base-300 border w-full">
                     <div class="mockup-browser-toolbar">
