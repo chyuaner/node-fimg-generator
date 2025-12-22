@@ -10,9 +10,9 @@ import { envStringToBoolean } from "./helpers";
    ------------------------------------------------- */
 async function getFromEdgeCache(request: Request): Promise<Response | null> {
   // `caches` 僅在 Cloudflare Workers 中存在
-  if (typeof caches !== "undefined" && caches?.default) {
+  if (typeof caches !== "undefined" && (caches as any).default) {
     // 完整 URL（含 query）作為快取鍵
-    const cached = await caches.default.match(request);
+    const cached = await (caches as any).default.match(request);
     // caches.default.match 可能回傳 undefined → 用 null 統一回傳型別
     return cached ?? null;
   }
@@ -28,7 +28,7 @@ async function maybeCacheResponse(
   response: Response
 ): Promise<Response> {
   // 只在 Workers 中執行
-  if (typeof caches === "undefined" || !caches?.default) return response;
+  if (typeof caches === "undefined" || !(caches as any).default) return response;
 
   // 只快取 200 OK，且必須是「public」才允許 cache
   if (response.status !== 200) return response;
@@ -47,7 +47,7 @@ async function maybeCacheResponse(
     });
 
     // 把完整的 request（含 query）寫入 Edge Cache
-    await caches.default.put(request, cacheResp);
+    await (caches as any).default.put(request, cacheResp);
 
     // 回傳給瀏覽器的 Response（同樣的 body）
     return new Response(body, {
