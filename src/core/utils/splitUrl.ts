@@ -105,15 +105,8 @@ export function splitUrl(
   const segs = rawSegs.slice(1); // 例如 "/a//b" => ["a", "", "b"]
 
   // ---------- 解析 query ----------
-  const query = Object.fromEntries(
-    rawQuery
-      .split('&')
-      .filter(Boolean)
-      .map(pair => {
-        const [k, v = ''] = pair.split('=', 2);
-        return [decodeURIComponent(k), decodeURIComponent(v)];
-      })
-  );
+  const query = Object.fromEntries(new URLSearchParams(rawQuery));
+
 
   // ---------- 先找 canvas ----------
   const first = segs[0];
