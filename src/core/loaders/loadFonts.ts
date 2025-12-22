@@ -6,6 +6,7 @@ export const fontFileMap = {
   noto: 'NotoSansTC-Medium.ttf',
   TaipeiSans: 'TaipeiSansTCBeta-Regular.ttf',
   TaipeiSansB: 'TaipeiSansTCBeta-Bold.ttf',
+  NotoSerifB: 'NotoSerifTC-Black.ttf',
   JasonHandwriting1: 'JasonHandwriting1.ttf',
   JasonHandwriting2: 'JasonHandwriting2.ttf',
   JasonHandwriting3: 'JasonHandwriting3.ttf',
