@@ -14,7 +14,7 @@ const { name = 'color', disabled = false, valHex = '', valAlpha = '255' } = Astr
         <div class="flex items-center gap-2">
             <!-- 顏色選擇器 -->
             <div
-                class="relative w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shadow-sm shrink-0"
+                class="relative w-10 h-10 rounded-lg overflow-hidden border border-neutral shadow-sm shrink-0"
                 class:opacity-50={disabled}
             >
                 <input
@@ -31,7 +31,7 @@ const { name = 'color', disabled = false, valHex = '', valAlpha = '255' } = Astr
                     name={`${name}_hex`}
                     value={valHex}
                     placeholder="Hex (e.g. ff0000)"
-                    class="input w-full text-sm px-2 py-1 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hex-input"
+                    class="input w-full text-sm px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hex-input"
                     class:opacity-50={disabled}
                     {disabled}
                 />
