@@ -5,19 +5,20 @@ export function initGenerator() {
     if (!form) return;
 
     // Configuration & Defaults
-    const CONFIG = {
+    const configData = form.dataset.config;
+    const CONFIG = configData ? JSON.parse(configData) : {
         debounceDelay: 1000,
         defaults: {
-            alpha: '255',
-            scale: '1',
-            shadow: '',
-            radius: '',
-            padding: '',
-            canvasWidth: '',
-            canvasHeight: '',
-            blockWidth: '300',
-            blockHeight: '',
-            embedAlt: 'Image'
+            default_alpha: '255',
+            default_scale: '1',
+            bg_shadow: '',
+            bg_radius: '',
+            bg_padding: '',
+            canvas_width: '',
+            canvas_height: '',
+            ph_width: '300',
+            ph_height: '',
+            embed_alt: 'Image'
         }
     };
 
@@ -153,8 +154,8 @@ export function initGenerator() {
 
         // 1. Canvas Size
         let canvasHtml = '';
-        const canvasW = ((data.canvas_width as string) || CONFIG.defaults.canvasWidth)?.trim();
-        const canvasH = ((data.canvas_height as string) || CONFIG.defaults.canvasHeight)?.trim();
+        const canvasW = ((data.canvas_width as string) || CONFIG.defaults.canvas_width)?.trim();
+        const canvasH = ((data.canvas_height as string) || CONFIG.defaults.canvas_height)?.trim();
         const isCanvasSizeEnabled = sections.canvasSize.toggle?.checked && (canvasW || canvasH);
 
         if (isCanvasSizeEnabled) {
@@ -180,7 +181,7 @@ export function initGenerator() {
             else if (pw) padding = pw;
             else if (ph) padding = `0x${ph}`;
 
-            const shadow = (data.bg_shadow === CONFIG.defaults.shadow || data.bg_shadow === '') ? '' : data.bg_shadow as string;
+            const shadow = (data.bg_shadow === CONFIG.defaults.bgShadow || data.bg_shadow === '') ? '' : data.bg_shadow as string;
             const radius = (data.bg_radius === CONFIG.defaults.radius || data.bg_radius === '') ? '' : data.bg_radius as string;
 
             let color = '';
@@ -209,8 +210,8 @@ export function initGenerator() {
         // 3. Main Content (Placeholder)
         const phSegments: {value: string, title: string}[] = [];
         if (!isCanvasSizeEnabled) {
-            const w = ((data.ph_width as string) || CONFIG.defaults.blockWidth)?.trim();
-            const h = ((data.ph_height as string) || CONFIG.defaults.blockHeight)?.trim();
+            const w = ((data.ph_width as string) || CONFIG.defaults.ph_width)?.trim();
+            const h = ((data.ph_height as string) || CONFIG.defaults.ph_height)?.trim();
             const val = (w && h) ? `${w}x${h}` : (w || h || '');
             phSegments.push({ value: val, title: 'Block Size' });
         }
@@ -335,17 +336,17 @@ export function initGenerator() {
     function applyDefaultsToForm() {
         if (!form) return;
         const mapping: Record<string, string> = {
-            'canvas_width': CONFIG.defaults.canvasWidth,
-            'canvas_height': CONFIG.defaults.canvasHeight,
-            'ph_width': CONFIG.defaults.blockWidth,
-            'ph_height': CONFIG.defaults.blockHeight,
-            'bg_padding_w': CONFIG.defaults.padding,
-            'bg_shadow': CONFIG.defaults.shadow,
-            'bg_radius': CONFIG.defaults.radius,
-            'scale': CONFIG.defaults.scale,
-            'bg_color_alpha': CONFIG.defaults.alpha,
-            'ph_bg_color_alpha': CONFIG.defaults.alpha,
-            'ph_fg_color_alpha': CONFIG.defaults.alpha
+            'canvas_width': CONFIG.defaults.canvas_width,
+            'canvas_height': CONFIG.defaults.canvas_height,
+            'ph_width': CONFIG.defaults.ph_width,
+            'ph_height': CONFIG.defaults.ph_height,
+            'bg_padding_w': CONFIG.defaults.bg_padding,
+            'bg_shadow': CONFIG.defaults.bg_shadow,
+            'bg_radius': CONFIG.defaults.bg_radius,
+            'bg_color_alpha': CONFIG.defaults.default_alpha,
+            'ph_bg_color_alpha': CONFIG.defaults.default_alpha,
+            'ph_fg_color_alpha': CONFIG.defaults.default_alpha,
+            'scale': CONFIG.defaults.default_scale,
         };
 
         for (const [name, val] of Object.entries(mapping)) {

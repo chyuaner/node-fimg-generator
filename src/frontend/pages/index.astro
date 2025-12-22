@@ -23,6 +23,22 @@ const tplOptions = Object.entries(pathMap).map(([key, value]) => ({
     value: key,
     image: value // Example for future use
 }));
+
+const generatorConfig = {
+    debounceDelay: 1000,
+    defaults: {
+        default_alpha: '255',
+        default_scale: '1',
+        bg_shadow: '',
+        bg_radius: '',
+        bg_padding: '',
+        canvas_width: '',
+        canvas_height: '',
+        ph_width: '300',
+        ph_height: '',
+        embed_alt: 'Image'
+    }
+};
 ---
 <Layout>
 <section id="intro" class="prose prose-sm !max-w-none -mt-[1em] border-b-1 mb-6">
@@ -75,7 +91,7 @@ const tplOptions = Object.entries(pathMap).map(([key, value]) => ({
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
         <div class="lg:col-span-5">
 
-            <form id="generator-form" action="/generate" method="GET">
+            <form id="generator-form" action="/generate" method="GET" data-config={JSON.stringify(generatorConfig)}>
             <div class="grid gap-4">
                     <!-- Canvas Size Section -->
                     <section class="card bg-indigo-600/30 shadow-sm">
