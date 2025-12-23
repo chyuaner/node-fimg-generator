@@ -151,14 +151,20 @@ export const parseColorOrPath = (colorStr: string) => {
 type BgObject =
   | { type: 'color'; value: string }
   | { type: 'tpl'; value: string; base64Url: string | null };
-export const parseColorOrPathLoad = async (colorStr: string, assetLoader?:AssetLoader): Promise<BgObject> => {
+export const parseColorOrPathLoad = async (colorStr: string, assetLoader?:AssetLoader): Promise<BgObject | null> => {
   const originData = parseColorOrPath(colorStr);
   if (originData.type == 'tpl' && assetLoader) {
     let bgPath = originData.value;
     const mimeType = getMimeType(bgPath);
-    const bgImgData = await assetLoader.loadImage(bgPath);
+    let bgImgData;
+    try {
+        bgImgData = await assetLoader.loadImage(bgPath);
+    } catch (e) {
+        return null;
+    }
+
     if (bgImgData === null || bgImgData === undefined) {
-      throw new Error('bgImgData is null or undefined');
+      return null;
     }
 
     // Prevent Maximum call stack size exceeded by avoiding spread operator on large arrays
@@ -209,9 +215,9 @@ export const parseColorOrPathLoad = async (colorStr: string, assetLoader?:AssetL
   }
 };
 
-export const bgBackgroundToParm = (bgBackground: BgObject | undefined) => {
-  // 只要 bgBackground 存在，就直接處理
-  if (bgBackground !== undefined) {
+export const bgBackgroundToParm = (bgBackground: BgObject | undefined | null) => {
+  // 只要 bgBackground 存在且不為 null/undefined，就直接處理
+  if (bgBackground) {
     if (bgBackground.type === 'tpl' && bgBackground.base64Url) {
       return { bgUrl: bgBackground.base64Url };
     }

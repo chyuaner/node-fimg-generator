@@ -215,8 +215,8 @@ async function coreHandler(
   const bgPart = content.bgcolor ?? null;
   const fgPart = content.fgcolor ?? null;
 
-  // 若沒有提供顏色，使用預設值
-  const bgPreParm = bgPart ? await parseColorOrPathLoad(bgPart, assetLoader) : {type: 'color' as const, value: '#cccccc'};
+  // 若沒有提供顏色或讀取範本失敗，使用預設值
+  const bgPreParm = (bgPart ? await parseColorOrPathLoad(bgPart, assetLoader) : null) ?? {type: 'color' as const, value: '#cccccc'};
   const bgParm = bgBackgroundToParm(bgPreParm);
   const fgColor = fgPart ? parseColor(fgPart) : '#969696';   // 預設較深的灰
 
