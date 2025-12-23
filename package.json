@@ -1,5 +1,5 @@
 {
-    "name": "cloudflare-fimg",
+    "name": "node-fimg-generator",
     "type": "module",
     "scripts": {
         "dev": "concurrently \"npm run dev:astro\" \"npm run dev:worker\"",

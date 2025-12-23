@@ -1,8 +1,9 @@
-# Cloudflare Image Gen (FakeImg Clone)
-本專案以Fake images please?為基礎，重新以能在Cloudflare Worker、Vercel原生運行為前提重新撰寫。並在不破壞Fake images please原有網址結構設計的情況下，加入分組式的網址結構，大幅加入功能擴充的彈性。
+Fimg (Fake Image Generator) 預留圖產生站
+===
 
-A high-performance image generation service running on Cloudflare Workers using @cf-wasm/og.
+本專案以Fake images please?為基礎，重新以能在Cloudflare Worker、Vercel原生運行為前提重新撰寫。本站提供精心設計過的URL直連網址，可讓你在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。同時也新增邊緣背景設計的功能，方便用於製作螢幕截圖示意圖、簡報圖美化用途。
 
+並在不破壞Fake images please原有網址結構設計的情況下，加入分組式的網址結構，大幅加入功能擴充的彈性。
 
 ## 專案特色
 * 本專案兼容Cloudflare Worker、Vercel (Serverless Edge)原生運行設計，
@@ -13,7 +14,7 @@ A high-performance image generation service running on Cloudflare Workers using 
     - [x] There are options too, you can pass a text, or change some colors.
     - [x] Colors must be hexadecimal, the first one is the background color.
     - [x] You can add the alpha value of the color with a comma, (hex,a).
-    - [x] The support for japanese, korean and chinese text is available with the use of the Noto font (font=noto)  （僅繁體中文測試過）
+    - [x] The support for japanese, korean and chinese text is available with the use of the Noto font (font=noto)
     - [x] You can now use emojis as well and Discord emotes. The format for Discord emotes is like that: `<:rooThink:596576798351949847>`
         * 雖然有實裝此功能，但是會額外產生外連到Discord伺服器的流量，若你在意效能就不建議使用
 - [x] 結合Gnome應用程式Gradia的邊緣背景設計
@@ -21,7 +22,7 @@ A high-performance image generation service running on Cloudflare Workers using 
     * 可相容Fake images please?舊有功能
     * 網址結構分為三大組：
     * 若沒有需求，可直接省略
-- [ ] 前端界面優化
+- [x] 前端界面優化
 
 ## 📦 目錄結構
 ### 程式啟動點
@@ -124,41 +125,11 @@ https://fimg.yuaner.tw/[canvas-size]/bg/[bg-padding]/[bg-shadow]/[bg-radius]/[bg
 * https://fimg.yuaner.tw/350x200/?text=World&font=lobster
 * https://fimg.yuaner.tw/440x230/ff0000,128/000,255/?retina=1&text=Problem?%20%3C%3Apepw%3A989410572514758676%3E
 
-### 草稿階段
-* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[theme]/[language]/
-* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[code-bgcolor]/[code-fgcolor]/[language]/text
-* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[code-bgcolor]/[code-fgtheme]/[language]/content
-* https://fimg.yuaner.tw/[最大畫布 000x000]/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[code-bgcolor]/[code-fgtheme]/[language]/content
-
-
-## 控制檔案
-本專案提供SVG與PNG
-
-提供三種方式控制你想拿的檔案格式
-
-若網址參數帶入 ?filetype=png ，或是 Header帶入 Accept: image/png，或是網址結尾以 .png 字串的話，就控制由png輸出。  優先順序： ?filetype=png > .png > Accept: image/png  然後SVG也比照。
-
-
-### 控制參數的優先順序與理由
-主要考量是以操作直覺性為主！
-
-#### 1. ?filetype=png
-考量這個為最優先，是考量到使用者可能會用Postman Params界面，會希望能在界面上方便用句選取消的方式來控制
-
-#### 2. .png
-對人類使用者與一般客戶端程式來說，最直覺說要取得什麼樣的檔案格式
-
-#### 3. Accept: image/png
-主流瀏覽器與比較成熟的客戶端，在發送HTTP Request時，就會直接順便宣告要接受什麼格式
-
-#### 4. 都沒指定
-目前直接以SVG為主。下述以SVG為主的理由：
-
-### 預設格式的理由
-雖然Fake images please?原本是以png為主，不過在本次專案中，將改以SVG為預設，以下說明主要考量：
-
-SVG：主流瀏覽器都支援，後端不須，
-PNG: 主流
+### 草稿(未實做)
+* https://fimg.yuaner.tw/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[theme]/[language]/
+* https://fimg.yuaner.tw/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[code-bgcolor]/[code-fgcolor]/[language]/text
+* https://fimg.yuaner.tw/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[code-bgcolor]/[code-fgtheme]/[language]/content
+* https://fimg.yuaner.tw/bg/[padding]/[shadow]/[radius]/[bgcolor]/code/[code-bgcolor]/[code-fgtheme]/[language]/content
 
 ## Setup
 
