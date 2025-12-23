@@ -4,6 +4,7 @@ interface Option {
   value: string;
   image?: string;
   fontId?: string;
+  fontExText?: string;
   description?: string;
 }
 
@@ -80,7 +81,16 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
                   <span class="font-medium truncate">{opt.label}</span>
                   {opt.description && <span class="text-xs opacity-60 truncate">{opt.description}</span>}
                 </div>
-                {opt.fontId && <span class="truncate"><img class="scale-250 max-w-48" src={`/400x100/FFF,0/?font=${encodeURIComponent(opt.fontId)}&text=${encodeURIComponent(opt.fontId)}`} alt={opt.fontId} /></span>}
+                {(opt.fontId || opt.fontExText) &&
+                  <span class="truncate">
+                    <img
+                      class="scale-230 max-w-64"
+                      src={`/500x100/FFF,0/?${opt.fontId ? `font=${encodeURIComponent(opt.fontId)}&` : ''}text=${encodeURIComponent(opt.fontExText ?? "Eng繁中カタカナ한국어")}`}
+                      alt={opt.fontId}
+                      fetchpriority="low"
+                      />
+                  </span>
+                }
               </div>
             </button>
           </li>

@@ -10,7 +10,7 @@ import { pathMap } from '../../core/loaders/assets';
 
 // Prepare options for DropdownSelect
 const fontOptions = [
-    { label: '預設 (Default)', value: '' },
+    { label: '預設 (Default)', value: '', fontExText: '<<預設的字體font>>' },
     ...Object.keys(fontFileMap).map(key => ({
         label: key,
         value: key,
@@ -349,7 +349,7 @@ const generatorConfig = {
                         </div>
                     </div>
                     <div class="grid place-content-center p-4 border-t border-base-300 backgroundImg-grid min-h-[300px]">
-                        <img id="preview-image" src="" alt="Preview" class="max-w-full h-auto" />
+                        <img id="preview-image" src="" alt="Preview" loading="eager" fetchpriority="high" class="max-w-full h-auto" />
                     </div>
                 </section>
 
