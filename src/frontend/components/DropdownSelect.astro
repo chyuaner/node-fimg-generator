@@ -74,7 +74,7 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
       >
         {options.map(opt => (
           <li>
-            <button type="button" class="flex items-center gap-3 text-left w-full hover:bg-base-200 focus:bg-primary focus:text-primary-content" data-value={opt.value} data-label={opt.label}>
+            <button type="button" class="menu-item flex items-center gap-3 text-left w-full focus:bg-primary focus:text-primary-content" data-value={opt.value} data-label={opt.label}>
               {opt.image && <img src={opt.image} alt="" class="w-10 h-10 object-cover rounded bg-base-200 shrink-0 option-img" />}
               <div class="flex flex-col">
                 <div class="flex-none flex flex-col overflow-hidden">
@@ -114,7 +114,9 @@ const displayLabel = selectedOption ? selectedOption.label : placeholder;
 
       const updateUI = (val: string) => {
         const match = Array.from(buttons).find(b => b.dataset.value === val);
+        buttons.forEach(b => b.classList.remove('menu-active'));
         if (match) {
+          match.classList.add('menu-active');
           if (label) label.textContent = match.dataset.label || '';
 
           const optionImg = match.querySelector('.option-img') as HTMLImageElement;
