@@ -6,7 +6,8 @@ import Footer from '../components/Footer.astro';
 import "../styles/eurl.css";
 
 const path = Astro.url.pathname.replace(/\//g, '') || 'index';
-const { title } = Astro.props;
+import { PUBLIC_BASE_URL } from 'astro:env/client';
+const { title, description, keywords } = Astro.props;
 ---
 <script>
 import Swup from 'swup';
@@ -96,6 +97,22 @@ swup.hooks.on('page:view', () => {
     <meta name="generator" content={Astro.generator} />
     <title>Fimg 預留圖產生站{title ? ` - ${title}` : ``}</title>
     <link rel="icon" href="/favicon.png" type="image/png">
+
+    <meta name="description" content={description ?? '提供URL直連網址，可讓你在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。'} />
+    <meta name="keywords" content={keywords ?? 'placeholder, fake image, image generator, URL parameters, SVG, PNG, 色彩, 文字, 佔位圖'} />
+    <!-- Open Graph（Facebook、LinkedIn、Plurk 等） -->
+    <meta property="og:title" content="Fimg 預留圖產生站" />
+    <meta property="og:description" content={description ?? '提供URL直連網址，可讓你在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。'} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={PUBLIC_BASE_URL} />
+    <meta property="og:image" content="favicon.png" /> <!-- 替換為實際的 OG 圖片路徑 -->
+    <meta property="og:site_name" content="Fimg 預留圖產生站" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Fimg 預留圖產生站" />
+    <meta name="twitter:description" content={description ?? '提供URL直連網址，可讓你在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。'} />
+    <meta name="twitter:image" content="favicon.png" /> <!-- 同上 -->
+
     <style>
         /* Define a transition duration during page visits */
         html.is-changing .transition-main,
