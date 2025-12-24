@@ -1,15 +1,24 @@
 ---
 const { src, url, title} = Astro.props;
+import { PUBLIC_BASE_URL } from 'astro:env/client';
+import { splitUrl } from '../../core/utils/splitUrl';
+import { genEurl } from '../scripts/generator';
 ---
 
-<div class="card lg:card-side bg-base-200 shadow-sm max-h-100 overflow-hidden">
-    <figure class="lg:max-w-xl lg:order-last lg:rounded-l-none">
+<div class="card xl:card-side bg-base-200 shadow-sm max-h-100 overflow-hidden">
+    <figure class="xl:max-w-xl xl:order-last xl:rounded-l-none">
         <img src={src} alt={title} class="" />
     </figure>
 
+
     <div class="card-body">
         {title && <h3 class="card-title mb-4">{title}</h3>}
-        <code class="bg-neutral text-neutral-content flex-1 flex items-center rounded-lg p-4 text-wrap break-all">{url}</code>
+        <div class="flex flex-1 items-center">
+            <code class="eurl bg-neutral text-neutral-content flex-1 flex rounded-xl p-4 text-wrap break-all">
+                <span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
+                <span class="eurl-content" set:html={genEurl(splitUrl(url.replace(PUBLIC_BASE_URL, '')))}></span>
+            </code>
+        </div>
         <!-- <div class="card-actions justify-end">
         <button class="btn btn-primary">Listen</button>
         </div> -->
