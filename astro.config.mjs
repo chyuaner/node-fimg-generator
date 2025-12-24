@@ -37,7 +37,18 @@ export default defineConfig({
     plugins: [
       tailwindcss({
         config: path.resolve('./tailwind.config.js'),
-      })
+      }),
+      {
+        name: 'spa-fallback',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url.startsWith('/generator/') && !req.url.includes('.')) {
+              req.url = '/generator';
+            }
+            next();
+          });
+        }
+      }
     ],
     server: {
       proxy: {

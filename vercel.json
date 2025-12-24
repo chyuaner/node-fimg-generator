@@ -1,5 +1,11 @@
 {
   "framework": "nextjs",
   "buildCommand": "astro build && next build",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "rewrites": [
+    {
+      "source": "/generator/:path*",
+      "destination": "/generator"
+    }
+  ]
 }

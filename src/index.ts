@@ -93,6 +93,12 @@ export default {
     // -------------------------------------------------
     // Serve static assets (HTML, CSS, JS) from the ASSETS binding
     // These are built by Astro and deployed with the worker
+
+    // -------------------------------------------------
+    // C. 一般靜態資源 (Astro) - 直接走 ASSETS
+    // -------------------------------------------------
+    // Serve static assets (HTML, CSS, JS) from the ASSETS binding
+    // These are built by Astro and deployed with the worker
     if (pathname === '/' || pathname.startsWith('/assets/') || pathname.endsWith('.html') || pathname.endsWith('.css') || pathname.endsWith('.js')) {
       if (env.ASSETS) {
         try {
@@ -104,6 +110,25 @@ export default {
           console.error('Error serving static asset:', e);
         }
       }
+    }
+
+    // -------------------------------------------------
+    // C-2. SPA Fallback for /generator (Cloudflare Workers)
+    // -------------------------------------------------
+    if (pathname === '/generator' || pathname.startsWith('/generator/')) {
+       if (env.ASSETS) {
+         try {
+           // Rewrite to serve the static entry file
+           // Assuming Astro builds defaults to folders: /generator/index.html
+           const spaRequest = new Request(new URL('/generator/index.html', request.url), request);
+           const response = await env.ASSETS.fetch(spaRequest);
+           if (response.status === 200) {
+             return response;
+           }
+         } catch (e) {
+           console.error('Error serving generator SPA:', e);
+         }
+       }
     }
 
     // -------------------------------------------------

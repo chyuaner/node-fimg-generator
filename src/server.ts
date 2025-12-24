@@ -16,6 +16,20 @@ const publicDir = path.join(process.cwd(), 'public');
 app.use(express.static(publicDir));
 
 // --------------------------------------------------
+// SPA Fallback for /generator/*
+// --------------------------------------------------
+app.get('/generator/*', (req, res, next) => {
+  // Check if it's a file request (has extension); if so, pass to next() (static handler or error)
+  if (path.extname(req.path)) {
+    return next();
+  }
+  // Otherwise serve the generator HTML
+  res.sendFile(path.join(publicDir, 'generator/index.html'), (err) => {
+    if (err) next(err);
+  });
+});
+
+// --------------------------------------------------
 // 動態圖片產生（未命中 static 時的 fallback）
 // --------------------------------------------------
 app.use(async (req, res, next) => {

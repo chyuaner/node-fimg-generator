@@ -1,0 +1,421 @@
+---
+import { PUBLIC_BASE_URL } from 'astro:env/client';
+import "../styles/eurl.css";
+import ColorInput from '../components/ColorInput.astro';
+import TplInput from '../components/TplInput.astro';
+import DropdownSelect from '../components/DropdownSelect.astro';
+import { fontFileMap } from '../../core/loaders/loadFonts';
+import { pathMap } from '../../core/loaders/assets';
+
+// Prepare options for DropdownSelect
+const fontOptions = [
+    { label: '預設 (Default)', value: '', fontExText: '<<預設的字體font>>' },
+    ...Object.keys(fontFileMap).map(key => ({
+        label: key,
+        value: key,
+        fontId: key
+    }))
+];
+
+const tplOptions = Object.entries(pathMap).map(([key, value]) => ({
+    label: key,
+    value: key,
+    image: value // Example for future use
+}));
+
+const generatorConfig = {
+    debounceDelay: 1000,
+    defaults: {
+        default_alpha: '255',
+        default_scale: '1',
+        bg_shadow: '5',
+        bg_radius: '10',
+        bg_padding: '10',
+        canvas_width: '',
+        canvas_height: '',
+        ph_width: '300',
+        ph_height: '',
+        embed_alt: 'Image'
+    }
+};
+---
+<section id="intro" class="prose prose-sm !max-w-none -mt-[1em] border-b-1 mb-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="col-span-2">
+            <!-- <h2>簡介</h2> -->
+            <p class="xl:inline">本站提供URL直連網址，可讓你在設計網站時，在已知尺寸的情況下，可快速插入預留圖可以幫助您排版。同時也新增邊緣背景設計的功能，方便用於製作螢幕截圖示意圖、簡報圖美化用途。</p>
+            <p class="xl:inline xl:pl-[1em]">更詳盡的說明，請看 ➤ <a href="/use">使用說明</a></p>
+            <h3>常用範例</h3>
+            <pre class="overflow-x-auto">&lt;img src=&quot;{PUBLIC_BASE_URL}/300x200.svg&quot;&gt; &lt;!-- &#x4E00;&#x822C;&#x9810;&#x7559;&#x5716; --&gt;
+&lt;img src=&quot;{PUBLIC_BASE_URL}/400x200?text=&#x1F5BC;&#xFE0F;&#x9810;&#x7559;&#x5716;&#x1F609;&amp;filetype=png&quot;&gt; &lt;!-- &#x81EA;&#x8A02;&#x6587;&#x6848;&#x9810;&#x7559;&#x5716; --&gt;
+&lt;img src=&quot;{PUBLIC_BASE_URL}/400x200/ff0000/FFF/?text=I am red.&quot;&gt; &lt;!-- &#x81EA;&#x8A02;&#x80CC;&#x666F;&#x8272;&#x8207;&#x6587;&#x5B57;&#x984F;&#x8272;&#x7684;&#x9810;&#x7559;&#x5716; --&gt;
+&lt;img src=&quot;{PUBLIC_BASE_URL}/300x200/bg/5/10/ph.svg&quot;&gt; &lt;!-- &#x5E36;&#x6709;&#x5E36;&#x6709;&#x9670;&#x5F71;&#x7684;&#x900F;&#x660E;&#x908A;&#x7DE3;&#x7684;&#x9810;&#x7559;&#x5716; --&gt;
+&lt;img src=&quot;{PUBLIC_BASE_URL}/300x200/bg/5/10/4/tpl(drool-l)/ph.svg&quot;&gt; &lt;!--&#x5E36;&#x6709;&#x5E36;&#x6709;&#x5713;&#x89D2;&#x9670;&#x5F71;&#x7684;&#x5716;&#x6848;&#x908A;&#x7DE3;&#x7684;&#x9810;&#x7559;&#x5716;--&gt;</pre>
+        </div>
+        <div class="prose-img:m-2 hidden lg:flex">
+            <img class="" alt="fakeimg.pl" src="/440x250/bg/5/3/ph/282828/eae0d0">
+        </div>
+    </div>
+</section>
+
+<article class="grid">
+    <header class="mb-6 prose">
+        <h2 class="">製作佔位圖</h2>
+    </header>
+
+    <div role="alert" class="hidden md:grid lg:hidden mb-6 alert alert-info" id="tablet-orientation-alert">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            class="h-6 w-6 shrink-0 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+
+        <span>
+            若你是使用平板，建議你將螢幕轉成橫向，會有最好的使用體驗！
+        </span>
+
+        <!-- 關閉按鈕（純原生） -->
+        <button type="button" class="btn btn-sm btn-ghost ml-auto" id="tablet-alert-close" aria-label="關閉提示">✕</button>
+    </div>
+
+    <!-- eurl section -->
+    <div id="eurl-sticky" class="sticky top-0 eurl mb-6 p-2 rounded-xl w-full whitespace-nowrap bg-neutral text-neutral-content z-20 shadow-lg">
+      <span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
+      <span class="eurl-content" id="eurl-content">
+          <!-- Dynamic content will be injected here by JS -->
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div class="lg:col-span-5">
+
+            <form id="generator-form" action="/generate" method="GET" data-config={JSON.stringify(generatorConfig)}>
+            <div class="grid gap-4">
+                    <!-- Canvas Size Section -->
+                    <section class="card bg-indigo-600/30 shadow-sm">
+                        <div class="card-body">
+                            <header class="md:flex items-center justify-between">
+                                <h2 class="card-title md:flex mb-0">畫布大小</h2>
+                                <div>
+                                    <p class="label">Optional</p>
+                                    <input type="checkbox" id="toggle-canvas-size" class="toggle" />
+                                </div>
+                            </header>
+
+                            <div class="content collapsible-content" id="content-canvas-size">
+                                <div>
+                                    <fieldset class="fieldset">
+                                        <label class="input w-full">
+                                            <input type="number" name="canvas_width" placeholder="Width" class="w-full" /><span class="label">px</span>
+                                            x
+                                            <input type="number" name="canvas_height" placeholder="Height" class="w-full" /><span class="label">px</span>
+                                        </label>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Edge Background Section -->
+                    <section class="card bg-cyan-600/30 shadow-sm">
+                        <div class="card-body">
+                            <header class="md:flex items-center justify-between">
+                                <h2 class="card-title md:flex mb-0">邊緣背景</h2>
+                                <div>
+                                    <p class="label">Optional</p>
+                                    <input type="checkbox" id="toggle-edge-bg" class="toggle" />
+                                </div>
+                            </header>
+
+                            <div class="content collapsible-content" id="content-edge-bg">
+                                <div>
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">Padding</legend>
+                                        <label class="input w-full">
+                                            <input type="number" name="bg_padding_w" placeholder="Width" class="w-full" /><span class="label">%</span>
+                                            x
+                                            <input type="number" name="bg_padding_h" placeholder="Height" class="w-full" /><span class="label">%</span>
+                                        </label>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">Shadow</legend>
+                                        <input type="number" name="bg_shadow" class="input w-full" placeholder="0" />
+                                        <p class="label">Optional</p>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">Radius</legend>
+                                        <input type="number" name="bg_radius" class="input w-full" placeholder="0" />
+                                        <p class="label">Optional</p>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <div class="tabs">
+                                            <legend class="fieldset-legend mr-6 w-full sm:w-auto">Background</legend>
+                                            <label class="label pr-4 mb-2">
+                                                <input type="radio" name="bg_type" class="tab radio" value="color" checked />
+                                                Color
+                                            </label>
+                                            <div class="tab-content">
+                                                <ColorInput name="bg_color" />
+                                            </div>
+
+                                            <label class="label pr-4 mb-2">
+                                                <input type="radio" name="bg_type" class="tab radio" value="tpl" />
+                                                Template
+                                            </label>
+                                            <div class="tab-content">
+                                                <TplInput name="bg_tpl" options={tplOptions} />
+                                            </div>
+
+                                            <label class="label pr-4 mb-2">
+                                                <input type="radio" name="bg_type" class="tab radio" value="none" />None
+                                            </label>
+                                            <div class="tab-content">
+                                                <div class="p-2 text-sm opacity-50">Transarent Background</div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Main Content Section -->
+                    <section class="card bg-yellow-600/30 shadow-sm">
+                        <div class="p-3">
+
+                            <div class="tabs tabs-lift">
+                                <header class="items-center justify-between mr-4 ml-2 mt-2">
+                                    <h2 class="card-title mb-0">主內容</h2>
+                                </header>
+
+                                <label class="tab">
+                                    <input type="radio" name="content_tab" checked />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 me-2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" /></svg>
+                                    placeholder
+                                </label>
+                                <div class="tab-content bg-base-100/50 border-base-300 p-3">
+                                    <fieldset class="fieldset" id="block-size-fieldset">
+                                        <legend class="fieldset-legend">區塊大小 (Block Size)</legend>
+                                        <label class="input w-full">
+                                            <input type="number" name="ph_width" placeholder="Width" class="w-full" /><span class="label">px</span>
+                                            x
+                                            <input type="number" name="ph_height" placeholder="Height" class="w-full" /><span class="label">px</span>
+                                        </label>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <div class="tabs">
+                                            <legend class="fieldset-legend mr-6 w-full sm:w-auto">Background</legend>
+                                            <label class="label pr-4 mb-2">
+                                                <input type="radio" name="ph_bg_type" class="tab radio" value="color" checked />
+                                                Color
+                                            </label>
+                                            <div class="tab-content">
+                                                <ColorInput name="ph_bg_color" />
+                                            </div>
+
+                                            <label class="label pr-4 mb-2">
+                                                <input type="radio" name="ph_bg_type" class="tab radio" value="tpl" />
+                                                Template
+                                            </label>
+                                            <div class="tab-content">
+                                                <TplInput name="ph_bg_tpl" options={tplOptions} />
+                                            </div>
+
+                                            <label class="label pr-4 mb-2">
+                                                <input type="radio" name="ph_bg_type" class="tab radio" value="default" />Default
+                                            </label>
+                                            <div class="tab-content">
+                                                <div class="p-2 text-sm opacity-50">Default Color</div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <div class="tabs">
+                                            <legend class="fieldset-legend mr-6 w-full sm:w-auto">Foreground Color</legend>
+                                            <label class="label pr-4 mb-2">
+                                                <input type="radio" name="ph_fg_type" class="tab radio" value="color" checked />
+                                                Color
+                                            </label>
+                                            <div class="tab-content">
+                                                <ColorInput name="ph_fg_color" />
+                                            </div>
+
+                                            <label class="label pr-4 mb-2">
+                                                <input type="radio" name="ph_fg_type" class="tab radio" value="default" />Default
+                                            </label>
+                                            <div class="tab-content">
+                                                <div class="p-2 text-sm opacity-50">Default Color</div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">Text</legend>
+                                        <input type="text" name="text" class="input w-full" placeholder="" />
+                                        <p class="label">Optional</p>
+                                    </fieldset>
+
+                                    <fieldset class="fieldset">
+                                        <legend class="fieldset-legend">Font</legend>
+                                        <DropdownSelect
+                                            name="font"
+                                            options={fontOptions}
+                                            placeholder="預設 (Default)"
+                                        />
+                                    <span class="label">Optional</span>
+                                    </fieldset>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+
+
+                    <section class="card bg-green-600/30 shadow-sm">
+                        <div class="card-body">
+                            <header class="md:flex items-center justify-between">
+                                <h2 class="card-title md:flex mb-0">額外設定</h2>
+                            </header>
+
+                            <fieldset class="fieldset">
+                                <legend class="fieldset-legend">Scale</legend>
+                                <div class="join w-full">
+                                    <DropdownSelect
+                                        name="scale"
+                                        class="join-item flex-1"
+                                        defaultValue="1"
+                                        options={[
+                                            { value: '1', label: '1' },
+                                            { value: '2', label: '2' },
+                                            { value: '3', label: '3' },
+                                            { value: '4', label: '4' },
+                                            { value: '5', label: '5' },
+                                        ]}
+                                    />
+                                    <span class="join-item btn no-animation pointer-events-none">px</span>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="fieldset">
+                                <legend class="fieldset-legend">Other options</legend>
+                                <label class="label">
+                                    <input type="checkbox" name="debug" value="1" class="checkbox" />
+                                    Debug Mode
+                                </label>
+                            </fieldset>
+
+                            <fieldset class="fieldset">
+                                <legend class="fieldset-legend">File Type</legend>
+                                <div class="join">
+                                    <input class="join-item btn" type="radio" name="filetype" value="null" aria-label="預設" checked />
+                                    <input class="join-item btn" type="radio" name="filetype" value="svg" aria-label=".svg" />
+                                    <input class="join-item btn" type="radio" name="filetype" value="png" aria-label=".png" />
+                                    <input class="join-item btn" type="radio" name="filetype" value="ico" aria-label=".ico" />
+                                </div>
+                            </fieldset>
+
+                            <noscript>
+                                <button type="submit" class="btn btn-primary w-full mt-4">Generate URL (No JS)</button>
+                            </noscript>
+
+                        </div>
+                    </section>
+                </div>
+            </form>
+        </div>
+
+        <div class="lg:col-span-7">
+            <div id="preview-sticky-container" class="sticky top-24 grid gap-4 z-10 transition-[top] duration-300">
+
+                <section class="mockup-browser border-base-300 border w-full">
+                    <div class="mockup-browser-toolbar">
+                        <span id="preview-loading" class="loading loading-spinner loading-md hidden"></span>
+                        <div class="input w-[65%] p-2 overflow-hidden text-ellipsis whitespace-nowrap" id="preview-url-display">...</div>
+                        <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="btn m-0 text-nowrap">下載 ▼</div>
+                        <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                            <li><a id="download-svg" target="_blank" download>.svg</a></li>
+                            <li><a id="download-png" target="_blank" download>.png</a></li>
+                            <li><a id="download-ico" target="_blank" download>.ico</a></li>
+                        </ul>
+                        </div>
+                    </div>
+                    <div class="grid place-content-center p-4 border-t border-base-300 backgroundImg-grid min-h-[300px]">
+                        <img id="preview-image" src="" alt="Preview" loading="eager" fetchpriority="high" class="max-w-full h-auto" />
+                    </div>
+                </section>
+
+                <section class="card bg-base-200 shadow-sm">
+                    <div class="card-body">
+                        <header class="md:flex items-center justify-between">
+                            <h2 class="card-title md:flex mb-0">嵌入圖片</h2>
+                        </header>
+                        <!-- name of each tab group should be unique -->
+                        <div class="tabs tabs-lift">
+                        <input type="radio" name="embed" class="tab" aria-label="HTML" checked />
+                        <div class="tab-content break-all border-base-300 bg-base-100 p-6">
+                            <pre class="text-wrap break-all" id="embed-html"></pre>
+                        </div>
+
+                        <input type="radio" name="embed" class="tab" aria-label="Markdown" />
+                        <div class="tab-content break-all border-base-300 bg-base-100 p-6">
+                            <pre class="text-wrap break-all" id="embed-markdown"></pre>
+                        </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+</article>
+
+<script>
+    // Generator initialization logic is now handled in Layout.astro
+    // to ensure it re-runs correctly during Swup transitions.
+</script>
+<!-- 原生 JavaScript：關閉 alert -->
+<!-- -------------- CSS：淡出動畫（保留）---------------------- -->
+<style>
+  /* 初始狀態：可見 */
+  #tablet-orientation-alert {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  /* 被隱藏時的樣式 */
+  #tablet-orientation-alert.fade-out {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+</style>
+
+<!-- -------------- 原生 JS：點擊關閉 → 淡出 ----------------- -->
+<script defer>
+  document.addEventListener('DOMContentLoaded', () => {
+    const closeBtn = document.getElementById('tablet-alert-close');
+    const alertBox = document.getElementById('tablet-orientation-alert');
+
+    if (!closeBtn || !alertBox) return;
+
+    // 點擊關閉按鈕
+    closeBtn.addEventListener('click', () => {
+      // 加入淡出類別，觸發 CSS transition
+      alertBox.classList.add('fade-out');
+
+      // 動畫結束後隱藏元素（避免留下佔位）
+      const onEnd = () => {
+        alertBox.style.display = 'none';   // 完全移除顯示
+        // 依需求也可以在此加上 Tailwind 的 hidden 類別
+        // alertBox.classList.add('hidden');
+        alertBox.removeEventListener('transitionend', onEnd);
+      };
+      alertBox.addEventListener('transitionend', onEnd);
+    });
+  });
+</script>

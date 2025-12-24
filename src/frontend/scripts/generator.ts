@@ -1,4 +1,5 @@
 import { PUBLIC_BASE_URL } from 'astro:env/client';
+import { splitUrl } from '../../core/utils/splitUrl';
 
 export function initGenerator() {
     const form = document.getElementById('generator-form') as HTMLFormElement | null;
@@ -365,6 +366,155 @@ export function initGenerator() {
     }
 
     applyDefaultsToForm();
+
+    // -------------------------------------------------------------------------
+    // URL Pre-filling Logic
+    // -------------------------------------------------------------------------
+    const pathname = window.location.pathname;
+    // Check if we are on a valid generator path with parameters (e.g. /generator/...)
+    // Simple check: must start with /generator/ and have more chars
+    if (pathname.startsWith('/generator/') && pathname.length > 11) {
+        // Remove '/generator' prefix to get the "standard" fimg URL part
+        // e.g. /generator/bg/20... -> /bg/20...
+        const subPath = pathname.substring(10); 
+        
+        // Use the core utility to parse it
+        // We simulate the full URL for the util logic if needed, but splitUrl mostly cares about path + query
+        const fullSubUrl = subPath + window.location.search;
+        const parsed = splitUrl(fullSubUrl);
+
+        // Map parsed data to form inputs
+        // Helper to set value safely
+        const setVal = (name: string, val: string | number | undefined | null) => {
+            if (val === undefined || val === null) return;
+            const input = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement;
+            if (input) {
+                input.value = String(val);
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        };
+
+        const setHexAlpha = (prefix: string, colorStr: string | null | undefined) => {
+            if (!colorStr) return;
+            // Expected formats: "hex" or "hex,alpha"
+            const parts = colorStr.split(',');
+            setVal(`${prefix}_hex`, parts[0]);
+            if (parts.length > 1) {
+                setVal(`${prefix}_alpha`, parts[1]);
+            } else {
+                setVal(`${prefix}_alpha`, '255');
+            }
+        };
+
+
+        // 1. Canvas Size
+        if (parsed.canvas) {
+           const [w, h] = parsed.canvas.split('x');
+           if (sections.canvasSize.toggle) {
+               sections.canvasSize.toggle.checked = true;
+               sections.canvasSize.toggle.dispatchEvent(new Event('change'));
+           }
+           setVal('canvas_width', w);
+           if (h) setVal('canvas_height', h);
+           else setVal('canvas_height', w); // If only one number? Usually splitUrl handles logical split? 
+           // Actually splitUrl returns string "300x200" or "300". 
+           // If "300", it might mean width=300, height=null in the final logic, 
+           // but here we just fill what we have. 
+        }
+
+        // 2. Background (Edge)
+        if (parsed.bg) {
+            const hasBg = parsed.bg.parts.length > 0;
+            if (hasBg && sections.edgeBg.toggle) {
+                sections.edgeBg.toggle.checked = true;
+                sections.edgeBg.toggle.dispatchEvent(new Event('change'));
+            }
+
+            // Padding
+            if (parsed.bg.padding) {
+                const [pw, ph] = parsed.bg.padding.split('x');
+                setVal('bg_padding_w', pw);
+                setVal('bg_padding_h', ph ?? pw);
+            }
+            // Shadow / Radius
+            if (parsed.bg.shadow) setVal('bg_shadow', parsed.bg.shadow);
+            if (parsed.bg.radius) setVal('bg_radius', parsed.bg.radius);
+            
+            // Color / Template
+            // bg.bgcolor stores the *value* part (e.g. "ff0000,128" or "tpl(...) path?")
+            // Wait, splitUrl's bg.bgcolor is from parts[3]. 
+            // Let's check how splitUrl parses "bg/..."
+            // It puts color into `bgcolor` field.
+            if (parsed.bg.bgcolor) {
+                const val = parsed.bg.bgcolor;
+                if (val.startsWith('tpl(')) {
+                     // handling tpl(name)
+                     const tplName = val.slice(4, -1);
+                     const radioTpl = form.querySelector('input[name="bg_type"][value="tpl"]') as HTMLInputElement;
+                     if (radioTpl) radioTpl.checked = true;
+                     setVal('bg_tpl', tplName); 
+                } else {
+                     // handling color
+                     const radioColor = form.querySelector('input[name="bg_type"][value="color"]') as HTMLInputElement;
+                     if (radioColor) radioColor.checked = true;
+                     setHexAlpha('bg_color', val);
+                }
+            }
+        }
+
+        // 3. Content (Placeholder)
+        if (parsed.content) {
+             // Size
+             if (parsed.content.size) {
+                 const [cw, ch] = parsed.content.size.split('x');
+                 setVal('ph_width', cw);
+                 setVal('ph_height', ch ?? cw);
+             }
+             
+             // Content Bg Color
+             const cBg = parsed.content.bgcolor;
+             if (cBg) {
+                 if (cBg.startsWith('tpl(')) {
+                     const name = cBg.slice(4, -1);
+                     const r = form.querySelector('input[name="ph_bg_type"][value="tpl"]') as HTMLInputElement;
+                     if (r) r.checked = true;
+                     setVal('ph_bg_tpl', name);
+                 } else {
+                     const r = form.querySelector('input[name="ph_bg_type"][value="color"]') as HTMLInputElement;
+                     if (r) r.checked = true;
+                     setHexAlpha('ph_bg_color', cBg);
+                 }
+             }
+
+             // Content Fg Color
+             const cFg = parsed.content.fgcolor;
+             if (cFg) {
+                 setHexAlpha('ph_fg_color', cFg);
+             }
+        }
+
+        // 4. Query Params
+        if (parsed.query) {
+            if (parsed.query.text) setVal('text', parsed.query.text);
+            if (parsed.query.font) setVal('font', parsed.query.font);
+            if (parsed.query.scale) setVal('scale', parsed.query.scale);
+            if (parsed.query.debug) {
+                 const dbg = form.elements.namedItem('debug') as HTMLInputElement;
+                 if (dbg) dbg.checked = true;
+            }
+            
+            // filetype is not in parsed.query usually (splitUrl might not extract it into query object specifically if not key-value?)
+            // parseUrl.ts `splitUrl` does: const query = Object.fromEntries(new URLSearchParams(rawQuery));
+            // So ?filetype=png IS in parsed.query
+             if (parsed.query.filetype) {
+                const ft = parsed.query.filetype;
+                const r = form.querySelector(`input[name="filetype"][value="${ft}"]`) as HTMLInputElement;
+                if (r) r.checked = true;
+            }
+        }
+        
+    }
+
     updateUIState();
     generateURL();
 }
