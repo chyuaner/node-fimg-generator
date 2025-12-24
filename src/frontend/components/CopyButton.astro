@@ -16,16 +16,10 @@ const buttonId = `copy-btn-${Math.random().toString(36).substr(2, 9)}`;
 const toastId = `toast-${Math.random().toString(36).substr(2, 9)}`;
 ---
 
-<!--
-  使用 <a> 元素，並加上唯一 ID 以便客戶端腳本操作。
-  className 直接由外層傳入，保持 DaisyUI / Tailwind 的樣式彈性。
-  <slot>{label}</slot> 讓使用者可以自行寫內容，若未寫則顯示 label。
--->
-<div class="relative inline-block">
+<copy-button class="relative inline-block" data-text={text}>
   <a
     id={buttonId}
     class={className}
-    data-copy-text={text}
     href="javascript:void(0)"
   >
     <slot>{label}</slot>
@@ -35,72 +29,12 @@ const toastId = `toast-${Math.random().toString(36).substr(2, 9)}`;
   <div id={toastId} class="toast toast-bottom absolute top-0 z-1000 opacity-0 pointer-events-none transition-opacity duration-300">
     <div class="alert alert-success">
       <div class="flex-1">
-        <!-- <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 shrink-0 stroke-current"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7"
-          />
-        </svg> -->
         <span>已複製到剪貼簿</span>
       </div>
     </div>
   </div>
-</div>
+</copy-button>
 
-<script define:vars={{ buttonId, toastId }}>
-  // 客戶端腳本：處理複製功能和 Toast 顯示
-  (function() {
-    const button = document.getElementById(buttonId);
-    const toast = document.getElementById(toastId);
-    
-    if (!button || !toast) return;
-    
-    button.addEventListener('click', async (e) => {
-      e.preventDefault(); // 阻止默認行為，避免頁面跳轉
-      const textToCopy = button.getAttribute('data-copy-text') || '';
-      
-      try {
-        // 使用瀏覽器的 Clipboard API
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(textToCopy);
-        } else {
-          // Fallback: 使用傳統方法
-          const textArea = document.createElement('textarea');
-          textArea.value = textToCopy;
-          textArea.style.position = 'fixed';
-          textArea.style.left = '-999999px';
-          textArea.style.top = '-999999px';
-          document.body.appendChild(textArea);
-          textArea.focus();
-          textArea.select();
-          try {
-            document.execCommand('copy');
-          } catch (err) {
-            console.error('複製失敗:', err);
-          }
-          document.body.removeChild(textArea);
-        }
-        
-        // 顯示 Toast
-        toast.classList.remove('opacity-0', 'pointer-events-none');
-        toast.classList.add('opacity-100');
-        
-        // 1.5 秒後自動關閉
-        setTimeout(() => {
-          toast.classList.remove('opacity-100');
-          toast.classList.add('opacity-0', 'pointer-events-none');
-        }, 1500);
-      } catch (err) {
-        console.error('複製失敗:', err);
-        alert('複製失敗，請手動複製');
-      }
-    });
-  })();
+<script>
+  import '../scripts/components/copy-button';
 </script>

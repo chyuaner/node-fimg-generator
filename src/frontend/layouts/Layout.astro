@@ -18,6 +18,11 @@ const swup = new Swup({
     plugins: [new SwupHeadPlugin()]
 });
 
+// Import common custom elements to ensure they are always available
+import '../scripts/components/dropdown-select';
+import '../scripts/components/copy-button';
+import '../scripts/components/color-input';
+
 // Handle generator initialization dynamically
 async function checkAndInitGenerator() {
     if (document.getElementById('generator-form')) {
