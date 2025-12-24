@@ -267,61 +267,64 @@ export function splitUrlPropsToForm(props: SplitUrlProps, form: HTMLFormElement)
     }
 }
 
-export function genEurl(result: SplitUrlProps): string {
-    // Helper to remove trailing nulls
+// --- URL Construction Shared Logic ---
+
+function getUrlSegments(result: SplitUrlProps) {
     const cleanParts = (parts: (string | null)[]) => {
         const lastIdx = parts.findLastIndex(p => p !== null);
         if (lastIdx === -1) return [];
         return parts.slice(0, lastIdx + 1);
     };
 
+    const canvas = result.canvas;
+    const bgParts = cleanParts(result.bg.parts);
+    const contentParts = cleanParts(result.content.parts);
+    const type = result.content.type;
+    const query = result.query;
+
+    const hasCanvas = !!canvas;
+    const hasBg = bgParts.length > 0;
+
+    // Omit /ph if first segment
+    let omitType = false;
+    if (type === 'ph' && !hasCanvas && !hasBg) {
+        omitType = true;
+    }
+
+    return { canvas, bgParts, contentParts, type, omitType, query, hasCanvas, hasBg };
+}
+
+export function genEurl(result: SplitUrlProps): string {
+    const { canvas, bgParts, contentParts, type, omitType, query } = getUrlSegments(result);
+
     // 1. canvasGroup
-    const canvasGroup = result.canvas
+    const canvasGroup = canvas
         ? `<span class="eurl-group hover:bg-indigo-600/30 inline">/` +
-        `<span class="eurl-part" data-url-ptitle="Canvas Size">${result.canvas}</span>` +
+        `<span class="eurl-part" data-url-ptitle="Canvas Size">${canvas}</span>` +
         `</span>`
         : '';
 
     // 2. bgGroup
     const bgTitles = ['Padding', 'Shadow', 'Radius', 'Color'];
-    const bgParts = cleanParts(result.bg.parts);
-
     let bgGroup = '';
     if (bgParts.length > 0) {
         const partsHtml = bgParts.map((p, i) => {
              const title = bgTitles[i] || 'Unknown';
-             // Render empty string for null to show // in URL instead of /null/
              const val = p === null ? '' : p;
              return `<span class="eurl-part" data-url-ptitle="${title}">${val}</span>`;
         }).join('/');
-
         bgGroup = `<span class="eurl-group hover:bg-cyan-600/30">/bg/${partsHtml}</span>`;
     }
 
     // 3. contentGroup
     let contentGroup = '';
-    const isCanvas = !!result.canvas;
-
-    // Determine titles
-    let contentTitles: string[];
-    if (isCanvas) {
-         contentTitles = ['bgcolor', 'fgcolor'];
-    } else {
-         contentTitles = ['Block Size', 'bgcolor', 'fgcolor'];
-    }
-
-    const contentParts = cleanParts(result.content.parts);
+    const contentTitles = canvas ? ['bgcolor', 'fgcolor'] : ['Block Size', 'bgcolor', 'fgcolor'];
     const hasContentParts = contentParts.length > 0;
-    const type = result.content.type; // 'ph' or null
-
-    // Query
-    const queryStr = new URLSearchParams(result.query).toString();
+    const queryStr = new URLSearchParams(query).toString();
     const queryHtml = queryStr
         ? `/?<span class="eurl-part">${queryStr.replace(/&/g, '&amp;<wbr>')}</span>`
         : '';
 
-    // Decide if we show content group
-    // Show if: 1. Parts exist OR 2. Type exists (explicit /ph) OR 3. Query exists (attach to content logic)
     if (hasContentParts || type || queryStr) {
           let partsHtml = '';
           if (hasContentParts) {
@@ -332,51 +335,33 @@ export function genEurl(result: SplitUrlProps): string {
               }).join('/');
           }
 
-          // Construct prefix: /type/parts...
-          // If type is null (implicit), and we have parts, we usually just show /parts...
-          // (e.g. /300x200/color - wait, implicit content usually implies PH structure?)
-          // But strict generator usually uses /ph.
-          // If parts is empty, do we show /?
-          // e.g. /ph/?query...
-
-          let prefix = '';
-          if (type) prefix = `/${type}`;
-
-          let middle = '';
-          if (partsHtml) middle = `/${partsHtml}`;
-
+          const prefix = (type && !omitType) ? `/${type}` : '';
+          const middle = partsHtml ? `/${partsHtml}` : '';
           contentGroup = `<span class="eurl-group hover:bg-yellow-600/30">${prefix}${middle}${queryHtml}</span>`;
     }
 
     return `${canvasGroup}${bgGroup}${contentGroup}`;
 }
 
-/**
- * Local implementation of URL builder that strictly follows the split props structure
- * including preserving nulls where necessary.
- */
 function localBuildUrl(result: SplitUrlProps, baseUrl: string = ''): string {
-    const parts: string[] = [];
+    const { canvas, bgParts, contentParts, type, omitType, query } = getUrlSegments(result);
+    const pathParts: string[] = [];
 
-    if (result.canvas) parts.push(result.canvas);
+    if (canvas) pathParts.push(canvas);
 
-    if (result.bg.parts.length > 0) {
-        parts.push('bg');
-        result.bg.parts.forEach(p => parts.push(p === null ? 'null' : p));
+    if (bgParts.length > 0) {
+        pathParts.push('bg');
+        bgParts.forEach(p => pathParts.push(p === null ? 'null' : p));
     }
 
-    if (result.content.type) {
-        if (result.content.parts.length > 0) {
-             // Assuming default is 'ph', but we push type if it's not "implicit" mode
-             // For strict correctness, we push type.
-             parts.push(result.content.type);
-             result.content.parts.forEach(p => parts.push(p === null ? 'null' : p));
-        }
+    if (type) {
+        if (!omitType) pathParts.push(type);
+        contentParts.forEach(p => pathParts.push(p === null ? 'null' : p));
     }
 
-    const query = new URLSearchParams(result.query).toString();
-    const path = '/' + parts.join('/');
-    return `${baseUrl.replace(/\/$/, '')}${path}${query ? `?${query}` : ''}`;
+    const queryStr = new URLSearchParams(query).toString();
+    const path = '/' + pathParts.join('/');
+    return `${baseUrl.replace(/\/$/, '')}${path}${queryStr ? `?${queryStr}` : ''}`;
 }
 
 export function initGenerator() {
