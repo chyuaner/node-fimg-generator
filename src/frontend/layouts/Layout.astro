@@ -80,7 +80,11 @@ swup.hooks.on('page:view', () => {
     tabs.forEach(tab => {
         const tabPath = tab.getAttribute('href');
         // Simple match, handling potential trailing slash difference if necessary
-        if (tabPath === currentPath || (tabPath !== '/' && currentPath === tabPath + '/')) {
+        if (
+            tabPath === currentPath ||
+            (tabPath !== '/' && currentPath === tabPath + '/') ||
+            (tabPath === '/' && currentPath.startsWith('/generator/'))
+        ) {
             tab.classList.add('tab-active');
         } else {
             tab.classList.remove('tab-active');
