@@ -257,12 +257,12 @@ export function buildUrl(
 
   // ---- ② Background ----------------------------------------------------
   // 若至少有一個屬性不為 null，就產生 /bg/... 的段落
-  const bgParts: (string | null)[] = [
+  const bgParts = [
     data.bg.padding,
     data.bg.shadow,
     data.bg.radius,
     data.bg.bgcolor,
-  ].filter(p => p != null) as string[];
+  ].filter((p): p is string => p != null);
 
   if (bgParts.length > 0) {
     // 在前面加入「bg」段落
