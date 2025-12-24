@@ -1,5 +1,5 @@
 ---
-const { src, url, title} = Astro.props;
+const { src, url, enableEurl=false, title} = Astro.props;
 import { PUBLIC_BASE_URL } from 'astro:env/client';
 import { splitUrl } from '../../core/utils/splitUrl';
 import { genEurl } from '../scripts/generator';
@@ -16,7 +16,21 @@ import { genEurl } from '../scripts/generator';
         <div class="flex flex-1 items-center">
             <code class="eurl bg-neutral text-neutral-content flex-1 flex rounded-xl p-4 text-wrap break-all">
                 <span class="eurl-base"><span class="eurl-group">{PUBLIC_BASE_URL}</span></span>
-                <span class="eurl-content" set:html={genEurl(splitUrl(url.replace(PUBLIC_BASE_URL, '')))}></span>
+                {enableEurl ? (
+                    // 使用 set:html 直接插入產生的 HTML
+                    <span
+                        class="eurl-content"
+                        set:html={genEurl(splitUrl(url.replace(PUBLIC_BASE_URL, '')))}
+                    />
+                ) : (
+                    // 直接顯示原始 URL
+                    <span class="eurl-content">
+                        <span class="eurl-group ">
+                        {url.replace(PUBLIC_BASE_URL, '')}
+                        </span>
+                    </span>
+                )}
+
             </code>
         </div>
         <!-- <div class="card-actions justify-end">
