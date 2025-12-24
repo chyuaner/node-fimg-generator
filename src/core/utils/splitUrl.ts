@@ -228,3 +228,74 @@ export function splitUrl(
 
   return { canvas, bg: bgObj, content: contentObj, query };
 }
+
+/**
+ * 從 `splitUrl` 的回傳物件還原成 URL（可自行傳入 baseUrl）。
+ *
+ * @param data   splitUrl 所回傳的物件（符合 SplitUrlProps 介面）
+ * @param baseUrl（可選）若要產生完整 URL，請傳入像 `https://fimg.yuaner.tw` 的字串
+ * @returns 組合好的 URL 字串（不含 baseUrl 時，僅回傳路徑與 query）
+ *
+ * 範例：
+ * ```ts
+ * const obj = splitUrl('/bg/15/0/10/tpl(adwaita-l)/ph/500x150/2D4556/FFF?text=Yuaner');
+ * const url = buildUrl(obj, 'https://fimg.yuaner.tw');
+ * // => "https://fimg.yuaner.tw/bg/15/0/10/tpl(adwaita-l)/ph/500x150/2D4556/FFF?text=Yuaner"
+ * ```
+ */
+export function buildUrl(
+  data: SplitUrlProps,
+  baseUrl: string = ''
+): string {
+  const pathSegments: string[] = [];
+
+  // ---- ① Canvas -------------------------------------------------------
+  if (data.canvas) {
+    // canvas 直接放在最前面
+    pathSegments.push(encodeURIComponent(data.canvas));
+  }
+
+  // ---- ② Background ----------------------------------------------------
+  // 若至少有一個屬性不為 null，就產生 /bg/... 的段落
+  const bgParts: (string | null)[] = [
+    data.bg.padding,
+    data.bg.shadow,
+    data.bg.radius,
+    data.bg.bgcolor,
+  ].filter(p => p != null) as string[];
+
+  if (bgParts.length > 0) {
+    // 在前面加入「bg」段落
+    pathSegments.push('bg', ...bgParts.map(p => encodeURIComponent(p)));
+  }
+
+  // ---- ③ Content -------------------------------------------------------
+  if (data.content.type) {
+    const contentParts: string[] = [];
+
+    // ph 的特殊規則：如果有 size，就把 size 放在最前面
+    if (data.content.type === 'ph' && data.content.size) {
+      contentParts.push(encodeURIComponent(data.content.size));
+    }
+
+    // 之後依序放 bgcolor、fgcolor（若存在）
+    if (data.content.bgcolor) {
+      contentParts.push(encodeURIComponent(data.content.bgcolor));
+    }
+    if (data.content.fgcolor) {
+      contentParts.push(encodeURIComponent(data.content.fgcolor));
+    }
+
+    // 組合成 "/{type}/part1/part2..."
+    pathSegments.push(data.content.type, ...contentParts);
+  }
+
+  // ---- ④ Query ---------------------------------------------------------
+  const queryString = new URLSearchParams(data.query).toString();
+
+  // ---- ⑤ 拼接 ---------------------------------------------------------
+  const path = '/' + pathSegments.filter(Boolean).join('/'); // 保證開頭有 '/'
+  const url = `${baseUrl.replace(/\/$/, '')}${path}${queryString ? `?${queryString}` : ''}`;
+
+  return url;
+}

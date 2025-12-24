@@ -1,6 +1,113 @@
 import { PUBLIC_BASE_URL } from 'astro:env/client';
 import { splitUrl } from '../../core/utils/splitUrl';
 
+export function genEurl(result: {
+        canvas: string | null;
+        bg: {
+            parts: (string | null)[];
+            padding?: string | null;
+            shadow?: string | null;
+            radius?: string | null;
+            bgcolor?: string | null;
+        };
+        content: {
+            type: string | null;
+            parts: (string | null)[];
+            size?: string | null;
+            bgcolor?: string | null;
+            fgcolor?: string | null;
+        };
+        query: Record<string, string>;
+    },
+    baseUrl = PUBLIC_BASE_URL
+): string {
+
+    // ------------------------------------------------------------
+    // 1. canvasGroup（若有 canvas） → 顏色 indigo、class inline
+    // ------------------------------------------------------------
+    const canvasGroup = result.canvas
+        ? `<span class="eurl-group hover:bg-indigo-600/30 inline">/` +
+        `<span class="eurl-part" data-url-ptitle="Canvas Size">${result.canvas}</span>` +
+        `</span>`
+        : '';
+
+    // ------------------------------------------------------------
+    // 2. bgGroup
+    // ------------------------------------------------------------
+    const bgTitles: Record<string, string> = {
+        padding: 'Padding',
+        shadow: 'Shadow',
+        radius: 'Radius',
+        bgcolor: 'Color',
+    };
+    const bgGroup = result.bg &&
+        (result.bg.padding ||
+            result.bg.shadow ||
+            result.bg.radius ||
+            result.bg.bgcolor)
+        ? `<span class="eurl-group hover:bg-cyan-600/30">/bg/` +
+        [
+            result.bg.padding,
+            result.bg.shadow,
+            result.bg.radius,
+            result.bg.bgcolor,
+        ]
+            .filter(Boolean)
+            .map((v, i) => {
+                const key = Object.keys(bgTitles)[i];
+                return `<span class="eurl-part" data-url-ptitle="${bgTitles[key]}">${v}</span>`;
+            })
+            .join('/') +
+        `/</span>`
+        : '';
+
+    // ------------------------------------------------------------
+    // 3. contentGroup（目前僅支援 ph） → 顏色 yellow
+    // ------------------------------------------------------------
+    const contentType = result.content.type;
+    let contentGroup = '';
+    if (contentType) {
+        const contentTitles: Record<string, string> = {
+            size: 'Block Size',
+            bgcolor: 'bgcolor',
+            fgcolor: 'fgcolor',
+        };
+
+        const partsMap: Record<string, string | null> = {
+            size: result.content.size,
+            bgcolor: result.content.bgcolor,
+            fgcolor: result.content.fgcolor,
+        };
+
+        const partsHtml = Object.entries(partsMap)
+            .filter(([, v]) => v != null)
+            .map(([k, v]) => {
+                const title = (contentTitles as any)[k] ?? k;
+                return `<span class="eurl-part" data-url-ptitle="${title}">${v}</span>`;
+            })
+            .join('/');
+
+        const queryStr = new URLSearchParams(result.query).toString();
+        const queryHtml = queryStr
+            ? `/?<span class="eurl-part">${queryStr.replace(/&/g, '&amp;<wbr>')}</span>`
+            : '';
+
+        contentGroup = `<span class="eurl-group hover:bg-yellow-600/30">/${contentType}/${partsHtml}${queryHtml}</span>`;
+    }
+
+    // ------------------------------------------------------------
+    // 4. 合併所有片段
+    // ------------------------------------------------------------
+    return `
+    <span class="eurl-base" data-astro-cid-dfafzuvk="">
+    <span class="eurl-group" data-astro-cid-dfafzuvk="">${baseUrl}</span>
+    </span>
+    <span class="eurl-content" id="eurl-content" data-astro-cid-dfafzuvk="">
+    ${canvasGroup}${bgGroup}${contentGroup}
+    </span>`.trim();
+}
+
+
 export function initGenerator() {
     const form = document.getElementById('generator-form') as HTMLFormElement | null;
     if (!form) return;
@@ -376,8 +483,8 @@ export function initGenerator() {
     if (pathname.startsWith('/generator/') && pathname.length > 11) {
         // Remove '/generator' prefix to get the "standard" fimg URL part
         // e.g. /generator/bg/20... -> /bg/20...
-        const subPath = pathname.substring(10); 
-        
+        const subPath = pathname.substring(10);
+
         // Use the core utility to parse it
         // We simulate the full URL for the util logic if needed, but splitUrl mostly cares about path + query
         const fullSubUrl = subPath + window.location.search;
@@ -416,10 +523,10 @@ export function initGenerator() {
            }
            setVal('canvas_width', w);
            if (h) setVal('canvas_height', h);
-           else setVal('canvas_height', w); // If only one number? Usually splitUrl handles logical split? 
-           // Actually splitUrl returns string "300x200" or "300". 
-           // If "300", it might mean width=300, height=null in the final logic, 
-           // but here we just fill what we have. 
+           else setVal('canvas_height', w); // If only one number? Usually splitUrl handles logical split?
+           // Actually splitUrl returns string "300x200" or "300".
+           // If "300", it might mean width=300, height=null in the final logic,
+           // but here we just fill what we have.
         }
 
         // 2. Background (Edge)
@@ -439,10 +546,10 @@ export function initGenerator() {
             // Shadow / Radius
             if (parsed.bg.shadow) setVal('bg_shadow', parsed.bg.shadow);
             if (parsed.bg.radius) setVal('bg_radius', parsed.bg.radius);
-            
+
             // Color / Template
             // bg.bgcolor stores the *value* part (e.g. "ff0000,128" or "tpl(...) path?")
-            // Wait, splitUrl's bg.bgcolor is from parts[3]. 
+            // Wait, splitUrl's bg.bgcolor is from parts[3].
             // Let's check how splitUrl parses "bg/..."
             // It puts color into `bgcolor` field.
             if (parsed.bg.bgcolor) {
@@ -452,7 +559,7 @@ export function initGenerator() {
                      const tplName = val.slice(4, -1);
                      const radioTpl = form.querySelector('input[name="bg_type"][value="tpl"]') as HTMLInputElement;
                      if (radioTpl) radioTpl.checked = true;
-                     setVal('bg_tpl', tplName); 
+                     setVal('bg_tpl', tplName);
                 } else {
                      // handling color
                      const radioColor = form.querySelector('input[name="bg_type"][value="color"]') as HTMLInputElement;
@@ -470,7 +577,7 @@ export function initGenerator() {
                  setVal('ph_width', cw);
                  setVal('ph_height', ch ?? cw);
              }
-             
+
              // Content Bg Color
              const cBg = parsed.content.bgcolor;
              if (cBg) {
@@ -502,7 +609,7 @@ export function initGenerator() {
                  const dbg = form.elements.namedItem('debug') as HTMLInputElement;
                  if (dbg) dbg.checked = true;
             }
-            
+
             // filetype is not in parsed.query usually (splitUrl might not extract it into query object specifically if not key-value?)
             // parseUrl.ts `splitUrl` does: const query = Object.fromEntries(new URLSearchParams(rawQuery));
             // So ?filetype=png IS in parsed.query
@@ -512,7 +619,7 @@ export function initGenerator() {
                 if (r) r.checked = true;
             }
         }
-        
+
     }
 
     updateUIState();
