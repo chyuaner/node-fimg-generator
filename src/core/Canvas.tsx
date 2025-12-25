@@ -67,8 +67,9 @@ export class Canvas {
     fontName: string;
     fontSize: number;
     text?: string;
+    title?: string;
   }) {
-    const { bgColor, bgUrl, fgColor, fontName, fontSize, text } = opts;
+    const { bgColor, bgUrl, fgColor, fontName, fontSize, text, title } = opts;
     // Scale fontSize (always number)
     const scaledFontSize = fontSize * this.scale;
 
@@ -80,6 +81,7 @@ export class Canvas {
         fgColor={fgColor}
         fontName={fontName}
         fontSize={scaledFontSize}
+        title={title}
       >
         {text}
       </PhElement>

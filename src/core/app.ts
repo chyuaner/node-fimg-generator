@@ -229,6 +229,7 @@ async function coreHandler(
 
   // Parse query parameters
   const text = query.text ?? (hasSize||hasInnerSize ? `${width}x${height}` : undefined);
+  const title = query.title;
   const retina = Object.prototype.hasOwnProperty.call(query, 'retina');
   const scaleParam = query.scale;
 
@@ -254,6 +255,7 @@ async function coreHandler(
     fontName,
     fontSize: fontSizeVal,
     text,
+    title,
   });
 
   // bg --------------------------------

@@ -7,6 +7,7 @@ interface PhElementProps {
   fontName: string;
   fontSize: number;
   text?: string;
+  title?: string;
   // bgUrl, bgColor are removed from here
 }
 
@@ -16,11 +17,13 @@ const PhElement = ({
   fontSize,
   style = {},
   children,
+  title,
 }: React.PropsWithChildren<PhElementProps & { style?: React.CSSProperties }>) => {
 
   const main = <div
       style={{
         display: "flex",
+        flexDirection: 'column',
         width: "100%",
         height: "100%",
         color: fgColor,
@@ -31,9 +34,19 @@ const PhElement = ({
         ...style,
       }}
     >
-      {typeof children === "string" || typeof children === "number"
-        ? parseTextToElements(String(children), fontSize)
-        : children}
+      <p style={{
+        marginTop: '-10',
+        marginBottom: '10',
+        fontSize: `${fontSize+8}px`,
+        }}>{typeof title === "string" || typeof title === "number"
+        ? parseTextToElements(title, fontSize)
+        : title}</p>
+
+      <div style={{display: "flex"}}>
+        {typeof children === "string" || typeof children === "number"
+          ? parseTextToElements(String(children), fontSize)
+          : children}
+      </div>
     </div>;
 
   return main;
