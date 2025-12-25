@@ -363,7 +363,7 @@ export function genEurl(result: SplitUrlProps): string {
     const exQueryStr = new URLSearchParams(exQuery).toString();
     if (exQueryStr) {
         const exPrefix = cQueryStr ? '&amp;' : '?';
-        exGroup = `<span class="eurl-group hover:bg-green-600/30" data-url-gtitle="Extra config">${exPrefix}` +
+        exGroup = `<span class="eurl-group hover:bg-green-600/30" data-url-gtitle="">${exPrefix}` +
         `<span class="eurl-part">${exQueryStr.replace(/&/g, '&amp;<wbr>')}</span>` +
         `</span>`;
     }
