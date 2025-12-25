@@ -190,43 +190,55 @@ const generatorConfig = {
 
                     <!-- Border Section -->
                     <section class="card bg-slate-600/30 shadow-sm">
-                        <div class="card-body">
-                            <header class="md:flex items-center justify-between">
+                        <div class="p-3">
+                            <header class="md:flex items-center justify-between mr-4 ml-2 mt-2 mb-2">
                                 <h2 class="card-title md:flex mb-0">內容邊框</h2>
                                 <div>
                                     <p class="label">Optional</p>
                                     <input type="checkbox" id="toggle-bd" class="toggle" />
                                 </div>
                             </header>
-
                             <div class="content collapsible-content" id="content-bd">
-                                <div>
-                                    <fieldset class="fieldset">
-                                        <legend class="fieldset-legend">Width</legend>
-                                        <label class="input w-full">
-                                            <input type="number" name="bd_w" placeholder="Width" class="w-full" /><span class="label">%</span>
-                                        </label>
-                                    </fieldset>
-
-                                    <fieldset class="fieldset">
-                                        <div class="tabs">
-                                            <legend class="fieldset-legend mr-6 w-full sm:w-auto">Background</legend>
-                                            <label class="label pr-4 mb-2">
-                                                <input type="radio" name="bd_type" class="tab radio" value="color" checked />
-                                                Color
+                                <div class="-mt-2 tabs tabs-lift">
+                                    <label class="tab">
+                                        <input type="radio" name="bd_tab" checked />
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 me-2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" /></svg>
+                                        Border
+                                    </label>
+                                    <div class="tab-content bg-base-100/50 border-base-300 p-3">
+                                        <fieldset class="fieldset">
+                                            <legend class="fieldset-legend">Width</legend>
+                                            <label class="input w-full">
+                                                <input type="number" name="bd_w" placeholder="Width" class="w-full" /><span class="label">%</span>
                                             </label>
-                                            <div class="tab-content">
-                                                <ColorInput name="bd_color" />
-                                            </div>
+                                        </fieldset>
 
-                                            <label class="label pr-4 mb-2">
-                                                <input type="radio" name="bd_type" class="tab radio" value="none" />None
-                                            </label>
-                                            <div class="tab-content">
-                                                <div class="p-2 text-sm opacity-50">Transarent Background</div>
+                                        <fieldset class="fieldset">
+                                            <div class="tabs">
+                                                <legend class="fieldset-legend mr-6 w-full sm:w-auto">Background</legend>
+                                                <label class="label pr-4 mb-2">
+                                                    <input type="radio" name="bd_type" class="tab radio" value="color" checked />
+                                                    Color
+                                                </label>
+                                                <div class="tab-content">
+                                                    <ColorInput name="bd_color" />
+                                                </div>
+
+                                                <label class="label pr-4 mb-2">
+                                                    <input type="radio" name="bd_type" class="tab radio" value="none" />None
+                                                </label>
+                                                <div class="tab-content">
+                                                    <div class="p-2 text-sm opacity-50">Transarent Background</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </fieldset>
+                                        </fieldset>
+                                    </div>
+
+                                    <label class="tab tab-disabled">
+                                        <input type="radio" name="bd_tab" value="window" disabled />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-barrier-block"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 21a1 1 0 0 1 0 -2h1v-2h-8v2h1a1 1 0 0 1 0 2h-4a1 1 0 0 1 0 -2h1v-2h-1a2 2 0 0 1 -2 -2v-7a2 2 0 0 1 2 -2h1v-1a1 1 0 1 1 2 0v1h8v-1a1 1 0 0 1 2 0v1h1a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-1v2h1a1 1 0 0 1 0 2zm-2.086 -13l-7 7h4.17l6.916 -7zm6.086 2.914l-4.086 4.086h4.086zm-10.916 -2.914h-3.084v3.084z" /></svg>
+                                        Window (敬請期待)
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -328,6 +340,12 @@ const generatorConfig = {
                                     </fieldset>
 
                                 </div>
+
+                                <label class="tab tab-disabled">
+                                    <input type="radio" name="bd_tab" value="window" disabled />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-barrier-block"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 21a1 1 0 0 1 0 -2h1v-2h-8v2h1a1 1 0 0 1 0 2h-4a1 1 0 0 1 0 -2h1v-2h-1a2 2 0 0 1 -2 -2v-7a2 2 0 0 1 2 -2h1v-1a1 1 0 1 1 2 0v1h8v-1a1 1 0 0 1 2 0v1h1a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-1v2h1a1 1 0 0 1 0 2zm-2.086 -13l-7 7h4.17l6.916 -7zm6.086 2.914l-4.086 4.086h4.086zm-10.916 -2.914h-3.084v3.084z" /></svg>
+                                    Code (敬請期待)
+                                </label>
                             </div>
 
                         </div>
