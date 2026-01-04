@@ -162,7 +162,10 @@ async function coreHandler(
     });
   }
 
-  if (pathname.startsWith('/err404')) {
+  if (
+    pathname.startsWith('/err404')
+    || pathname.endsWith('.php')
+  ) {
     const canvas = new Canvas(assetLoader);
     const width=800, height=400;
     canvas.setCanvasSize(width, height);
@@ -175,6 +178,7 @@ async function coreHandler(
       height,
       fonts,
       format: format as any,
+      status: 404,
     });
 
     return imageResponse;
@@ -249,7 +253,7 @@ async function coreHandler(
     canvas.setCanvasScale(scale);
   }
   canvas.setCanvasSize(width, height);
-    
+
   // bd --------------------------------
   // bd.padding -> borderWidth
   // bd.bgcolor -> borderColor
