@@ -194,7 +194,7 @@ async function coreHandler(
     height = origHeight;
   }
 
-  const is404 = (pathname.endsWith('.php')
+  const is404 = !pathname.startsWith('/err404') && (pathname.endsWith('.php')
     // 若未提供寬高且 bg、bd、content、query 均沒有有效內容，視為 404
     || (!width && !height && (
       // bg.parts 為空陣列或不存在
