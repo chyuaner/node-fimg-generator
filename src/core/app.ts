@@ -194,8 +194,7 @@ async function coreHandler(
     height = origHeight;
   }
 
-  const is404 = (pathname.startsWith('/err404')
-    || pathname.endsWith('.php')
+  const is404 = (pathname.endsWith('.php')
     // 若未提供寬高且 bg、bd、content、query 均沒有有效內容，視為 404
     || (!width && !height && (
       // bg.parts 為空陣列或不存在
@@ -209,7 +208,7 @@ async function coreHandler(
     ))
   );
 
-  if (is404) {
+  if (is404 || pathname.startsWith('/err404')) {
     const canvas = new Canvas(assetLoader);
     const width=800, height=400;
     canvas.setCanvasSize(width, height);
@@ -222,7 +221,7 @@ async function coreHandler(
       height,
       fonts,
       format: format as any,
-      status: 404,
+      status: is404 ? 404 : 200,
     });
 
     return imageResponse;
