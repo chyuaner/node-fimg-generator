@@ -310,13 +310,27 @@ async function coreHandler(
 
     canvas.addBg({
         ...bgBackgroundParm,
-        // 轉成數值（若是 undefined 則會被忽略）
-        ...(paddingX !== undefined || paddingY !== undefined
-        ? { padding: `${paddingY ?? paddingX ?? 0}px ${paddingX ?? paddingY ?? 0}px` }
-        : {}),
-        // 直接使用已經計算好的單一數值
-        ...(shadowValue !== undefined ? { shadow: `${shadowValue}px` } : {}),
-        ...(radiusValue !== undefined ? { radius: `${radiusValue}px` } : {}),
+        // ---------- padding ----------
+        // 只有在 paddingX / paddingY 為有效數值時才加入，避免產生 NaN
+        ...(typeof paddingX === 'number' && !Number.isNaN(paddingX) ||
+          typeof paddingY === 'number' && !Number.isNaN(paddingY)
+          ? {
+              padding: `${Number.isNaN(paddingY) ? 0 : paddingY ?? paddingX ?? 0}px ` +
+                      `${Number.isNaN(paddingX) ? 0 : paddingX ?? paddingY ?? 0}px`,
+            }
+          : {}),
+        // ---------- shadow ----------
+        // shadowValue 為 undefined、null 或 NaN 時不加入
+        ...(typeof shadowValue === 'number' && !Number.isNaN(shadowValue)
+          ? { shadow: `${shadowValue}px` }
+          : {}),
+
+        // ---------- radius ----------
+        // radiusValue 為 undefined、null 或 NaN 時不加入
+        ...(typeof radiusValue === 'number' && !Number.isNaN(radiusValue)
+          ? { radius: `${radiusValue}px` }
+          : {}),
+
         // 若還想自行加入其他 style，可在此追加 wrapperStyle
       });
 
